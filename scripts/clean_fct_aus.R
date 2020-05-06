@@ -7,31 +7,22 @@
 # _________________________________________
 library(dplyr);library(here);library(readxl)
 Sys.setlocale('LC_ALL','C') #sets language to eliminate multibyte error if it arrises
-
+here()
 # source script of functions
-source(here("functions","func_cleaning_fct.R"))
+source(here("scripts","functions","func_cleaning_fct.R"))
 
 # load raw data files
 food_details_file <- "Release1_Food_details_file.xlsx"
 food_database_file <- "Release1_Food_nutrient_database.xlsx"
 
-# hoping this doesn't remain an issue, but can't use the here package to locate
-# things in google drive because they force you into a folder called "My Drive" 
-# that just doens't play nice with reading and writing files, so have to 
-# specify it as "My Drive"... instead of just the pathname... see help file here
-# https://support.google.com/drive/thread/8914333?hl=en
 
-# each user must define their working directory 
-# *where the NutrientDatabase folder is stored*
-zach_drive_wd <- file.path("/Volumes/GoogleDrive/My Drive/BFA_Nutrition/Data_and_Script/NutritionDatabase")
-
-
+# now use here package to navigate from working directory to specific food file
 food_details_dat <- read_excel(
-  file.path(zach_drive_wd,"data","australia_database",food_details_file), 
+  here("data","australia_database",food_details_file), 
   sheet="Release 1 - Food File")
 
 food_database_dat <- read_excel(
-  file.path(zach_drive_wd,"data","australia_database",food_database_file),
+  here("data","australia_database",food_database_file),
   sheet="Solid per 100g & liq per 100mL",
   col_names=FALSE,skip=2)
 
@@ -100,4 +91,14 @@ food_database_dat <- food_database_dat[-c(1,2),] #and remove the old units
 # Merge food details with nutrient database
 # __________________________________________
 
-# use "Public Food Key" variable as key to merge, merge onto aquatic_food_details_dat
+# use "Public Food Key", food name and classification ID variables as keys to merge, merge onto aquatic_food_details_dat
+
+aquatic_foods_database_dat <- merge(aquatic_food_details_dat,food_database_dat,all.x = TRUE, 
+                                    by.x=c("Public Food Key","Classification ID","Name"),
+                                    by.y=c("Public Food Key","Classification","Food Name")
+)
+# dim(aquatic_food_details_dat);dim(food_database_dat);dim(aquatic_foods_database_dat) # check data dimensions to make sure it merged correctly
+write.csv(aquatic_foods_database_dat,here("data","OutputsFromR","cleaned_fcts","clean_fct_aus.csv"),row.names = FALSE)
+
+
+
