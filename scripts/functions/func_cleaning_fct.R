@@ -19,3 +19,21 @@ clean_colnames_aus_fct <- function(dat,x) {
   }
   return(new_name)
 }
+
+#__________________________________________
+# Creates a named vector used to change variable names from 
+# original dataset to the naming structure in AFCD
+# requires column names in data/database_merge_key.xlsx
+# so if it is a new dataset, the columns must be added to this spreadsheet
+# before merge can happen :) 
+# _________________________________________
+convert_nutrient_names <- function(orig_dataset_variable_name){
+  print("see database nutrient merge key spreadsheet (data/database_merge_key.xlsx) for correct orig_dataset_variable_name")
+  dat <- select(merge_key,AFCD_variable_name,all_of(orig_dataset_variable_name))  
+  dat <- dat[is.na(dat[[orig_dataset_variable_name]])==FALSE,]
+  
+  return(
+    paste0("'",dat[['AFCD_variable_name']],"'","=","'",dat[[orig_dataset_variable_name]],"'")
+  )
+  
+}

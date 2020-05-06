@@ -5,7 +5,7 @@
 #__________________________________________
 # read data and load libraries directory defaults
 # _________________________________________
-library(dplyr);library(here);library(readxl)
+library(tidyverse);library(here);library(readxl)
 Sys.setlocale('LC_ALL','C') #sets language to eliminate multibyte error if it arrises
 here()
 # source script of functions
@@ -14,6 +14,7 @@ source(here("scripts","functions","func_cleaning_fct.R"))
 # load raw data files
 food_details_file <- "Release1_Food_details_file.xlsx"
 food_database_file <- "Release1_Food_nutrient_database.xlsx"
+merge_key_file <- "database_merge_key.xlsx"
 
 
 # now use here package to navigate from working directory to specific food file
@@ -26,6 +27,11 @@ food_database_dat <- read_excel(
   sheet="Solid per 100g & liq per 100mL",
   col_names=FALSE,skip=2)
 
+# and read the excel merge key used to modify names and units to merge with AFCD
+merge_key <- read_excel(
+  here("data",merge_key_file),
+  sheet="key"
+  )
 
 
 # __________________________________________
@@ -41,6 +47,7 @@ aquatic_foods_classifications <- c( #vector of aquatic food types
   "Molluscs, fresh, frozen",
   "Crustacea, fresh, frozen",
   "Packed fin fish",
+  "Fish and seafood products",
   "Smoked fish"
   )
 
@@ -97,7 +104,36 @@ aquatic_foods_database_dat <- merge(aquatic_food_details_dat,food_database_dat,a
                                     by.x=c("Public Food Key","Classification ID","Name"),
                                     by.y=c("Public Food Key","Classification","Food Name")
 )
+
+
 # dim(aquatic_food_details_dat);dim(food_database_dat);dim(aquatic_foods_database_dat) # check data dimensions to make sure it merged correctly
+
+
+
+
+aus_names_to_convert_to_afcd <- convert_nutrient_names("Aus_variable_name") #create named vector to change names in AUS dataset for merge with AFCD
+
+
+       
+
+
+
+# now, change names so that it can be readily merged with AFCD
+aquatic_foods_database_dat <- aquatic_foods_database_dat %>%
+  select(-food_category,-Description) %>% #drops a couple of variables we don't need... Description is a really specific version of 'Name' variable
+  rename() %>%
+  rename( # now rename the remaining variables 
+    "aus_food_key" = "Public Food Key",
+    "aus_classification_id"="Classification ID",
+    "aus_info_origin"="Derivation",
+    "aus_sampling_details"="Sampling details",
+    "aus_nitrogen_factor"="Nitrogen Factor",
+    "aus_specific_gravity"="Specific Gravity",
+    "aus_analysed_portion"="Analysed portion",
+    "aus_unanalyse_portion"="Unanalysed portion"
+    )
+
+
 write.csv(aquatic_foods_database_dat,here("data","OutputsFromR","cleaned_fcts","clean_fct_aus.csv"),row.names = FALSE)
 
 
