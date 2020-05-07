@@ -110,18 +110,21 @@ aquatic_foods_database_dat <- merge(aquatic_food_details_dat,food_database_dat,a
 
 
 
+# use function in "functions/func_cleaning_fct.r" create dataframe that 
+# includes variable names to change from Aus to AFCD
+aus_names_to_convert_to_afcd <- convert_nutrient_names("Aus_variable_name") 
 
-aus_names_to_convert_to_afcd <- convert_nutrient_names("Aus_variable_name") #create named vector to change names in AUS dataset for merge with AFCD
-
-
+gsub('"','',aus_names_to_convert_to_afcd)
        
-
+str(noquote(aus_names_to_convert_to_afcd))
 
 
 # now, change names so that it can be readily merged with AFCD
 aquatic_foods_database_dat <- aquatic_foods_database_dat %>%
-  select(-food_category,-Description) %>% #drops a couple of variables we don't need... Description is a really specific version of 'Name' variable
-  rename() %>%
+  # select(-food_category,-Description) %>% #drops a couple of variables we don't need... Description is a really specific version of 'Name' variable
+  data.table::setnames(
+    old=aus_names_to_convert_to_afcd$original_dataset,
+    new=aus_names_to_convert_to_afcd$AFCD_variable_name) %>%
   rename( # now rename the remaining variables 
     "aus_food_key" = "Public Food Key",
     "aus_classification_id"="Classification ID",
@@ -133,6 +136,8 @@ aquatic_foods_database_dat <- aquatic_foods_database_dat %>%
     "aus_unanalyse_portion"="Unanalysed portion"
     )
 
+# now I need to write a function that converts nutrient measurement units if needed, 
+# can use the merge key to do this. 
 
 write.csv(aquatic_foods_database_dat,here("data","OutputsFromR","cleaned_fcts","clean_fct_aus.csv"),row.names = FALSE)
 

@@ -28,12 +28,22 @@ clean_colnames_aus_fct <- function(dat,x) {
 # before merge can happen :) 
 # _________________________________________
 convert_nutrient_names <- function(orig_dataset_variable_name){
+  # test
+  # orig_dataset_variable_name <- "Aus_variable_name"
+  
   print("see database nutrient merge key spreadsheet (data/database_merge_key.xlsx) for correct orig_dataset_variable_name")
   dat <- select(merge_key,AFCD_variable_name,all_of(orig_dataset_variable_name))  
   dat <- dat[is.na(dat[[orig_dataset_variable_name]])==FALSE,]
+  names(dat) <- c("AFCD_variable_name","original_dataset")
   
-  return(
-    paste0("'",dat[['AFCD_variable_name']],"'","=","'",dat[[orig_dataset_variable_name]],"'")
-  )
+  return(dat)
   
 }
+
+
+# now need to create a function that evaluates units for nutrient information
+# it should maybe
+# 1) search to see if they are the same, if so... do tnothing
+# 2) if different, for that entire column of nutrient information, multiply by some conversion coefficient
+# this could require a conversion table that has all the conversion coefficients, and matches based on the 
+# combination of nutrients between the two datasets (mg != g so multiply by 1e-3)
