@@ -47,3 +47,5 @@ convert_nutrient_names <- function(orig_dataset_variable_name){
 # 2) if different, for that entire column of nutrient information, multiply by some conversion coefficient
 # this could require a conversion table that has all the conversion coefficients, and matches based on the 
 # combination of nutrients between the two datasets (mg != g so multiply by 1e-3)
+
+

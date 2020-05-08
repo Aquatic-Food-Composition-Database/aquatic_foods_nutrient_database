@@ -15,7 +15,7 @@ source(here("scripts","functions","func_cleaning_fct.R"))
 food_details_file <- "Release1_Food_details_file.xlsx"
 food_database_file <- "Release1_Food_nutrient_database.xlsx"
 merge_key_file <- "database_merge_key.xlsx"
-
+conversion_table_file <- "unit_conversion_tables.csv"
 
 # now use here package to navigate from working directory to specific food file
 food_details_dat <- read_excel(
@@ -138,6 +138,59 @@ aquatic_foods_database_dat <- aquatic_foods_database_dat %>%
 
 # now I need to write a function that converts nutrient measurement units if needed, 
 # can use the merge key to do this. 
+
+
+convert_units <- function(ele,dat,original_unit,convert_to_unit) {
+  # dat <- merge_key
+  # original_unit <- "Aus_unit"
+  # convert_to_unit <- "AFCD_unit"
+  
+  if( is.na(dat[ele,original_unit])==TRUE | is.na(dat[ele,convert_to_unit])==TRUE) {coef <- NA} else {
+    if(dat[ele,original_unit]==dat[ele,convert_to_unit]) {coef <- 1}
+    if(dat[ele,original_unit]=="g" & dat[ele,convert_to_unit]=="mg") {coef <- 1e3}
+    if(dat[ele,original_unit]=="g" & dat[ele,convert_to_unit]=="ug") {coef <- 1e6}
+    if(dat[ele,original_unit]=="mg" & dat[ele,convert_to_unit]=="g") {coef <- 1e-3}
+    if(dat[ele,original_unit]=="mg" & dat[ele,convert_to_unit]=="ug") {coef <- 1e3}
+    if(dat[ele,original_unit]=="ug" & dat[ele,convert_to_unit]=="g") {coef <- 1e-6}
+    if(dat[ele,original_unit]=="ug" & dat[ele,convert_to_unit]=="mg") {coef <- 1e-3}  
+  }
+  
+  return(coef)
+}
+
+# check to see if function is working??
+coefs <- sapply(1:dim(merge_key)[1],function(x) 
+  convert_units(ele=x,dat=merge_key,original_unit = "Aus_unit",convert_to_unit="AFCD_unit")
+)
+
+
+# I think i need to run the sapply inside of another one that subsets to ONLY include variables in the original datasets
+# that's fine, because we can just add in the variable names to this as well, that'll be needed for the column-wise 
+# multiplication of coefficients when doing the actual conversion anyways. 
+convert_FCT_units <- function(ele,dat,original_unit,convert_to_unit,variables_to_convert) {
+  dat <- merge_key
+  original_unit <- "Aus_unit"
+  convert_to_unit <- "AFCD_unit"
+  variables_to_convert <- "Aus_variable_name"
+  dat <- dat[is.na(dat[,variables_to_convert])==FALSE,] # removes any value for which there 
+  
+  coefs <- sapply(1:dim(dat)[1],function(x) 
+    convert_units(ele=x,dat=merge_key,
+                  original_unit = original_unit,
+                  convert_to_unit=convert_to_unit
+                  )
+    )
+  cbind(dat[,original_unit],dat[,convert_to_unit],coefs)
+  
+  }
+
+
+cbind(merge_key$Aus_unit,merge_key$AFCD_unit,aus_coefs,merge_key$AFCD_variable_name)
+# hmm.... not quite. we need to get JUST the coefficients that exist in the original FCT table to keep it clean
+
+# now we have a vector of coefficients, now we want to multiply that coefficient by any numeric
+# help should be here... once dataset is correctly set up 
+# https://stackoverflow.com/questions/35407852/multiply-columns-with-rows-by-matching-column-name-and-row-name-in-r
 
 write.csv(aquatic_foods_database_dat,here("data","OutputsFromR","cleaned_fcts","clean_fct_aus.csv"),row.names = FALSE)
 
