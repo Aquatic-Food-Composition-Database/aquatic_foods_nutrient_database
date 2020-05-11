@@ -1,4 +1,12 @@
+#============================================================
+# Cleaning AUS national 2019 food compositiont tables 
+# for merge with AFCT
 
+#Name: J. Zachary (Zach) Koehn
+#Email: zkoehn@stanford.edu
+#Date started: 05/01/2020
+#Revised: 05/11/2020
+#============================================================
 
 
 

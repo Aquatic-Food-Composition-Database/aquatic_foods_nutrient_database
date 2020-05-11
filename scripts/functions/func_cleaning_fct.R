@@ -1,4 +1,12 @@
+#============================================================
+# Functions for cleaning and merging food composition table 
+# into AFCD
 
+#Name: J. Zachary (Zach) Koehn
+#Email: zkoehn@stanford.edu
+#Date started: 05/04/2020
+#Revised: 05/11/2020
+#============================================================
 
 
 
