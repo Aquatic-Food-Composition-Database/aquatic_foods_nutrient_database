@@ -15,7 +15,7 @@
 # _________________________________________
 library(tidyverse);library(dplyr);library(here);library(readxl)
 Sys.setlocale('LC_ALL','C') #sets language to eliminate multibyte error if it arrises
-here()
+
 # source script of functions
 source(here("scripts","functions","func_cleaning_fct.R"))
 
@@ -170,11 +170,6 @@ aquatic_foods_database_dat <- aquatic_foods_database_dat %>%
     "aus_unanalyse_portion"="Unanalysed portion"
   )
 
+aquatic_foods_database_dat$Country.ISO3 <- "AUS" #adds ISO country code for Australia
+
 write.csv(aquatic_foods_database_dat,here("data","OutputsFromR","cleaned_fcts","clean_fct_aus.csv"),row.names = FALSE)
-
-
-
-
-names(food_database_dat)
-names(aquatic_foods_database_dat)
-
