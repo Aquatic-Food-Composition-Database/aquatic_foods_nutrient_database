@@ -124,7 +124,6 @@ dat_pac_blue_clean <- dat_pac_blue_no_overlap %>%
 
 dat_pac_blue_clean$Country.ISO3 <- "PNDB" #adds classification for PNDB
 
-names(dat_pac_blue_clean)
 
 write.csv(dat_pac_blue_clean,here("data","OutputsFromR","cleaned_fcts","clean_fct_pndb.csv"),row.names = FALSE)
 
