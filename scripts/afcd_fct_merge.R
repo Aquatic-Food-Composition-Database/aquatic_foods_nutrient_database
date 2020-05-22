@@ -10,7 +10,7 @@
 afcd_file <- "AFCD.final.csv"
 aus_file <- "clean_fct_aus.csv"
 pndb_file <- "clean_fct_pndb.csv"
-
+fao_wa_file <- "clean_fct_fao_west_africa.csv"
 #__________________________________________
 # read data and load libraries directory defaults
 # _________________________________________
@@ -27,14 +27,14 @@ aus_dat <- read.csv(
 pndb_dat <- read.csv(
   here("data","OutputsFromR","cleaned_fcts",pndb_file)
   )
+fao_wa_dat <- read.csv(
+  here("data","OutputsFromR","cleaned_fcts",fao_wa_file)
+  )
 
 
-dim(afcd_dat)
-dim(aus_dat)
 
-c(names(afcd_dat),names(aus_dat))[duplicated(c(names(afcd_dat),names(aus_dat)))==FALSE]
 
 # binds together all variables
-afcd_bind <- bind_rows(afcd_dat,aus_dat,pndb_dat)
+afcd_bind <- bind_rows(afcd_dat,aus_dat,pndb_dat,fao_wa_dat)
 
-dim(afcd_bind[afcd_bind$Country.ISO3=="AUS",])
+
