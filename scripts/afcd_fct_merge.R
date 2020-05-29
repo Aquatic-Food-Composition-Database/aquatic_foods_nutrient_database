@@ -7,10 +7,16 @@
 #Revised: 05/14/2020
 #============================================================
 
-afcd_file <- "AFCD.final.csv"
+afcd_file <- "AFCD_working.csv"
 aus_file <- "clean_fct_aus.csv"
 pndb_file <- "clean_fct_pndb.csv"
 fao_wa_file <- "clean_fct_fao_west_africa.csv"
+smiling_cambodia_file <- "clean_fct_smiling_cambodia.csv"
+smiling_indonesia_file <- "clean_fct_smiling_indonesia.csv"
+smiling_laos_file <- "clean_fct_smiling_laos.csv"
+smiling_thailand_file <- "clean_fct_smiling_thailand.csv"
+smiling_vietnam_file <- "clean_fct_smiling_vietnam.csv"
+
 #__________________________________________
 # read data and load libraries directory defaults
 # _________________________________________
@@ -30,11 +36,28 @@ pndb_dat <- read.csv(
 fao_wa_dat <- read.csv(
   here("data","OutputsFromR","cleaned_fcts",fao_wa_file)
   )
+smiling_cambodia_dat <- read.csv(
+  here("data","OutputsFromR","cleaned_fcts",smiling_cambodia_file)
+)
+smiling_indonesia_dat <- read.csv(
+  here("data","OutputsFromR","cleaned_fcts",smiling_indonesia_file)
+)
+smiling_laos_dat <- read.csv(
+  here("data","OutputsFromR","cleaned_fcts",smiling_laos_file)
+)
+smiling_thailand_dat <- read.csv(
+  here("data","OutputsFromR","cleaned_fcts",smiling_thailand_file)
+)
+smiling_vietnam_dat <- read.csv(
+  here("data","OutputsFromR","cleaned_fcts",smiling_vietnam_file)
+)
 
-
-
+# a few of the FCT food codes do not have preceding character so read in as integers, need to convert to character
+smiling_laos_dat$Original.FCT.Food.Code <- as.character(smiling_laos_dat$Original.FCT.Food.Code)
+smiling_thailand_dat$Original.FCT.Food.Code <- as.character(smiling_thailand_dat$Original.FCT.Food.Code)
+smiling_vietnam_dat$Original.FCT.Food.Code <- as.character(smiling_vietnam_dat$Original.FCT.Food.Code)
 
 # binds together all variables
-afcd_bind <- bind_rows(afcd_dat,aus_dat,pndb_dat,fao_wa_dat)
+afcd_bind <- bind_rows(afcd_dat,aus_dat,pndb_dat,fao_wa_dat,smiling_cambodia_dat,smiling_indonesia_dat,smiling_laos_dat,smiling_thailand_dat,smiling_vietnam_dat)
 
-
+write.csv(afcd_bind,here("data","OutputsFromR","AFCD_final.csv"),row.names = FALSE)

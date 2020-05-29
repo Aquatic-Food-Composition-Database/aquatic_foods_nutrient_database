@@ -83,12 +83,12 @@ convert_units <- function(ele,dat,original_unit,convert_to_unit) {
 # multiplication of coefficients when doing the actual conversion anyways. 
 coefs_convert_unit_fct <- function(key,original_unit,convert_to_unit,variables_to_convert) {
   # key <- merge_key
-  # original_unit <- "Aus_unit"
+  # original_unit <- "Smiling_Cambodia_unit"
   # convert_to_unit <- "AFCD_unit"
-  # variables_to_convert <- "Aus_variable_name"
+  # variables_to_convert <- "Smiling_Cambodia_variable_name"
+
   # first remove any value where we don't have a 
   key <- key[is.na(key[,variables_to_convert])==FALSE,] # removes any nutrient value from the  
-  
   coefs <- sapply(1:dim(key)[1],function(x) 
     convert_units(ele=x,dat=key,
                   original_unit = original_unit,
