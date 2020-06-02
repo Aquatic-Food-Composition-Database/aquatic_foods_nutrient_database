@@ -16,6 +16,7 @@ smiling_indonesia_file <- "clean_fct_smiling_indonesia.csv"
 smiling_laos_file <- "clean_fct_smiling_laos.csv"
 smiling_thailand_file <- "clean_fct_smiling_thailand.csv"
 smiling_vietnam_file <- "clean_fct_smiling_vietnam.csv"
+norway_file <-  "clean_fct_norway_2019.csv"
 
 #__________________________________________
 # read data and load libraries directory defaults
@@ -51,13 +52,22 @@ smiling_thailand_dat <- read.csv(
 smiling_vietnam_dat <- read.csv(
   here("data","OutputsFromR","cleaned_fcts",smiling_vietnam_file)
 )
+norway_dat <- read.csv(
+  here("data","OutputsFromR","cleaned_fcts",norway_file)
+)
+
 
 # a few of the FCT food codes do not have preceding character so read in as integers, need to convert to character
 smiling_laos_dat$Original.FCT.Food.Code <- as.character(smiling_laos_dat$Original.FCT.Food.Code)
 smiling_thailand_dat$Original.FCT.Food.Code <- as.character(smiling_thailand_dat$Original.FCT.Food.Code)
 smiling_vietnam_dat$Original.FCT.Food.Code <- as.character(smiling_vietnam_dat$Original.FCT.Food.Code)
+norway_dat$Original.FCT.Food.Code <- as.character(norway_dat$Original.FCT.Food.Code)
 
 # binds together all variables
-afcd_bind <- bind_rows(afcd_dat,aus_dat,pndb_dat,fao_wa_dat,smiling_cambodia_dat,smiling_indonesia_dat,smiling_laos_dat,smiling_thailand_dat,smiling_vietnam_dat)
+afcd_bind <- bind_rows(afcd_dat,
+                       aus_dat,pndb_dat,fao_wa_dat,
+                       smiling_cambodia_dat,smiling_indonesia_dat,
+                       smiling_laos_dat,smiling_thailand_dat,
+                       smiling_vietnam_dat,norway_dat)
 
 write.csv(afcd_bind,here("data","OutputsFromR","AFCD_final.csv"),row.names = FALSE)
