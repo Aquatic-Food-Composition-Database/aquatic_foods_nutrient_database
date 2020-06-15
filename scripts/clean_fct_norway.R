@@ -1,5 +1,5 @@
 #============================================================
-# 
+# Cleaning Norway national FCT
 
 #Name: J. Zachary (Zach) Koehn
 #Email: zkoehn@stanford.edu
