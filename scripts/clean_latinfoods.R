@@ -33,10 +33,30 @@ merge_key <- read_excel(
 # subset for aquatic foods
 # Food Codes for aquatic fish starts with E
 
+variables_to_remove <- c("ALIMENTO",
+  "TIPO",
+  "CEPA",
+  "GRADO",
+  "MENSAJE",
+  "VARIEDAD",
+  "NOMBRE_ALT",
+  "NOMBRE_COMERCIAL",
+  "GENERO",
+  "ESPECIE"
+)
+
 latinfoods_aquatic_foods_dat <- latinfoods_dat[grep("^E", latinfoods_dat$CODIGO),] %>%
-  transmute(scientific_name = paste(GENERO,ESPECIE)) # add scientific names and drop teh genus and species columns
+  mutate(scientific_name = paste(GENERO,ESPECIE)) %>% # add scientific names and drop teh genus and species columns
+  select(-all_of(variables_to_remove)) # remove columns that are not needed with AFCD
 
+# now (tidyverse is VERY annoying in that you can't pipeline this at this time (without indecipherable errors at least))
+latinfoods_aquatic_foods_dat[,8:33] <- apply(latinfoods_aquatic_foods_dat[,8:33],2,function(x) 
+  gsub(x,pattern = ",",replacement = ".") # change comma to decimal
+)
 
+latinfoods_aquatic_foods_dat[,8:33] <- apply(latinfoods_aquatic_foods_dat[,8:33],2,function(x) 
+  as.numeric(x) #convert to numeric
+)
 
 # run user-written function that converts nutrient measurement units if needed
 
@@ -44,9 +64,8 @@ latinfoods_conversion_coefs <- coefs_convert_unit_fct(key=merge_key,
                                                  original_unit="latinfoods_unit",
                                                  convert_to_unit="AFCD_unit",
                                                  variables_to_convert="latinfoods_variable_name") %>%
-  slice(-1:-3) %>%
+  slice(-1:-6,-32,-33) %>%
   select(latinfoods_variable_name,coefs) #just select the variable name and conversion coefficient
-
 
 # now take all that information and create a named vector, with JUST the conversion coefficients named by the nutrient to be converted
 coefs <- as.numeric(latinfoods_conversion_coefs$coefs)
@@ -62,7 +81,10 @@ latinfoods_aquatic_foods_dat[name_match] <- sweep(latinfoods_aquatic_foods_dat[n
 # finally, change names so that it can be readily merged with AFCD
 
 # use function in "functions/func_cleaning_fct.r" create dataframe that 
-# includes variable names to change from Aus to AFCD
+# includes variable names to change from LATINFOODS to AFCD
+# note: LATINFOODS Sodium variable was called "NA", which doesn't play nice in programming so it was modified in
+# the CSV to "SODIUM"
+
 latinfoods_names_to_convert_to_afcd <- convert_nutrient_names("latinfoods_variable_name") 
 
 
@@ -73,7 +95,7 @@ latinfoods_aquatic_foods_dat_clean <- latinfoods_aquatic_foods_dat %>%
 # if this throws an error related to teh old not being int he new... it's usually because the formatting of those 
 # variables is wrong. 
 
-latinfoods_aquatic_foods_dat_clean$Country.ISO3 <- "IND" #adds classification for PNDB
+latinfoods_aquatic_foods_dat_clean$Country.ISO3 <- "FAO.latinfoods" #adds classification for FAO Latinfoods
 
 
 
@@ -85,6 +107,6 @@ latinfoods_aquatic_foods_dat_clean$Country.ISO3 <- "IND" #adds classification fo
 
 
 # save the modified data frames to the folder
-write.csv(latinfoods_aquatic_foods_dat_clean,here("data","OutputsFromR","cleaned_fcts","clean_fct_latinfoods_2017.csv"),row.names = FALSE)
+write.csv(latinfoods_aquatic_foods_dat_clean,here("data","OutputsFromR","cleaned_fcts","clean_latinfoods.csv"),row.names = FALSE)
 
 
