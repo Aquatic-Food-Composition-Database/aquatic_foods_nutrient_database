@@ -34,7 +34,7 @@ colnames(norway_dat) <- as.character(norway_dat[3,])
 norway_dat <- norway_dat[-1:-5,]
 
 
-# ID_Code for fish starts with J
+# ID_Code for fish starts with 04.
 
 norway_aquatic_foods_dat <- norway_dat[grep("^04.", norway_dat$FoodID),] 
 norway_aquatic_foods_dat <- norway_aquatic_foods_dat[, !duplicated(colnames(norway_aquatic_foods_dat))] %>%
