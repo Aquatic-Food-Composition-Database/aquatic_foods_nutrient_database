@@ -43,8 +43,22 @@ vitamin <- read.csv(
 
 
 ##################
-# merge datasets together
+# BEFORE merging the datasets together, 
+# calculate the absolute amino and fatty acid information
 ##################
+
+# total lipid/amino values are found in macros
+
+
+
+
+
+##################
+# merge datasets together
+# of note, the first 26 rows in each of these should be the same across all datasets
+##################
+
+
 # now determine the metadata that we can use to intersect
 name_intersect <- Reduce(intersect,
   list(
