@@ -1,12 +1,12 @@
 ##################
 # Cleans data collected from peer review studies for merge with AFCD
+# calculates absolute values from relative values 
 # 
 # creator: Zach Koehn
 # email: zkoehn@stanford.edu
 # date started: 07/14/2020
 # last date modified: 07/16/2020
 ##################
-
 
 ##################
 # load needed packages and data sets
@@ -23,7 +23,7 @@ macro <- read.csv(
 amino <- read.csv(
   here("data","afcd_peer_review_data","Seafood nutrients","amino acids.csv"),
   header=TRUE
-  )
+)
 fats <- read.csv(
   here("data","afcd_peer_review_data","Seafood nutrients","fatty_acids.csv"),
   header=TRUE
@@ -43,7 +43,7 @@ vitamin <- read.csv(
 
 
 ##################
-# before merging, determine the metadata that we can use that to merge the data
+# before merging, determine the metadata that we can use to intersect
 ##################
 
 name_intersect <- Reduce(intersect,
@@ -57,71 +57,37 @@ name_intersect <- Reduce(intersect,
                          )
 )
 
-
-
 ##################
-# merge datasets together
-# of note, the first 26 rows in each of these should be the same across all datasets
+# calculate the absolute amino and fatty acid information from studies where it is relative
 ##################
 
+# Directions from Camille Desisto: 
+# The fatty acid columns preceded by "PFA." are values that are expressed in as the percent of total fatty acids or the percent of total lipids/ fats. 
+# The amino acids column preceded by "PP." are values that are expressed in percent of protein 
+# and those preceded by "PAA" are expressed in terms of the percent of total amino acids. 
+# 
+# Total protein and fat/lipid values are in the macronutrients sheet 
 
 
-# now bind all the nutrient data frames together
+# bind to macro data and extract relative information for aminos, protein and fatty acids
+# and multiply each of the relative values by the absolute (total) values
+macro <- macro %>%
+  mutate(across(Nitrogen.nonprotein_est:hydrogen.total_sd, as.numeric)) 
 
 
-all_nutrients <- merge(
-  macro,
-  amino,
-  by=name_intersect) %>% distinct()
-all_nutrients_1 <- merge(
-  all_nutrients,
-  vitamin,
-  by=name_intersect) %>% distinct()
-all_nutrients_2 <- merge(
-  all_nutrients_1,
-  minerals,
-  by=name_intersect) %>% distinct()
-all_nutrients_3 <- merge(
-  all_nutrients_2,
-  fats,
-  by=name_intersect) %>% distinct()
-all_nutrients_4 <- merge(
-  all_nutrients_3,
-  misc,
-  by=name_intersect) %>% distinct()
-
-##################
-# for now REMOVE relative values, those are cleaned & calculated in "clean_pere_review_relative_values.R"
-##################
-all_nutrients_no_relatives <- all_nutrients_4 %>%
+relative_aminos <- merge(macro,amino,by= name_intersect) %>%
+  distinct() %>%
   select(
-    -str_subset(names(all_nutrients_4),"PAA."), #for now removes 
-    -str_subset(names(all_nutrients_4),"PP."),
-    -str_subset(names(all_nutrients_4),"PFA."),
-    -str_subset(names(all_nutrients_4),"X."), #old artifact of merging (false rownames)
-    -str_subset(names(all_nutrients_4),"_sd"), #removes the standard deviation 
-    -Fatty.acid.22.1.n9.fatty.acid.22.1.n11 #duplicated
-  ) %>%
-  rename_all(funs(
-    stringr::str_replace_all( ., "_est", "" )
-  ))
-
-
-
-##################
-# clean for merge with existing AFCD data
-##################
-
-write.csv(
-  all_nutrients_no_relatives,
-  here("data","OutputsFromR","cleaned_fcts",
-       "clean_peer_review.csv"
-       ),
-  row.names = FALSE
-)
-
-
-
-
-
-
+    all_of(name_intersect),
+    str_subset(names(amino),"PAA.")
+  ) 
+relative_proteins <- amino %>%
+  select(
+    all_of(name_intersect),
+    str_subset(names(amino),"PP.")
+  )
+relative_fats <- fats %>%
+  select(
+    all_of(name_intersect),
+    str_subset(names(fats),"PFA.")
+  )
