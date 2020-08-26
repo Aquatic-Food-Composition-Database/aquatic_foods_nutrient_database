@@ -94,4 +94,5 @@ afcd_bind <- bind_rows(afcd_dat,
                        )
 
 
-write.csv(afcd_bind,here("data","OutputsFromR","AFCD_final.csv"),row.names = FALSE)
+
+write.csv(afcd_bind,here("data","OutputsFromR","AFCD_merged.csv"),row.names = FALSE)
