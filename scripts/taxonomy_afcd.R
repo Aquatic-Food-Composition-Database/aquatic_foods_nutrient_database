@@ -15,22 +15,22 @@
 #_____________________________________________________________________________________________
 # read data and load libraries directory defaults
 # ________________________________________________________________________________________________
-library(plyr);library(dplyr);library(here)
+library(tidyverse)
+library(taxize)
+library(taxizedb)
+library(data.table)
 
+# filenames
 afcd_merged_file <- "AFCD_merged.csv"
-worms_2017_file <- "WoRMS.6.2017.csv"
 
 
+# work directory, set yours using wk_dir here!
 wk_dir <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Nutrition/Separate/aquatic_foods_nutrient_database"
 
 afcd_dat <- read.csv(
   file.path(wk_dir,"data","OutputsFromR",afcd_merged_file),
   header = TRUE)
 
-# taxonomic database from the World Register of Marine Species or (WoRMS). It's a bigger file. 
-worms <- read.csv(
-  file.path(wk_dir,"data",worms_2017_file),
-  header=T,stringsAsFactors = F)
 
 
 Sys.setlocale('LC_ALL','C') #sets language to eliminate multibyte error
@@ -43,102 +43,115 @@ Sys.setlocale('LC_ALL','C') #sets language to eliminate multibyte error
 
 #_____________________________________________________________________________________________
 # Adds taxonomic information to dataset
-# : uses fuzzy merge approach on scientific name to attach associated class, order,family,AFCD 
+# using the package "taxize"
+# Tutorial: 
 # ________________________________________________________________________________________________
-
-
-#combines typically used scientific names from national databases, fishbase, FAO, and preferred (ie RAM Legacy)
-worms$potential.scinames <- paste(worms$scientificName,worms$acceptedNameUsage ,sep=", ")
-
-# take a subset to make this whole thing faster... probably don't need:
-# Platyhelmintes (flatworms)'
-# Annelida (segmented worms)
-# Porifera (sponges)
-# Nematoda (round worms)
-# Bryozoa 
-# Nemertea (ribbon worms)
-# Cnidaria (jellyfish, anemones)
-phylum.to.exclude <- c("Platyhelmintes","Annelida","Porifera",
-                       "Nematoda","Bryozoa","Nemertea","Cnidaria")
-worms <- worms[ !(worms$phylum %in% phylum.to.exclude),] 
-
-
 afcd_dat_all_names <- afcd_dat %>%
   select(Scientific.Name) %>%
-  distinct()
-afcd_dat_all_names$Scientific.Name <- trimws(afcd_dat_all_names$Scientific.Name,which=c("both")) %>% distinct()
-afcd_dat_all_names <- as.data.frame(apply(afcd_dat_all_names, 2, function(x) gsub("^$|^ $", NA, x)))
+  distinct() %>%
+  mutate(Scientific.Name=trimws(Scientific.Name)) %>%
+  filter(
+    Scientific.Name!=""
+    )
 
-afcd_dat_all_names$match.names <- "" #create blank column to be filled
-afcd_dat_all_names <- as.data.frame(afcd_dat_all_names)
-afcd_dat_all_names$Scientific.Name <- as.character(afcd_dat_all_names$Scientific.Name)
+  afcd_scinames <- unique(afcd_dat_all_names$Scientific.Name)
+id_tx_ncbi <- taxizedb::name2taxid(afcd_scinames,db="ncbi", out_type="summary")
+id_tx_itis <- taxizedb::name2taxid(afcd_scinames,db="itis", out_type="summary")
+id_tx_gbif <- taxizedb::name2taxid(afcd_scinames,db="gbif", out_type="summary")
+id_tx_wfo <- taxizedb::name2taxid(afcd_scinames,db="wfo", out_type="summary")
+id_tx_tpl <- taxizedb::name2taxid(afcd_scinames,db="tpl", out_type="summary")
 
-worms <- as.data.frame(worms,stringsAsFactors=F)
 
-#below is a messy merge for each row based on how closely the character string
-# matches a string in the potential scientific names dataset
-#if it matches, it is added to the matched name vector
+setdiff(id_tx_tpl$name,id_tx_gbif$name) #gbif has everything in tpl
+setdiff(id_tx_wfo$name,id_tx_gbif$name) #gbif has everything in wfo
+setdiff(id_tx_ncbi$name,id_tx_gbif$name) #gbif has everything in wfo
 
-# fuzzy merge to add multiple science names where available
-#!!! Commented out b/c takes a LONG time to run, the imported CSV immediately below is the output
-# includes a counter so progress can be marked.
+class_ncbi <- taxizedb::classification(id_tx_ncbi$id,db="ncbi")
+class_itis <- taxizedb::classification(id_tx_itis$id,db="itis")
+class_gbif <- taxizedb::classification(id_tx_gbif$id,db="gbif")
 
-for(i in 1:dim(afcd_dat_all_names)[1]) {
-  x <- agrep(afcd_dat_all_names$Scientific.Name[i], worms$potential.scinames,
-             ignore.case=TRUE, value=TRUE,
-             max.distance = 0.05, useBytes = TRUE)
-  x <- paste0(x,"")
-  afcd_dat_all_names$match.names[i] <- x
-  Sys.sleep(.1)      # some loop operations to create a progress bar (takes a LONG time)
-  cat(i, paste0(dim(afcd_dat_all_names)[1]),"\r")
-  flush.console()
+
+widen_taxa <- function(class_list,i) {
+  # i <- 1827
+  # class_list <- class_ncbi
+  id_df <- as.data.frame(class_list[[i]])
+  id_wide <- id_df %>% 
+    select(name,rank) %>%
+    distinct() %>%
+    filter(rank %in% c(
+      "kingdom","phylum","class","order","family","genus","species"
+      )
+    ) %>%
+    pivot_wider(names_from=rank,values_from=name) %>%
+    select(contains("kingdom"),contains("phylum"),contains("class"),contains("order"),contains("family"),contains("genus"),contains("species")) %>%
+    mutate(
+      taxa_id=names(class_list)[i])  
+
+  return(as.data.frame(id_wide))
+
 }
 
-write.csv(afcd_dat_all_names,
-  here("OutputsFromR","matched.worms.AFCD.csv"),
-  row.names=FALSE)
-
-
-# ok, here's the shortcut, I commented out  the fuzzy loop because it took ages. 
-# I saved the output as a csv and commented out the actual fuzzy merge and just load that output below.
-afcd_dat_all_names <- read.csv(
-  file.path(wk_dir,"data","OutputsFromR","matched.worms.genus.csv"),
-  header=T,stringsAsFactors = F)
-
-worms_taxonomy <- worms[,which(names(worms) %in% c("potential.scinames","class","order","family","genus"))]
-
-names(worms_taxonomy) <- c("Class_w","Order_w",
-                           "Family_w","Genus_w","alt.scinames")
-
-names_worms_phylo <- merge(worms_taxonomy,afcd_dat_all_names,by="alt.scinames")
-names_worms_phylo <- names_worms_phylo[!duplicated(names_worms_phylo),]
-
-afcd_worms <- merge(names_worms_phylo,afcd_dat, by="Scientific.Name",all.y = T)
-
-
-
-
-
-# now add in any missing Order, Family names in WoRMS using AFCD existing data (from FISHBASE)
-for(i in 1:dim(afcd_worms)[1]) {
-  if(is.na(afcd_worms$Order_w[i])==T) {
-    afcd_worms$Order_w[i] <- afcd_worms$Order.worms[i]
-  }
-  if(is.na(afcd_worms$Family_w[i])==T) {
-    afcd_worms$Family_w[i] <- afcd_worms$Family.worms[i]
-  }
-  if(is.na(afcd_worms$Class_w[i])==T) {
-    afcd_worms$Class_w[i] <- afcd_worms$Class.worms[i]
-  }
-  if(is.na(afcd_worms$Genus_w[i])==T) {
-    afcd_worms$Genus_w[i] <- afcd_worms$Genus.worms[i]
-  }
+# the itis database did not have 
+## create a function that returns a logical value
+isEmpty <- function(x) {
+    is.data.frame(x) && sum(dim(x)) == 0L
 }
+## apply it over the list
+empty <- unlist(lapply(class_itis, isEmpty))
+empty_itis <- names(empty)[empty==TRUE]
+class_itis_remove_bad_ids <- class_itis[!(names(class_itis) %in% empty_itis)]
+## remove the empties
+list_gbif <- lapply(1:length(class_gbif), function(i) widen_taxa(class_list=class_gbif,i=i))
+list_itis <- lapply(1:length(class_itis_remove_bad_ids), function(i) widen_taxa(class_list=class_itis_remove_bad_ids,i=i))
+list_ncbi <- lapply(1:length(class_ncbi), function(i) widen_taxa(class_list=class_ncbi,i=i))
 
-afcd_worms$Class_w
 
-# write finalized dataset to CSV
-write.csv(
-  afcd_worms,
-  here("data","OutputsFromR","AFCD_final.csv"),
-  row.names = F) 
+taxa_ncbi <- plyr::rbind.fill(list_ncbi)
+taxa_itis <- plyr::rbind.fill(list_itis)
+taxa_gbif <- plyr::rbind.fill(list_ncbi)
+
+taxa_ncbi$taxa_db <- "ncbi"
+taxa_itis$taxa_db <- "itis"
+taxa_gbif$taxa_db <- "gbif"
+
+
+
+taxa_taxize <- bind_rows(taxa_gbif,taxa_itis,taxa_ncbi)
+
+names(taxa_taxize)
+
+taxa_taxize_unique <- taxa_taxize[!duplicated(taxa_taxize$species),] 
+
+grepl(taxa_taxize_unique$species,"c(")
+
+taxa_taxize_unique$match_name <- "" # Creating an empty column
+
+taxa_taxize_unique[1657:1660,]
+
+for(i in 1:dim(taxa_taxize_unique)[1]) {
+   x <- agrep(taxa_taxize_unique$species[i], afcd_scinames,
+   ignore.case=TRUE, value=TRUE,
+   max.distance = 0.02, useBytes = TRUE)
+   x <- paste0(x,"")
+   taxa_taxize_unique$match_name[i] <- x
+} 
+
+afcd_taxa <- merge(taxa_taxize_unique,afcd_dat,all.y=TRUE,by.x="species",by.y="Scientific.Name")
+
+# ok, so still missing a good bit of information from species that aren't in these databases...
+# but, we can extract the genus from the species name and at least fill in the upper classifications
+# by matching that genus with another row where we have complete information
+
+# also still missing information from infoods, USA, Koriea, New Zealand (basically all the blank Scientific Names at the top)
+# this COULD be because it's cooked.... but need to look into it
+
+write.csv(afcd_taxa,
+    file.path(wk_dir,"data","OutputsFromR","afcd_final.csv"),
+    row.names=FALSE
+  )
+
+
+
+head(afcd_taxa)
+
+
