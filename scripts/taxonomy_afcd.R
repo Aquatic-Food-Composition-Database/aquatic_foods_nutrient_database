@@ -142,8 +142,8 @@ afcd_taxa <- merge(taxa_taxize_unique,afcd_dat,all.y=TRUE,by.x="species",by.y="S
 # but, we can extract the genus from the species name and at least fill in the upper classifications
 # by matching that genus with another row where we have complete information
 
-# also still missing information from infoods, USA, Koriea, New Zealand (basically all the blank Scientific Names at the top)
-# this COULD be because it's cooked.... but need to look into it
+# also still missing information from infoods (biodiv3,latinfoods,MOZ, USA, Koriea, New Zealand (basically all the blank Scientific Names at the top)
+# this COULD be because it's cooked.... but need to look into it, just subset blank scientific names in AFCD_merged.csv to see them
 
 write.csv(afcd_taxa,
     file.path(wk_dir,"data","OutputsFromR","afcd_final.csv"),
