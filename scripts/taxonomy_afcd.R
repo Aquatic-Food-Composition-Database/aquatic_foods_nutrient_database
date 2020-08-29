@@ -19,6 +19,7 @@ library(tidyverse)
 library(taxize)
 library(taxizedb)
 library(data.table)
+library(pbapply)
 
 # filenames
 afcd_merged_file <- "AFCD_merged.csv"
@@ -91,7 +92,8 @@ widen_taxa <- function(class_list,i) {
 
 }
 
-# the itis database did not have 
+# the itis database did not have a few id's, which also made parts of the list output having 
+# no rows... which made it impossible to work with... so need to remove those bad IDs from itis
 ## create a function that returns a logical value
 isEmpty <- function(x) {
     is.data.frame(x) && sum(dim(x)) == 0L
@@ -114,7 +116,11 @@ taxa_ncbi$taxa_db <- "ncbi"
 taxa_itis$taxa_db <- "itis"
 taxa_gbif$taxa_db <- "gbif"
 
-
+#must be some bugs in the package... it included a few taxa_id's where species were NA
+# this creates some issues in the merge and string manipulation down below, so remove them now
+taxa_gbif <- taxa_gbif[is.na(taxa_gbif$species) != TRUE,] 
+taxa_itis <- taxa_itis[is.na(taxa_itis$species) != TRUE,] 
+taxa_ncbi <- taxa_ncbi[is.na(taxa_ncbi$species) != TRUE,] 
 
 taxa_taxize <- bind_rows(taxa_gbif,taxa_itis,taxa_ncbi)
 
@@ -122,25 +128,59 @@ names(taxa_taxize)
 
 taxa_taxize_unique <- taxa_taxize[!duplicated(taxa_taxize$species),] 
 
-grepl(taxa_taxize_unique$species,"c(")
-
-taxa_taxize_unique$match_name <- "" # Creating an empty column
-
-taxa_taxize_unique[1657:1660,]
-
-for(i in 1:dim(taxa_taxize_unique)[1]) {
-   x <- agrep(taxa_taxize_unique$species[i], afcd_scinames,
-   ignore.case=TRUE, value=TRUE,
-   max.distance = 0.02, useBytes = TRUE)
-   x <- paste0(x,"")
-   taxa_taxize_unique$match_name[i] <- x
-} 
-
 afcd_taxa <- merge(taxa_taxize_unique,afcd_dat,all.y=TRUE,by.x="species",by.y="Scientific.Name")
 
 # ok, so still missing a good bit of information from species that aren't in these databases...
-# but, we can extract the genus from the species name and at least fill in the upper classifications
+# but, I extracted the genus from the species name and at least fill in the upper classifications
 # by matching that genus with another row where we have complete information
+
+
+
+# now fills in any missing genus information from the first word of the species name
+afcd_taxa$genus <- sapply(1: dim(afcd_taxa)[1],function(i) 
+  if(is.na(afcd_taxa$genus[i])==TRUE) {afcd_taxa$genus[i] <- strsplit(afcd_taxa$species[i]," ")[[1]][1]} else {afcd_taxa$genus[i] <- afcd_taxa$genus[i]}
+  )
+
+
+afcd_taxa <- read.csv(
+    file.path(wk_dir,"data","OutputsFromR","afcd_final.csv"),
+    header=TRUE
+  )
+
+# seq_test <- 12975:12997
+seq_true <- 1:dim(afcd_taxa)[1]
+
+
+
+# creates a list of the FILLED taxonomic information, based on genus
+list_kingdom_fam <- pblapply(seq_true,function(i) {
+  # i=12997
+  if( is.na(afcd_taxa$species[i])==FALSE ) {
+    afcd_taxa[i,c("kingdom","phylum","class","order","family","genus")] <- afcd_taxa[i,c("kingdom","phylum","class","order","family","genus")]
+    } 
+  if( (is.na(afcd_taxa$genus[i])==FALSE) && (is.na(afcd_taxa$family[i])==FALSE) ) {
+    afcd_taxa[i,c("kingdom","phylum","class","order","family","genus")] <- afcd_taxa[i,c("kingdom","phylum","class","order","family","genus")]
+    }
+  if( (is.na(afcd_taxa$genus[i])==FALSE) && (is.na(afcd_taxa$family[i])==TRUE) ) {
+    same_genus <- afcd_taxa[afcd_taxa$genus %like% afcd_taxa$genus[i], ]
+    fills <- same_genus[,c("kingdom","phylum","class","order","family","genus")]
+
+    fill_kingdom_fam <- distinct(fills[complete.cases(fills),])
+    if(dim(fill_kingdom_fam)[1]>0) {
+      afcd_taxa[i,c("kingdom","phylum","class","order","family","genus")] <- fill_kingdom_fam
+      } else {
+        afcd_taxa[i,c("kingdom","phylum","class","order","family","genus")] <- fills[1,]  
+        }
+    }
+  return(afcd_taxa[i,c("kingdom","phylum","class","order","family","genus")])
+
+  }
+)
+# before adding to the taxonomic columns, the list must be converted to a dataframe
+afcd_taxa[seq_true,c("kingdom","phylum","class","order","family","genus")] <- as.data.frame(rbindlist(list_kingdom_fam))
+
+
+
 
 # also still missing information from infoods (biodiv3,latinfoods,MOZ, USA, Koriea, New Zealand (basically all the blank Scientific Names at the top)
 # this COULD be because it's cooked.... but need to look into it, just subset blank scientific names in AFCD_merged.csv to see them
@@ -149,9 +189,4 @@ write.csv(afcd_taxa,
     file.path(wk_dir,"data","OutputsFromR","afcd_final.csv"),
     row.names=FALSE
   )
-
-
-
-head(afcd_taxa)
-
 
