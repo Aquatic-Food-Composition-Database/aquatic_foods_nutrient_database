@@ -50,29 +50,34 @@ Sys.setlocale('LC_ALL','C') #sets language to eliminate multibyte error
 afcd_dat_all_names <- afcd_dat %>%
   select(Scientific.Name) %>%
   distinct() %>%
-  mutate(Scientific.Name=trimws(Scientific.Name)) %>%
+  mutate(
+    Scientific.Name=trimws(Scientific.Name),
+    Scientific.Name=str_to_sentence(Scientific.Name)
+    ) %>%
   filter(
     Scientific.Name!=""
     )
 
-  afcd_scinames <- unique(afcd_dat_all_names$Scientific.Name)
+afcd_scinames <- unique(afcd_dat_all_names$Scientific.Name)
+
 id_tx_ncbi <- taxizedb::name2taxid(afcd_scinames,db="ncbi", out_type="summary")
 id_tx_itis <- taxizedb::name2taxid(afcd_scinames,db="itis", out_type="summary")
 id_tx_gbif <- taxizedb::name2taxid(afcd_scinames,db="gbif", out_type="summary")
-id_tx_wfo <- taxizedb::name2taxid(afcd_scinames,db="wfo", out_type="summary")
-id_tx_tpl <- taxizedb::name2taxid(afcd_scinames,db="tpl", out_type="summary")
 
+# remove these two because all names in them are contained in the above, see commented script in lines immediately below
+# id_tx_wfo <- taxizedb::name2taxid(afcd_scinames,db="wfo", out_type="summary")
+# id_tx_tpl <- taxizedb::name2taxid(afcd_scinames,db="tpl", out_type="summary")
 
-setdiff(id_tx_tpl$name,id_tx_gbif$name) #gbif has everything in tpl
-setdiff(id_tx_wfo$name,id_tx_gbif$name) #gbif has everything in wfo
-setdiff(id_tx_ncbi$name,id_tx_gbif$name) #gbif has everything in wfo
+# setdiff(id_tx_tpl$name,id_tx_gbif$name) #gbif has everything in tpl
+# setdiff(id_tx_wfo$name,id_tx_gbif$name) #gbif has everything in wfo
+# setdiff(id_tx_ncbi$name,id_tx_gbif$name) #gbif has everything in wfo
 
 class_ncbi <- taxizedb::classification(id_tx_ncbi$id,db="ncbi")
 class_itis <- taxizedb::classification(id_tx_itis$id,db="itis")
 class_gbif <- taxizedb::classification(id_tx_gbif$id,db="gbif")
 
 
-widen_taxa <- function(class_list,i) {
+widen_taxa_func <- function(class_list,i) {
   # i <- 1827
   # class_list <- class_ncbi
   id_df <- as.data.frame(class_list[[i]])
@@ -95,17 +100,17 @@ widen_taxa <- function(class_list,i) {
 # the itis database did not have a few id's, which also made parts of the list output having 
 # no rows... which made it impossible to work with... so need to remove those bad IDs from itis
 ## create a function that returns a logical value
-isEmpty <- function(x) {
+identify_empty_rows_func <- function(x) {
     is.data.frame(x) && sum(dim(x)) == 0L
 }
 ## apply it over the list
-empty <- unlist(lapply(class_itis, isEmpty))
+empty <- unlist(lapply(class_itis, identify_empty_rows_func))
 empty_itis <- names(empty)[empty==TRUE]
 class_itis_remove_bad_ids <- class_itis[!(names(class_itis) %in% empty_itis)]
 ## remove the empties
-list_gbif <- lapply(1:length(class_gbif), function(i) widen_taxa(class_list=class_gbif,i=i))
-list_itis <- lapply(1:length(class_itis_remove_bad_ids), function(i) widen_taxa(class_list=class_itis_remove_bad_ids,i=i))
-list_ncbi <- lapply(1:length(class_ncbi), function(i) widen_taxa(class_list=class_ncbi,i=i))
+list_gbif <- lapply(1:length(class_gbif), function(i) widen_taxa_func(class_list=class_gbif,i=i))
+list_itis <- lapply(1:length(class_itis_remove_bad_ids), function(i) widen_taxa_func(class_list=class_itis_remove_bad_ids,i=i))
+list_ncbi <- lapply(1:length(class_ncbi), function(i) widen_taxa_func(class_list=class_ncbi,i=i))
 
 
 taxa_ncbi <- plyr::rbind.fill(list_ncbi)
@@ -122,48 +127,63 @@ taxa_gbif <- taxa_gbif[is.na(taxa_gbif$species) != TRUE,]
 taxa_itis <- taxa_itis[is.na(taxa_itis$species) != TRUE,] 
 taxa_ncbi <- taxa_ncbi[is.na(taxa_ncbi$species) != TRUE,] 
 
-taxa_taxize <- bind_rows(taxa_gbif,taxa_itis,taxa_ncbi)
+taxa_taxize <- bind_rows(taxa_gbif,taxa_itis,taxa_ncbi) %>%
+  drop_na(genus)
 
-names(taxa_taxize)
 
+# basically want to order the dataset giving priority to NCBI, then ITIS, then GBIF - fortunately these are reverse alphabetical
+  # so can use order to do so. 
+taxa_taxize <- taxa_taxize[order(taxa_taxize$taxa_db,decreasing = TRUE),]  #had to do this in base... b/c tidyverse isn't good at this.
+# now remove any duplicates... with preference to NCBI > ITIS > GBIF
 taxa_taxize_unique <- taxa_taxize[!duplicated(taxa_taxize$species),] 
 
+
 afcd_taxa <- merge(taxa_taxize_unique,afcd_dat,all.y=TRUE,by.x="species",by.y="Scientific.Name")
+
 
 # ok, so still missing a good bit of information from species that aren't in these databases...
 # but, I extracted the genus from the species name and at least fill in the upper classifications
 # by matching that genus with another row where we have complete information
 
-
-
+afcd_taxa$species <- trimws(afcd_taxa$species,"both") #remove white spaces on some of these variables 
 # now fills in any missing genus information from the first word of the species name
+
+
 afcd_taxa$genus <- sapply(1: dim(afcd_taxa)[1],function(i) 
   if(is.na(afcd_taxa$genus[i])==TRUE) {afcd_taxa$genus[i] <- strsplit(afcd_taxa$species[i]," ")[[1]][1]} else {afcd_taxa$genus[i] <- afcd_taxa$genus[i]}
   )
 
+# here make any 
+afcd_taxa <- afcd_taxa %>%
+  mutate(
+    genus=str_replace(genus,"Scorpena","Scorpaena"),
+    genus=str_replace(genus,"tinca","Tinca")
+    ) %>%
+  filter(
+    genus!="species" # one of the entries was just a note beginning with species
+    )
 
-afcd_taxa <- read.csv(
-    file.path(wk_dir,"data","OutputsFromR","afcd_final.csv"),
-    header=TRUE
-  )
+# afcd_taxa <- read.csv(
+#     file.path(wk_dir,"data","OutputsFromR","AFCD_final.csv"),
+#     header=TRUE
+#   )
 
-# seq_test <- 12975:12997
+seq_test <- 420:424
 seq_true <- 1:dim(afcd_taxa)[1]
-
 
 
 # creates a list of the FILLED taxonomic information, based on genus
 list_kingdom_fam <- pblapply(seq_true,function(i) {
-  # i=12997
+  # i=422
   if( is.na(afcd_taxa$species[i])==FALSE ) {
     afcd_taxa[i,c("kingdom","phylum","class","order","family","genus")] <- afcd_taxa[i,c("kingdom","phylum","class","order","family","genus")]
     } 
-  if( (is.na(afcd_taxa$genus[i])==FALSE) && (is.na(afcd_taxa$family[i])==FALSE) ) {
+  if( (is.na(afcd_taxa$genus[i])==FALSE || afcd_taxa$genus=="") && (is.na(afcd_taxa$family[i])==FALSE) ) {
     afcd_taxa[i,c("kingdom","phylum","class","order","family","genus")] <- afcd_taxa[i,c("kingdom","phylum","class","order","family","genus")]
     }
-  if( (is.na(afcd_taxa$genus[i])==FALSE) && (is.na(afcd_taxa$family[i])==TRUE) ) {
-    same_genus <- afcd_taxa[afcd_taxa$genus %like% afcd_taxa$genus[i], ]
-    fills <- same_genus[,c("kingdom","phylum","class","order","family","genus")]
+  if( (is.na(afcd_taxa$genus[i])==FALSE) && (is.na(afcd_taxa$family[i])==TRUE) && afcd_taxa$genus[i]!="" ) {
+    same_genus <- afcd_taxa[afcd_taxa$genus %like% afcd_taxa$genus[i],c("kingdom","phylum","class","order","family","genus") ]
+    fills <- same_genus
 
     fill_kingdom_fam <- distinct(fills[complete.cases(fills),])
     if(dim(fill_kingdom_fam)[1]>0) {
@@ -176,17 +196,17 @@ list_kingdom_fam <- pblapply(seq_true,function(i) {
 
   }
 )
+
 # before adding to the taxonomic columns, the list must be converted to a dataframe
-afcd_taxa[seq_true,c("kingdom","phylum","class","order","family","genus")] <- as.data.frame(rbindlist(list_kingdom_fam))
+filled_kingdom_fam <- as.data.frame(rbindlist(list_kingdom_fam))
 
-
-
+afcd_taxa[seq_true,c("kingdom","phylum","class","order","family","genus")] <- filled_kingdom_fam
 
 # also still missing information from infoods (biodiv3,latinfoods,MOZ, USA, Koriea, New Zealand (basically all the blank Scientific Names at the top)
 # this COULD be because it's cooked.... but need to look into it, just subset blank scientific names in AFCD_merged.csv to see them
 
 write.csv(afcd_taxa,
-    file.path(wk_dir,"data","OutputsFromR","afcd_final.csv"),
+    file.path(wk_dir,"data","OutputsFromR","aquatic_food_composition_database","AFCD_live.csv"),
     row.names=FALSE
   )
 
