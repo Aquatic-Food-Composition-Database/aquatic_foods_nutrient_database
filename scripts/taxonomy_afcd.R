@@ -52,13 +52,14 @@ afcd_dat_all_names <- afcd_dat %>%
   distinct() %>%
   mutate(
     Scientific.Name=trimws(Scientific.Name),
-    Scientific.Name=str_to_sentence(Scientific.Name)
-    ) %>%
-  filter(
-    Scientific.Name!=""
+    Scientific.Name=str_to_sentence(Scientific.Name),
+    Scientific.Name=str_replace_all(Scientific.Name,"Theragra chalcogramma","Gadus chalcogrammus"), #new name (Alaska pollock)
+    Scientific.Name=str_replace_all(Scientific.Name,"Cystoseria","Cystoseira") #misspelled genus
     )
 
+
 afcd_scinames <- unique(afcd_dat_all_names$Scientific.Name)
+afcd_scinames <- afcd_scinames[afcd_scinames!="" & is.na(afcd_scinames)==FALSE]
 
 id_tx_ncbi <- taxizedb::name2taxid(afcd_scinames,db="ncbi", out_type="summary")
 id_tx_itis <- taxizedb::name2taxid(afcd_scinames,db="itis", out_type="summary")
@@ -153,22 +154,19 @@ afcd_taxa$genus <- sapply(1: dim(afcd_taxa)[1],function(i)
   if(is.na(afcd_taxa$genus[i])==TRUE) {afcd_taxa$genus[i] <- strsplit(afcd_taxa$species[i]," ")[[1]][1]} else {afcd_taxa$genus[i] <- afcd_taxa$genus[i]}
   )
 
-# here make any 
+# here make any obvious modifications to names ahead of running the code below that fills the data 
 afcd_taxa <- afcd_taxa %>%
   mutate(
     genus=str_replace(genus,"Scorpena","Scorpaena"),
     genus=str_replace(genus,"tinca","Tinca")
-    ) %>%
-  filter(
-    genus!="species" # one of the entries was just a note beginning with species
-    )
+    ) 
 
 # afcd_taxa <- read.csv(
 #     file.path(wk_dir,"data","OutputsFromR","AFCD_final.csv"),
 #     header=TRUE
 #   )
 
-seq_test <- 420:424
+# seq_test <- 420:424
 seq_true <- 1:dim(afcd_taxa)[1]
 
 
@@ -202,6 +200,22 @@ filled_kingdom_fam <- as.data.frame(rbindlist(list_kingdom_fam))
 
 afcd_taxa[seq_true,c("kingdom","phylum","class","order","family","genus")] <- filled_kingdom_fam
 
+# add information for this aquatic plant
+for(i in seq_true) {
+  if(afcd_taxa$species[i]=="Enhydra fluctuans") {
+  afcd_taxa$kingdom[i]<-"Plantae"
+  afcd_taxa$phylum[i]<-"Magniliophyta"
+  afcd_taxa$class[i]<-"Magnoliospida"
+  afcd_taxa$order[i]<-"Asterales"
+  afcd_taxa$family[i]<-"Asteraceae"
+  afcd_taxa$genus[i]<-"Enhydra"
+  }
+}
+
+
+afcd_taxa <- afcd_taxa %>% 
+        arrange(is.na(.),kingdom,phylum,class) %>%
+        select(-Class.worms,-Order.worms,-Family.worms,-Genus.worms)
 # also still missing information from infoods (biodiv3,latinfoods,MOZ, USA, Koriea, New Zealand (basically all the blank Scientific Names at the top)
 # this COULD be because it's cooked.... but need to look into it, just subset blank scientific names in AFCD_merged.csv to see them
 
