@@ -8,7 +8,7 @@
 # Email: zkoehn@gmail.com
 # For: Chris Golden - Harvard University, synthesizing aquatic foods database
 # Date started: 08/17/2017
-# Revised: 04/05/2020
+# Revised: 09/04/2020
 # ===============================================================================
 
 
@@ -52,9 +52,10 @@ afcd_dat_all_names <- afcd_dat %>%
   distinct() %>%
   mutate(
     Scientific.Name=trimws(Scientific.Name),
-    Scientific.Name=str_to_sentence(Scientific.Name),
+    Scientific.Name=str_replace_all(Scientific.Name,"\n",""), #some had hidden line breaks
     Scientific.Name=str_replace_all(Scientific.Name,"Theragra chalcogramma","Gadus chalcogrammus"), #new name (Alaska pollock)
-    Scientific.Name=str_replace_all(Scientific.Name,"Cystoseria","Cystoseira") #misspelled genus
+    Scientific.Name=str_replace_all(Scientific.Name,"Cystoseria","Cystoseira"), #misspelled genus
+    Scientific.Name=str_to_sentence(Scientific.Name)
     )
 
 
@@ -109,9 +110,9 @@ empty <- unlist(lapply(class_itis, identify_empty_rows_func))
 empty_itis <- names(empty)[empty==TRUE]
 class_itis_remove_bad_ids <- class_itis[!(names(class_itis) %in% empty_itis)]
 ## remove the empties
-list_gbif <- lapply(1:length(class_gbif), function(i) widen_taxa_func(class_list=class_gbif,i=i))
-list_itis <- lapply(1:length(class_itis_remove_bad_ids), function(i) widen_taxa_func(class_list=class_itis_remove_bad_ids,i=i))
-list_ncbi <- lapply(1:length(class_ncbi), function(i) widen_taxa_func(class_list=class_ncbi,i=i))
+list_gbif <- pblapply(1:length(class_gbif), function(i) widen_taxa_func(class_list=class_gbif,i=i))
+list_itis <- pblapply(1:length(class_itis_remove_bad_ids), function(i) widen_taxa_func(class_list=class_itis_remove_bad_ids,i=i))
+list_ncbi <- pblapply(1:length(class_ncbi), function(i) widen_taxa_func(class_list=class_ncbi,i=i))
 
 
 taxa_ncbi <- plyr::rbind.fill(list_ncbi)
@@ -211,7 +212,6 @@ for(i in seq_true) {
   afcd_taxa$genus[i]<-"Enhydra"
   }
 }
-
 
 afcd_taxa <- afcd_taxa %>% 
         arrange(is.na(.),kingdom,phylum,class) %>%
