@@ -11,7 +11,7 @@
 ##################
 # load needed packages and data sets
 ##################
-library(tidyverse);library(here)
+library(tidyverse);library(here);library(data.table)
 
 
 # load nutrient information from Camille's datasets in our drive folder
@@ -27,7 +27,8 @@ amino <- read.csv(
 fats <- read.csv(
   here("data","afcd_peer_review_data","Seafood nutrients","fatty_acids.csv"),
   header=TRUE
-)
+) %>%
+  dplyr::select(-X)
 minerals <- read.csv(
   here("data","afcd_peer_review_data","Seafood nutrients","minerals.csv"),
   header=TRUE
@@ -66,28 +67,32 @@ name_intersect <- Reduce(intersect,
 
 
 
-# now bind all the nutrient data frames together
+# now bind all the nutrient data frames together 
+# note this also ensures that all names used in the merge are of the same type
+# fats <- fats %>% mutate(across(all_of(name_intersect),as.character))
 
-
-all_nutrients <- merge(
-  macro,
-  amino,
+all_nutrients <- full_join(
+  macro %>% mutate(across(all_of(name_intersect),as.character)),
+  amino %>% mutate(across(all_of(name_intersect),as.character)),
   by=name_intersect) %>% distinct()
-all_nutrients_1 <- merge(
+all_nutrients_1 <- full_join(
   all_nutrients,
-  vitamin,
+  vitamin %>% mutate(across(all_of(name_intersect),as.character)),
   by=name_intersect) %>% distinct()
-all_nutrients_2 <- merge(
+all_nutrients_2 <- full_join(
   all_nutrients_1,
-  minerals,
+  minerals %>% mutate(across(all_of(name_intersect),as.character)),
   by=name_intersect) %>% distinct()
-all_nutrients_3 <- merge(
+all_nutrients_3 <- full_join(
   all_nutrients_2,
-  fats,
+  fats %>% mutate(
+    across(all_of(name_intersect),as.character),
+    Edible.portion.coefficient_est = as.character(Edible.portion.coefficient_est)
+    ),
   by=name_intersect) %>% distinct()
-all_nutrients_4 <- merge(
+all_nutrients_4 <- full_join(
   all_nutrients_3,
-  misc,
+  misc %>% mutate(across(all_of(name_intersect),as.character)),
   by=name_intersect) %>% distinct()
 
 ##################

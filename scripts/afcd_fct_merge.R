@@ -80,7 +80,8 @@ peer_review_dat<- peer_review_dat %>%
   mutate(
     across(Nitrogen.nonprotein:Tannins.total,as.numeric),
     Dry.Matter=as.character(Dry.Matter),
-    Study.ID.number=as.character(Study.ID.number)
+    Study.ID.number=as.character(Study.ID.number),
+    Scientific.Name=as.character(Scientific.Name)
     )
 
 # binds together all variables
@@ -93,6 +94,6 @@ afcd_bind <- bind_rows(afcd_dat,
                        peer_review_dat
                        )
 
-
+unique(afcd_bind$Scientific.Name)
 
 write.csv(afcd_bind,here("data","OutputsFromR","AFCD_merged.csv"),row.names = FALSE)
