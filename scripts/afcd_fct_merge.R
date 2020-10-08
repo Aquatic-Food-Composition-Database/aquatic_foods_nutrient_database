@@ -23,50 +23,50 @@ peer_review_file <- "clean_peer_review.csv"
 #__________________________________________str
 # read data and load libraries directory defaults
 # _________________________________________
-library(tidyverse);library(dplyr);library(here)
+library(tidyverse);library(dplyr)
 
-
+directory <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Nutrition/Separate/aquatic_foods_nutrient_database"
 # now use here package to navigate from working directory to specific food file
 afcd_dat <- read.csv(
-  here("data","OutputsFromR",afcd_file)
+  file.path(directory,"data","OutputsFromR",afcd_file)
   )
 aus_dat <- read.csv(
-  here("data","OutputsFromR","cleaned_fcts",aus_file)
+  file.path(directory,"data","OutputsFromR","cleaned_fcts",aus_file)
   )
 pndb_dat <- read.csv(
-  here("data","OutputsFromR","cleaned_fcts",pndb_file)
+  file.path(directory,"data","OutputsFromR","cleaned_fcts",pndb_file)
   )
 fao_wa_dat <- read.csv(
-  here("data","OutputsFromR","cleaned_fcts",fao_wa_file)
+  file.path(directory,"data","OutputsFromR","cleaned_fcts",fao_wa_file)
   )
 smiling_cambodia_dat <- read.csv(
-  here("data","OutputsFromR","cleaned_fcts",smiling_cambodia_file)
+  file.path(directory,"data","OutputsFromR","cleaned_fcts",smiling_cambodia_file)
 )
 smiling_indonesia_dat <- read.csv(
-  here("data","OutputsFromR","cleaned_fcts",smiling_indonesia_file)
+  file.path(directory,"data","OutputsFromR","cleaned_fcts",smiling_indonesia_file)
 )
 smiling_laos_dat <- read.csv(
-  here("data","OutputsFromR","cleaned_fcts",smiling_laos_file)
+  file.path(directory,"data","OutputsFromR","cleaned_fcts",smiling_laos_file)
 )
 smiling_thailand_dat <- read.csv(
-  here("data","OutputsFromR","cleaned_fcts",smiling_thailand_file)
+  file.path(directory,"data","OutputsFromR","cleaned_fcts",smiling_thailand_file)
 )
 smiling_vietnam_dat <- read.csv(
-  here("data","OutputsFromR","cleaned_fcts",smiling_vietnam_file)
+  file.path(directory,"data","OutputsFromR","cleaned_fcts",smiling_vietnam_file)
 )
 norway_dat <- read.csv(
-  here("data","OutputsFromR","cleaned_fcts",norway_file)
+  file.path(directory,"data","OutputsFromR","cleaned_fcts",norway_file)
 )
 india_dat <- read.csv(
-  here("data","OutputsFromR","cleaned_fcts",india_file)
+  file.path(directory,"data","OutputsFromR","cleaned_fcts",india_file)
 )
 latinfoods_dat <- read.csv(
-  here("data","OutputsFromR","cleaned_fcts",latinfoods_file)
+  file.path(directory,"data","OutputsFromR","cleaned_fcts",latinfoods_file)
 )
 
 
 peer_review_dat <- read.csv(
-  here("data","OutputsFromR","cleaned_fcts",peer_review_file)
+  file.path(directory,"data","OutputsFromR","cleaned_fcts",peer_review_file)
 )
 
 # a few of the FCT food codes do not have preceding character so read in as integers, need to convert to character
@@ -81,7 +81,8 @@ peer_review_dat<- peer_review_dat %>%
     across(Nitrogen.nonprotein:Tannins.total,as.numeric),
     Dry.Matter=as.character(Dry.Matter),
     Study.ID.number=as.character(Study.ID.number),
-    Scientific.Name=as.character(Scientific.Name)
+    Scientific.Name=as.character(Scientific.Name),
+    peer_review="yes"
     )
 
 # binds together all variables
@@ -94,6 +95,6 @@ afcd_bind <- bind_rows(afcd_dat,
                        peer_review_dat
                        )
 
-unique(afcd_bind$Scientific.Name)
+dim(afcd_bind)
 
-write.csv(afcd_bind,here("data","OutputsFromR","AFCD_merged.csv"),row.names = FALSE)
+write.csv(afcd_bind,file.path(directory,"data","OutputsFromR","AFCD_merged.csv"),row.names = FALSE)
