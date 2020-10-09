@@ -150,6 +150,14 @@ part_counts <- names(part_counts[part_counts>30])
 
 summary(peer_sub$Edible.portion.coefficient)
 
+
+peer_sub %>%
+
+
+
+########################
+# plots of every kind!!
+########################
 give_n <- function(x){
   return(c(y = -0.2, label = length(x))) 
   # experiment with the multiplier to find the perfect position
@@ -317,4 +325,343 @@ weird_parts %>%
 		)+
 	theme_bw()
 
+unique(peer_sub$class)
 
+
+nutrient_name <- sym("Protein.total.calculated.from.total.nitrogen")
+# nutrient_name <- "Protein.total.calculated.from.protein.nitrogen"
+# nutrient_name <- "Protein.total.method.of.determination.unknown.or.variable"
+category <- sym("Parts")
+classification <- sym("order")
+
+ray_finned_class_plot <- peer_sub %>%
+	filter(
+		Preparation %in% c("dried","frozen","unknown","freeze-dried","raw"),
+		Parts %in% c("w","f","whole","flesh and skin","e"),
+		!!classification != "NA",
+		is.na(!!nutrient_name)==FALSE,
+		class == "Actinopteri"
+		) %>%
+	mutate(
+		kingdom=str_replace(kingdom,"Metazoa","Animalia"),
+		kingdom=str_replace(kingdom,"Viridiplantae","Plantae")
+
+		) %>%
+	ggplot(
+		aes(
+			x=reorder(!!classification,!!nutrient_name,FUN=median,na.rm=TRUE),
+			y=!!nutrient_name,
+			color=!!category,
+			fill=NULL
+			)
+		) +
+	geom_boxplot(
+		size=0.5,
+		outlier.shape=NA
+		) +
+	# geom_jitter(
+	# 	alpha=0.2,shape=16,width = 0.2
+	# 	) +
+	geom_point(
+		shape=16,position = position_jitterdodge(jitter.width=0.1),alpha=0.2
+		) +
+	# scale_fill_manual(values = cal_palette("superbloom3")) +
+	# scale_color_manual(values = cal_palette("superbloom3")) +
+	scale_fill_brewer(palette = "Set1") +
+	scale_color_brewer(palette = "Set1") +
+
+	stat_summary(fun=median, geom="point",size=6,shape=8,color="gray10") +
+	stat_summary(fun.data = give_n, geom = "text", size=3,hjust = 1,vjust=0.5,color="gray10") +
+	coord_flip() +
+	ylab("Protein concentration (g/100g product form)") +
+	xlab(NULL) +
+	labs(
+		title="Actinopteri (Ray-finned fishes) - Protein calculated from total nitrogen",
+		subtitle="Only includes dried, frozen, freeze-dried,raw and 'unknown' product forms"
+		)+
+	theme(
+		legend.position="top"
+		)+
+	theme_bw()
+
+
+nutrient_name <- sym("Protein.total.calculated.from.total.nitrogen")
+# nutrient_name <- "Protein.total.calculated.from.protein.nitrogen"
+# nutrient_name <- "Protein.total.method.of.determination.unknown.or.variable"
+category <- sym("Parts")
+classification <- sym("genus") 
+
+clupeiformes_family_plot <- peer_sub %>%
+	filter(
+		Preparation %in% c("dried","frozen","unknown","freeze-dried","raw"),
+		Parts %in% c("w","f","whole","flesh and skin","e"),
+		!!classification != "NA",
+		is.na(!!nutrient_name)==FALSE,
+		class == "Actinopteri",
+		order=="Clupeiformes"
+		) %>%
+	mutate(
+		kingdom=str_replace(kingdom,"Metazoa","Animalia"),
+		kingdom=str_replace(kingdom,"Viridiplantae","Plantae")
+
+		) %>%
+	ggplot(
+		aes(
+			x=reorder(!!classification,!!nutrient_name,FUN=median,na.rm=TRUE),
+			y=!!nutrient_name,
+			color=!!category,
+			fill=NULL
+			)
+		) +
+	geom_boxplot(
+		size=0.5,
+		outlier.shape=NA
+		) +
+	# geom_jitter(
+	# 	alpha=0.2,shape=16,width = 0.2
+	# 	) +
+	geom_point(
+		shape=16,position = position_jitterdodge(jitter.width=0.1),alpha=0.2
+		) +
+	# scale_fill_manual(values = cal_palette("superbloom3")) +
+	# scale_color_manual(values = cal_palette("superbloom3")) +
+	scale_fill_brewer(palette = "Set1") +
+	scale_color_brewer(palette = "Set1") +
+
+	stat_summary(fun=median, geom="point",size=6,shape=8,color="gray10") +
+	stat_summary(fun.data = give_n, geom = "text", size=3,hjust = 1,vjust=0.5,color="gray10") +
+	coord_flip() +
+	ylab("Protein concentration (g/100g product form)") +
+	xlab(NULL) +
+	labs(
+		title="Clupeiformes - Protein calculated from total nitrogen",
+		subtitle="Only includes dried, frozen, freeze-dried,raw and 'unknown' product forms"
+		)+
+	theme(
+		legend.position="top"
+		)+
+	theme_bw()
+
+
+salmoniformes_family_plot <- peer_sub %>%
+	filter(
+		Preparation %in% c("dried","frozen","unknown","freeze-dried","raw"),
+		Parts %in% c("w","f","whole","flesh and skin","e"),
+		!!classification != "NA",
+		is.na(!!nutrient_name)==FALSE,
+		class == "Actinopteri",
+		order=="Salmoniformes"
+		) %>%
+	mutate(
+		kingdom=str_replace(kingdom,"Metazoa","Animalia"),
+		kingdom=str_replace(kingdom,"Viridiplantae","Plantae")
+
+		) %>%
+	ggplot(
+		aes(
+			x=reorder(!!classification,!!nutrient_name,FUN=median,na.rm=TRUE),
+			y=!!nutrient_name,
+			color=!!category,
+			fill=NULL
+			)
+		) +
+	geom_boxplot(
+		size=0.5,
+		outlier.shape=NA
+		) +
+	# geom_jitter(
+	# 	alpha=0.2,shape=16,width = 0.2
+	# 	) +
+	geom_point(
+		shape=16,position = position_jitterdodge(jitter.width=0.1),alpha=0.2
+		) +
+	# scale_fill_manual(values = cal_palette("superbloom3")) +
+	# scale_color_manual(values = cal_palette("superbloom3")) +
+	scale_fill_brewer(palette = "Set1") +
+	scale_color_brewer(palette = "Set1") +
+
+	stat_summary(fun=median, geom="point",size=6,shape=8,color="gray10") +
+	stat_summary(fun.data = give_n, geom = "text", size=3,hjust = 1,vjust=0.5,color="gray10") +
+	coord_flip() +
+	ylab("Protein concentration (g/100g product form)") +
+	xlab(NULL) +
+	labs(
+		title="Salmoniformes - Protein calculated from total nitrogen",
+		subtitle="Only includes dried, frozen, freeze-dried,raw and 'unknown' product forms"
+		)+
+	theme(
+		legend.position="top"
+		)+
+	theme_bw()
+
+carangiformes_family_plot <- peer_sub %>%
+	filter(
+		Preparation %in% c("dried","frozen","unknown","freeze-dried","raw"),
+		Parts %in% c("w","f","whole","flesh and skin","e"),
+		!!classification != "NA",
+		is.na(!!nutrient_name)==FALSE,
+		class == "Actinopteri",
+		order=="Carangiformes"
+		) %>%
+	mutate(
+		kingdom=str_replace(kingdom,"Metazoa","Animalia"),
+		kingdom=str_replace(kingdom,"Viridiplantae","Plantae")
+
+		) %>%
+	ggplot(
+		aes(
+			x=reorder(!!classification,!!nutrient_name,FUN=median,na.rm=TRUE),
+			y=!!nutrient_name,
+			color=!!category,
+			fill=NULL
+			)
+		) +
+	geom_boxplot(
+		size=0.5,
+		outlier.shape=NA
+		) +
+	# geom_jitter(
+	# 	alpha=0.2,shape=16,width = 0.2
+	# 	) +
+	geom_point(
+		shape=16,position = position_jitterdodge(jitter.width=0.1),alpha=0.2
+		) +
+	# scale_fill_manual(values = cal_palette("superbloom3")) +
+	# scale_color_manual(values = cal_palette("superbloom3")) +
+	scale_fill_brewer(palette = "Set1") +
+	scale_color_brewer(palette = "Set1") +
+
+	stat_summary(fun=median, geom="point",size=6,shape=8,color="gray10") +
+	stat_summary(fun.data = give_n, geom = "text", size=3,hjust = 1,vjust=0.5,color="gray10") +
+	coord_flip() +
+	ylab("Protein concentration (g/100g product form)") +
+	xlab(NULL) +
+	labs(
+		title="Carangiformes - Protein calculated from total nitrogen",
+		subtitle="Only includes dried, frozen, freeze-dried,raw and 'unknown' product forms"
+		)+
+	theme(
+		legend.position="top"
+		)+
+	theme_bw()
+
+
+cichliformes_family_plot <- peer_sub %>%
+	filter(
+		Preparation %in% c("dried","frozen","unknown","freeze-dried","raw"),
+		Parts %in% c("w","f","whole","flesh and skin","e"),
+		!!classification != "NA",
+		is.na(!!nutrient_name)==FALSE,
+		class == "Actinopteri",
+		order=="Cichliformes"
+		) %>%
+	mutate(
+		kingdom=str_replace(kingdom,"Metazoa","Animalia"),
+		kingdom=str_replace(kingdom,"Viridiplantae","Plantae")
+
+		) %>%
+	ggplot(
+		aes(
+			x=reorder(!!classification,!!nutrient_name,FUN=median,na.rm=TRUE),
+			y=!!nutrient_name,
+			color=!!category,
+			fill=NULL
+			)
+		) +
+	geom_boxplot(
+		size=0.5,
+		outlier.shape=NA
+		) +
+	# geom_jitter(
+	# 	alpha=0.2,shape=16,width = 0.2
+	# 	) +
+	geom_point(
+		shape=16,position = position_jitterdodge(jitter.width=0.1),alpha=0.2
+		) +
+	# scale_fill_manual(values = cal_palette("superbloom3")) +
+	# scale_color_manual(values = cal_palette("superbloom3")) +
+	scale_fill_brewer(palette = "Set1") +
+	scale_color_brewer(palette = "Set1") +
+
+	stat_summary(fun=median, geom="point",size=6,shape=8,color="gray10") +
+	stat_summary(fun.data = give_n, geom = "text", size=3,hjust = 1,vjust=0.5,color="gray10") +
+	coord_flip() +
+	ylab("Protein concentration (g/100g product form)") +
+	xlab(NULL) +
+	labs(
+		title="Cichliformes - Protein calculated from total nitrogen",
+		subtitle="Only includes dried, frozen, freeze-dried,raw and 'unknown' product forms"
+		)+
+	theme(
+		legend.position="top"
+		)+
+	theme_bw()
+
+
+gadiformes_family_plot <- peer_sub %>%
+	filter(
+		Preparation %in% c("dried","frozen","unknown","freeze-dried","raw"),
+		Parts %in% c("w","f","whole","flesh and skin","e"),
+		!!classification != "NA",
+		is.na(!!nutrient_name)==FALSE,
+		class == "Actinopteri",
+		order=="Gadiformes"
+		) %>%
+	mutate(
+		kingdom=str_replace(kingdom,"Metazoa","Animalia"),
+		kingdom=str_replace(kingdom,"Viridiplantae","Plantae")
+
+		) %>%
+	ggplot(
+		aes(
+			x=reorder(!!classification,!!nutrient_name,FUN=median,na.rm=TRUE),
+			y=!!nutrient_name,
+			color=!!category,
+			fill=NULL
+			)
+		) +
+	geom_boxplot(
+		size=0.5,
+		outlier.shape=NA
+		) +
+	# geom_jitter(
+	# 	alpha=0.2,shape=16,width = 0.2
+	# 	) +
+	geom_point(
+		shape=16,position = position_jitterdodge(jitter.width=0.1),alpha=0.2
+		) +
+	# scale_fill_manual(values = cal_palette("superbloom3")) +
+	# scale_color_manual(values = cal_palette("superbloom3")) +
+	scale_fill_brewer(palette = "Set1") +
+	scale_color_brewer(palette = "Set1") +
+
+	stat_summary(fun=median, geom="point",size=6,shape=8,color="gray10") +
+	stat_summary(fun.data = give_n, geom = "text", size=3,hjust = 1,vjust=0.5,color="gray10") +
+	coord_flip() +
+	ylab("Protein concentration (g/100g product form)") +
+	xlab(NULL) +
+	labs(
+		title="Gadiformes - Protein calculated from total nitrogen",
+		subtitle="Only includes dried, frozen, freeze-dried,raw and 'unknown' product forms"
+		)+
+	theme(
+		legend.position="top"
+		)+
+	theme_bw()
+
+pdf(
+	file.path(wk_dir,
+	  	"data",
+	  	"OutputsFromR",
+	  	"quality_control",
+	  	"plots",
+	  	"Actinopteri_plots.pdf"
+	  	)
+	)
+ray_finned_class_plot
+clupeiformes_family_plot
+salmoniformes_family_plot
+carangiformes_family_plot
+cichliformes_family_plot
+gadiformes_family_plot
+dev.off()
