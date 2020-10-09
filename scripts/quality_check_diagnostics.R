@@ -39,7 +39,7 @@ library(ggridges)
 # filenames
 afcd_file <- "AFCD_live.csv"
 peer_review_file <- "clean_peer_review.csv" #need this to extract ONLY the peer review data we complied for the AFCD
-
+study_info <- "study information - Sheet1.csv"
 
 # work directory, set yours using wk_dir here!
 wk_dir <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Nutrition/Separate/aquatic_foods_nutrient_database"
@@ -60,6 +60,15 @@ peer_review_dat <- read.csv(
   	peer_review_file)
 )
 
+peer_review_study_info <- read.csv(
+  file.path(wk_dir,
+  	"data",
+  	"afcd_peer_review_data",
+  	"Seafood nutrients",
+  	study_info),
+  header=TRUE
+)
+
 
 # first extract the rows representing studies we compiled for AFCD
 peer_review_study_ids <- unique(as.character(peer_review_dat$Study.ID.number))
@@ -70,16 +79,67 @@ peer_sub <- afcd_dat %>%
 		Study.ID.number %in% peer_review_study_ids
 		)
 
+peer_sub <- merge(peer_review_study_info,peer_sub,all.y=TRUE,by="Study.ID.number")
+
+
+weird_parts <- peer_sub %>%
+	filter(Parts %in% c(
+		"body wall",
+		"gills","gill",
+		"viscera",
+		"gonads","gonad",
+		"scale",
+		"hepatopancreas",
+		"intestine",
+		"foot",
+		"stomach",
+		"heart",
+		"digestive gland",
+		"gelatin",
+		"brain",
+		"Meristematic tip",
+		"digestive tract"
+		)
+	)
+
+
+acid_freeze_dried_prep_lit <- peer_sub %>%
+	filter(Preparation %in% c(
+		"freeze-dried",
+		"acid digestion"
+		)
+	) %>% 
+	select(Preparation,Study.DOI,Study.APA.citation) %>%
+	distinct()
+
+
+
+
+weird_parts_lit <- select(weird_parts,Study.DOI,Study.APA.citation)
+
+write.csv(
+	unique(weird_parts_lit),
+	file.path(wk_dir,
+	  	"data",
+	  	"OutputsFromR",
+	  	"quality_control",
+	  	"weird_food_parts_lit.csv"),
+	row.names=FALSE
+	)
+
+write.csv(
+	acid_freeze_dried_prep_lit,
+	file.path(wk_dir,
+	  	"data",
+	  	"OutputsFromR",
+	  	"quality_control",
+	  	"acid_freeze_dried_prep_lit.csv"),
+	row.names=FALSE
+	)
 
 
 sort(summary(as.factor(peer_sub$Parts)),decreasing=TRUE)
 sort(summary(as.factor(peer_sub$Preparation)),decreasing=TRUE)
-
-sort(summary(as.factor(peer_sub$kingdom)),decreasing=TRUE)
-sort(summary(as.factor(peer_sub$phylum)),decreasing=TRUE)
-sort(summary(as.factor(peer_sub$class)),decreasing=TRUE)
-sort(summary(as.factor(peer_sub$order)),decreasing=TRUE)
-
 
 
 prep_counts <- summary(as.factor(peer_sub$Preparation))
@@ -95,9 +155,6 @@ give_n <- function(x){
   # experiment with the multiplier to find the perfect position
 }
 
-function(dat,nutrient_name,process_type) {
-
-}
 
 nutrient_name <- sym("Protein.total.calculated.from.total.nitrogen")
 # nutrient_name <- "Protein.total.calculated.from.protein.nitrogen"
@@ -203,5 +260,61 @@ peer_sub %>%
 	theme_bw()
 
 
+
+nutrient_name <- sym("Protein.total.calculated.from.total.nitrogen")
+# nutrient_name <- "Protein.total.calculated.from.protein.nitrogen"
+# nutrient_name <- "Protein.total.method.of.determination.unknown.or.variable"
+category <- sym("phylum")
+classification <- sym("Parts")
+
+weird_parts %>%
+	filter(
+		Preparation %in% c("dried","frozen","unknown","freeze-dried","raw"),
+		!!classification != "NA",
+		!!category != "NA",
+		is.na(!!nutrient_name)==FALSE
+		
+		) %>%
+	mutate(
+		kingdom=str_replace(kingdom,"Metazoa","Animalia"),
+		kingdom=str_replace(kingdom,"Viridiplantae","Plantae")
+
+		) %>%
+	ggplot(
+		aes(
+			x=reorder(!!classification,!!nutrient_name,FUN=median,na.rm=TRUE),
+			y=!!nutrient_name,
+			color=!!category,
+			fill=NULL
+			)
+		) +
+	geom_boxplot(
+		size=0.5,
+		outlier.shape=NA
+		) +
+	# geom_jitter(
+	# 	alpha=0.2,shape=16,width = 0.2
+	# 	) +
+	geom_point(
+		shape=16,position = position_jitterdodge(jitter.width=0.1),alpha=0.2
+		) +
+	# scale_fill_manual(values = cal_palette("superbloom3")) +
+	# scale_color_manual(values = cal_palette("superbloom3")) +
+	scale_fill_brewer(palette = "Set1") +
+	scale_color_brewer(palette = "Set1") +
+
+	stat_summary(fun=median, geom="point",size=6,shape=8,color="gray10") +
+	stat_summary(fun.data = give_n, geom = "text", size=3,hjust = 1,vjust=0.5,color="gray10") +
+	coord_flip() +
+	ylab("Protein concentration (g/100g product form)") +
+	xlab(NULL) +
+	labs(
+		title="Weird parts of aquatic foods in Protein calculated from total nitrogen",
+		subtitle="Only includes dried, frozen, freeze-dried,raw and 'unknown' product forms"
+		)+
+	theme(
+		legend.position="top"
+		)+
+	theme_bw()
 
 
