@@ -151,9 +151,28 @@ part_counts <- names(part_counts[part_counts>30])
 summary(peer_sub$Edible.portion.coefficient)
 
 
-peer_sub %>%
+genus_to_export <- c(
+	"Engraulis",
+	"Trachurus",
+	"Oreochromis",
+	"Gadus",
+	"Merluccius"
+	)
 
+genus_export_lit <- peer_sub %>%
+	filter(genus %in% genus_to_export) %>% 
+	select(genus,Study.DOI,Study.APA.citation) %>%
+	distinct()
 
+write.csv(
+	genus_export_lit,
+	file.path(wk_dir,
+	  	"data",
+	  	"OutputsFromR",
+	  	"quality_control",
+	  	"genus_lit_to_check.csv"),
+	row.names=FALSE
+	)
 
 ########################
 # plots of every kind!!
