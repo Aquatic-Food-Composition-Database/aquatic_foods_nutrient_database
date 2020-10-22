@@ -20,10 +20,11 @@ library(taxize)
 library(taxizedb)
 library(data.table)
 library(pbapply)
+library(readxl)
 
 # filenames
 afcd_merged_file <- "AFCD_merged.csv"
-
+asfis_file <- "ASFIS_sp_2020.xlsx"
 
 # work directory, set yours using wk_dir here!
 wk_dir <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Nutrition/Separate/aquatic_foods_nutrient_database"
@@ -32,6 +33,10 @@ afcd_dat <- read.csv(
   file.path(wk_dir,"data","OutputsFromR",afcd_merged_file),
   header = TRUE)
 
+asfis_spec_info <- read_excel(
+  file.path(wk_dir,"data","ASFIS_sp",asfis_file),
+  sheet = "ASFIS_All_for_publishing"
+  )
 
 
 Sys.setlocale('LC_ALL','C') #sets language to eliminate multibyte error
@@ -219,8 +224,25 @@ afcd_taxa <- afcd_taxa %>%
 # also still missing information from infoods (biodiv3,latinfoods,MOZ, USA, Koriea, New Zealand (basically all the blank Scientific Names at the top)
 # this COULD be because it's cooked.... but need to look into it, just subset blank scientific names in AFCD_merged.csv to see them
 
+
+asfis_subs <- asfis_spec_info %>%
+  select(ISSCAAP,Family,Order,Scientific_name) %>%
+  distinct()
+
+intersect(asfis_subs$Family,afcd_taxa$family)
+
+intersect(unique(asfis_subs$Order),afcd_taxa$order)
+
+as.data.frame(asfis_subs %>%
+  select(ISSCAAP,Order) %>%
+  distinct() %>%
+  group_by(ISSCAAP) %>%
+        summarise_each(funs(paste(., collapse = "-"))))
+
 write.csv(afcd_taxa,
     file.path(wk_dir,"data","OutputsFromR","aquatic_food_composition_database","AFCD_live.csv"),
     row.names=FALSE
   )
+
+
 
