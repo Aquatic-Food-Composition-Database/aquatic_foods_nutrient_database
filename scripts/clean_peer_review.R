@@ -36,7 +36,7 @@ minerals <- read.csv(
   header=TRUE
 )
 misc <- read.csv(
-  file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","misc..csv"),
+  file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","misc.csv"),
   header=TRUE
 )
 vitamin <- read.csv(
