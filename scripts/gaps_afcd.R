@@ -254,79 +254,15 @@ write.csv(
 	)
 
 
-# This fills the higher level taxonomic information for any taxa for which we have a match at the lower taxonomic level (e.g., if we have genus, it fills family)
-fw_match_info$afcd_match_family <- afcd_dat_all_names$family[ifelse(is.na(fw_match_info$afcd_match_genus)==FALSE,match(fw_match_info$afcd_match_genus,afcd_dat_all_names$genus),NA)]
-fw_match_info$afcd_match_order <- afcd_dat_all_names$order[ifelse(is.na(fw_match_info$afcd_match_family)==FALSE,match(fw_match_info$afcd_match_family,afcd_dat_all_names$family),NA)]
+# # This fills the higher level taxonomic information for any taxa for which we have a match at the lower taxonomic level (e.g., if we have genus, it fills family)
+# fw_match_info$afcd_match_family <- afcd_dat_all_names$family[ifelse(is.na(fw_match_info$afcd_match_genus)==FALSE,match(fw_match_info$afcd_match_genus,afcd_dat_all_names$genus),NA)]
+# fw_match_info$afcd_match_order <- afcd_dat_all_names$order[ifelse(is.na(fw_match_info$afcd_match_family)==FALSE,match(fw_match_info$afcd_match_family,afcd_dat_all_names$family),NA)]
 
-fw_match_info
-afcd_dat_all_names$family[2784]
-
-fw_match_info[which(fw_match_info$fw_match=="ariidae"),]
-dim(fw_match_info[is.na(fw_match_info$fw_match_key)==TRUE,])
+1-dim(fw_match_info[is.na(fw_match_info$fw_match_key)==TRUE,])[1]/dim(fw_match_info)[1]
 
 
 fw_sci <- as.data.frame(fw_sci)
  names(fw_sci) <- "fw_data"
-
-head(fw_gaps)
-fw_gaps <- left_join(fw_sci,fw_match_info,by=c("fw_data"="fw_match")) 
-
-# ok, so now there are a few gaps that I have to manually correct or fill based on specific taxa, based on the name from fw_data
-fw_match_info[which(fw_match_info$fw_taxa_name=="arapaima gigas"),][,c("afcd_match_family","afcd_match_order","afcd_match_class")] <- c("arapaimidae","osteoglossiformes","actinopterygii")
-
-fw_gaps[which(fw_gaps$fw_dat=="arapaima gigas"),][,c("afcd_match_family","afcd_match_order","afcd_match_class")] <- c("arapaimidae","osteoglossiformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="astacus"),][,c("afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c("astacus","astacidae","decapoda","malacostraca")
-fw_gaps[which(fw_gaps$fw_dat=="atherinidae"),][,c("afcd_match_order","afcd_match_class")] <- c("atherinidae","atheriniformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="bivalvia"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,NA,NA,NA,"bivalvia")
-fw_gaps[which(fw_gaps$fw_dat=="barbonymus schwanenfeldii"),][,c("afcd_match_family","afcd_match_order","afcd_match_class")] <- c("cyprinidae","cypriniformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="esox"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"esox","esocidae","esociformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="helostoma temminckii"),][,c("afcd_match_family","afcd_match_order","afcd_match_class")] <- c("helostomatidae","anabantiformes","actinopterygii")
-
-fw_gaps[which(fw_gaps$fw_dat=="helostoma temminckii"),][,c("afcd_match_family","afcd_match_order","afcd_match_class")] <- c("helostomatidae","anabantiformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="hoplosternum littorale"),][,c("afcd_match_family","afcd_match_order","afcd_match_class")] <- c("callichthyidae","siluriformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="hydrocynus forskahlii"),][,c("afcd_match_family","afcd_match_order","afcd_match_class")] <- c("alestidae","characiformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="lophiosilurus alexandri"),][,c("afcd_match_family","afcd_match_order","afcd_match_class")] <- c("callichthyidae","siluriformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="morone chrysops"),][,c("afcd_match_family","afcd_match_order","afcd_match_class")] <- c("moronidae","perciformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="oncorhynchus masou"),][,c("afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c("oncorhynchus","salmonidae","salmoniformes","actinopterygii")
-
-fw_gaps[which(fw_gaps$fw_dat=="morone chrysops"),][,c("afcd_match_family","afcd_match_order","afcd_match_class")] <- c("moronidae","perciformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="osteoglossum bicirrhosum"),][,c("afcd_match_family","afcd_match_order","afcd_match_class")] <- c("osteoglossinae","osteoglossiformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="sarotherodon melanotheron"),][,c("afcd_match_family","afcd_match_order","afcd_match_class")] <- c("cichlidae","cichliformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="serrasalmus"),][,c("afcd_match_family","afcd_match_order","afcd_match_class")] <- c("moronidae","perciformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="serrasalmus"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"serrasalmus","serrasalmidae","characiformes","actinopterygii")
-
-fw_gaps[which(fw_gaps$fw_dat=="spirulina platensis"),][,c("afcd_match_class")] <- c("cyanophyceae")
-fw_gaps[which(fw_gaps$fw_dat=="spirulina nei"),][,c("afcd_match_class")] <- c("cyanophyceae")
-fw_gaps[which(fw_gaps$fw_dat=="testudines"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,NA,NA,"testudines","reptilia")
-fw_gaps[which(fw_gaps$fw_dat=="pelodiscus sinensis"),][,c("afcd_match_class")] <- c("reptilia")
-fw_gaps[which(fw_gaps$fw_dat=="alosa"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"alosa","clupeidae","clupeiformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="oreochromis tanganicae"),][,c("afcd_match_family","afcd_match_order","afcd_match_class")] <- c("cichlidae","cichliformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="oreochromis shiranus"),][,c("afcd_match_family","afcd_match_order","afcd_match_class")] <- c("cichlidae","cichliformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="carassius spp"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"carassius","cyprinidae","cypriniformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="carassius spp"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"planiliza","siluriformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="salmo ischchan"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"salmo","salmonidae","salmoniformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="lates niloticus"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"lates","centropomidae","perciformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="lates stappersii"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"lates","centropomidae","perciformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="lates microlepis"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"lates","centropomidae","perciformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="lates mariae"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"lates","centropomidae","perciformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="alosa mediocris"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"alosa","clupeidae","clupeiformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="alosa immaculata"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"alosa","clupeidae","clupeiformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="hypophthalmichthys nobilis"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"hypophthalmichthys","xenocyprididae","cypriniformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="chrysichthys platycephalus"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"chrysichthys","claroteidae","siluriformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="chrysichthys"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"chrysichthys","claroteidae","siluriformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="chrysichthys sianenna"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"chrysichthys","claroteidae","siluriformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="chrysichthys stappersii"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"chrysichthys","claroteidae","siluriformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="chrysichthys brachynema"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"chrysichthys","claroteidae","siluriformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="chrysichthys"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"chrysichthys","claroteidae","siluriformes","actinopterygii")
-
-fw_gaps[which(fw_gaps$fw_dat=="pangasius djambal"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"pangasius","pangasiidae","siluriformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="labeo victorianus"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"labeo","cyprinidae","cypriniformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="labeo dussumieri"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"labeo","cyprinidae","cypriniformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="labeo"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"labeo","cyprinidae","cypriniformes","actinopterygii")
-fw_gaps[which(fw_gaps$fw_dat=="puntius"),][,c("afcd_match_species","afcd_match_genus","afcd_match_family","afcd_match_order","afcd_match_class")] <- c(NA,"puntius","cyprinidae","cypriniformes","actinopterygii")
-
-
-fw_gaps[which(fw_gaps$afcd_match_class=="actinopterygii"),]			
 
 
 # Marine match
