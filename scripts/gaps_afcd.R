@@ -42,17 +42,6 @@ Sys.setlocale('LC_ALL','C') #sets language to eliminate multibyte error
 
 
 
-# remove any missing values or NAs from list (not great for the merge)
-fw_sci <- unique(fw_dat$sci.name)
-fw_sci <- fw_sci[fw_sci!=""]
-fw_sci <- fw_sci[is.na(fw_sci)==FALSE]
-fw_sci <- tolower(fw_sci)
-fw_sci <- sapply(fw_sci, function(x) as.character(x))
-names(fw_sci) <- NULL
-mar_sci <- unique(mar_dat$scientific_name)
-mar_sci <- mar_sci[mar_sci!=""]
-mar_sci <- mar_sci[is.na(mar_sci)==FALSE]
-mar_sci <- tolower(mar_sci)
 
 
 
@@ -180,6 +169,16 @@ write.csv(
 
 
 # Freshwater match
+
+
+# clean freshwater names to make match more efficient remove any missing values or NAs from list (not great for the merge)
+fw_sci <- unique(fw_dat$sci.name)
+fw_sci <- fw_sci[fw_sci!=""]
+fw_sci <- fw_sci[is.na(fw_sci)==FALSE]
+fw_sci <- tolower(fw_sci)
+fw_sci <- sapply(fw_sci, function(x) as.character(x))
+names(fw_sci) <- NULL
+
 fw_match_index_species <- amatch(fw_sci,afcd_dat_all_names$sci_name,maxDist=2)
 fw_match_species <- afcd_dat_all_names$sci_name[fw_match_index_species]
 # length(fw_match_species[is.na(fw_match_species)==TRUE])
@@ -239,6 +238,7 @@ fw_match_info <- data.frame(
 	afcd_match_order=fw_match_order
 	)
 
+1-dim(fw_match_info[is.na(fw_match_info$fw_match_key)==TRUE,])[1]/dim(fw_match_info)[1]
 
 
 write.csv(
@@ -258,35 +258,62 @@ write.csv(
 # fw_match_info$afcd_match_family <- afcd_dat_all_names$family[ifelse(is.na(fw_match_info$afcd_match_genus)==FALSE,match(fw_match_info$afcd_match_genus,afcd_dat_all_names$genus),NA)]
 # fw_match_info$afcd_match_order <- afcd_dat_all_names$order[ifelse(is.na(fw_match_info$afcd_match_family)==FALSE,match(fw_match_info$afcd_match_family,afcd_dat_all_names$family),NA)]
 
-1-dim(fw_match_info[is.na(fw_match_info$fw_match_key)==TRUE,])[1]/dim(fw_match_info)[1]
 
-
-fw_sci <- as.data.frame(fw_sci)
- names(fw_sci) <- "fw_data"
 
 
 # Marine match
-mar_match_index <- amatch(afcd_dat_all_names$sci_name,mar_sci,maxDist=4)
-mar_match_species <- mar_sci[mar_match_index]
-length(mar_match_species[is.na(mar_match_species)==TRUE])
-cbind(afcd_dat_all_names$sci_name,mar_match_species)[1:80,]
 
-mar_match_index <- amatch(afcd_dat_all_names$genus,sapply(strsplit(mar_sci," "), `[`, 1),maxDist=2)
-mar_match_genus <- sapply(strsplit(mar_sci," "), `[`, 1)[mar_match_index]
+# clean the SAU names to make string matching more efficient
+mar_sci <- unique(mar_dat$scientific_name)
+mar_sci <- mar_sci[mar_sci!=""]
+mar_sci <- mar_sci[is.na(mar_sci)==FALSE]
+mar_sci <- tolower(mar_sci)
+mar_sci <- sapply(mar_sci, function(x) as.character(x))
+names(mar_sci) <- NULL
+
+length_taxa_name_sau <- sapply(strsplit(mar_sci, " "), length)
+mar_sci[length_taxa_name==4]
+mar_match_index_species <- amatch(mar_sci,afcd_dat_all_names$sci_name,maxDist=2)
+mar_match_species <- afcd_dat_all_names$sci_name[mar_match_index_species]
+# length(mar_match_species[is.na(mar_match_species)==TRUE])
+# species_test <- data.frame(
+# 	mar_taxa=mar_sci,
+# 	match_afcd=mar_match_species
+# 	)
+# species_test[order(species_test$mar_taxa),]
+
+
+# need to figure out how to ONLY do this for values with no more than two words in each string (Marine nei etc is getting converted to morone)
+mar_match_index_genus <- amatch(sapply(strsplit(mar_sci," "), `[`, 1),afcd_dat_all_names$genus,maxDist=2)
+mar_match_genus <- afcd_dat_all_names$genus[mar_match_index_genus]
 length(mar_match_genus[is.na(mar_match_genus)==TRUE])
-cbind(afcd_dat_all_names$genus,mar_match_genus)[1:80,]
+# genus_test <- data.frame(
+# 	mar_taxa=mar_sci,
+# 	match_afcd=mar_match_genus
+# 	)
+# genus_test[order(genus_test$mar_taxa),]
 
-mar_match_index <- amatch(afcd_dat_all_names$family,mar_sci,maxDist=1)
-mar_match_family <- mar_sci[mar_match_index]
-length(mar_match_family[is.na(mar_match_family)==TRUE])
-cbind(afcd_dat_all_names$family,mar_match_family)[1:80,]
 
-mar_match_index <- amatch(afcd_dat_all_names$order,mar_sci,maxDist=1)
-mar_match_order <- mar_sci[mar_match_index]
-length(mar_match_order[is.na(mar_match_order)==TRUE])
-cbind(afcd_dat_all_names$family,mar_match_order)[1:80,]
+mar_match_index_family <- amatch(mar_sci,afcd_dat_all_names$family,maxDist=1)
+mar_match_family <- afcd_dat_all_names$family[mar_match_index_family]
+# length(mar_match_family[is.na(mar_match_family)==TRUE])
+# family_test <- data.frame(
+# 	mar_taxa=mar_sci,
+# 	match_afcd=mar_match_family
+# 	)
+# family_test[order(family_test$mar_taxa),]
 
-mar_matches <- cbind(mar_match_species,mar_match_genus,mar_match_family)
+
+mar_match_index_order <- amatch(mar_sci,afcd_dat_all_names$order,maxDist=1)
+mar_match_order <- afcd_dat_all_names$order[mar_match_index_order]
+# length(mar_match_order[is.na(mar_match_order)==TRUE])
+# order_test <- data.frame(
+# 	mar_taxa=mar_sci,
+# 	match_afcd=mar_match_order
+# 	)
+# order_test[order(order_test$mar_taxa),]
+
+
 
 
 
@@ -294,29 +321,53 @@ mar_match <- ifelse(is.na(mar_match_species)==TRUE,mar_match_genus,mar_match_spe
 mar_match <- ifelse(is.na(mar_match)==TRUE,mar_match_family,mar_match)
 mar_match <- ifelse(is.na(mar_match)==TRUE,mar_match_order,mar_match)
 
-mar_match_info <- as.data.frame(cbind(mar_match,mar_match_species,mar_match_genus,mar_match_family,mar_match_order)) %>% 
-	drop_na(mar_match) %>%
-	distinct(mar_match,.keep_all=TRUE)
+mar_match_info <- data.frame(
+	mar_taxa_name=mar_sci,
+	mar_match_key=mar_match,
+	afcd_match_species=mar_match_species,
+	afcd_match_genus=mar_match_genus,
+	afcd_match_family=mar_match_family,
+	afcd_match_order=mar_match_order
+	)
 
-head(mar_match_info)
+mar_match_info[which(mar_match_info$mar_taxa_name=="marine fishes not identified"),]
+
+
+write.csv(
+	mar_match_info,
+	file.path(
+		wk_dir,
+		"data",
+		"OutputsFromR",
+		"afcd_gaps",
+		"mar_afcd_gaps.csv"
+		),
+	row.names=FALSE
+	)
+
 
 
 
 mar_sci <- as.data.frame(mar_sci)
 names(mar_sci) <- "mar_data"
 
-mar_gaps <- left_join(mar_sci,mar_match_info,by=c("mar_data"="mar_match"))
+mar_gaps <- left_join(mar_sci,mar_match_info,by=c("mar_data"="mar_match_key"))
 names(mar_gaps)[1] <- "sau_match_name"
 
+mar_gaps[which(mar_gaps=="brevoortia"),]
 # now merge this with the SAU landings data Daniel extracted
 sau_landings <- mar_dat %>%
 	select(scientific_name,tonnes) %>%
 	mutate(scientific_name=tolower(scientific_name))
 
 mar_gaps <- left_join(
-	mar_gaps,
+	mar_match_info,
 	sau_landings,
-	by=c("sau_match_name"="scientific_name")) 
+	by=c("mar_match_key"="scientific_name")) 
+
+
+1-dim(mar_match_info[is.na(mar_match_info$mar_match_key)==TRUE,])[1]/dim(mar_match_info)[1]
+
 
 write.csv(
 	mar_gaps,
@@ -325,7 +376,7 @@ write.csv(
 		"data",
 		"OutputsFromR",
 		"afcd_gaps",
-		"mar_afcd_gaps.csv"
+		"mar_afcd_gaps_with_landings.csv"
 		),
 	row.names=FALSE
 	)
