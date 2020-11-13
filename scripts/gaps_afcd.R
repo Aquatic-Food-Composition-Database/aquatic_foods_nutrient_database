@@ -129,8 +129,9 @@ afcd_dat_all_names[which(afcd_dat_all_names$family=="platyrhinidae"),][,c("class
 afcd_dat_all_names[which(afcd_dat_all_names$family=="pomacanthidae"),][,c("order")] <- "perciformes"
 afcd_dat_all_names[which(afcd_dat_all_names$family=="potamididae"),][c("class")] <- c("gastropoda")
 afcd_dat_all_names[which(afcd_dat_all_names$family=="scatophagidae"),][,c("order")] <- "perciformes"
-afcd_dat_all_names[which(afcd_dat_all_names$family=="semisulcospiridae"),][,c("order")] <- c("gastropoda")
-afcd_dat_all_names[which(afcd_dat_all_names$family=="semisulcospiridae"),][,c("class")] <- c("mollusca")
+afcd_dat_all_names[which(afcd_dat_all_names$family=="semisulcospiridae"),][,c("order")] <- c("sorbeoconcha")
+afcd_dat_all_names[which(afcd_dat_all_names$family=="semisulcospiridae"),][,c("class")] <- c("gastropoda")
+afcd_dat_all_names[which(afcd_dat_all_names$family=="semisulcospiridae"),][,c("phylum")] <- c("mollusca")
 afcd_dat_all_names[which(afcd_dat_all_names$family=="sillaginidae"),][,c("order")] <- c("perciformes")
 afcd_dat_all_names[which(afcd_dat_all_names$family=="sphyraenidae"),][,c("order")] <- c("perciformes")
 afcd_dat_all_names[which(afcd_dat_all_names$family=="paguridae"),][,c("order")] <- c("decapoda")
@@ -138,7 +139,6 @@ afcd_dat_all_names[which(afcd_dat_all_names$family=="paguridae"),][,c("class")] 
 
 
 afcd_dat_all_names[which(afcd_dat_all_names$class=="phaeophyceae"),][,c("phylum")] <- c("ochrophyta")
-
 
 # now fill any NAs in our taxonomic data
 setDT(afcd_dat_all_names[ending_in_ae!=TRUE & length_taxa_name>1,])[, family:= family[!is.na(family)][1L] , by = genus] #fill family by genus (EXCEPT where the lowest classification is family)
@@ -220,14 +220,29 @@ fw_match_order <- afcd_dat_all_names$order[fw_match_index_order]
 # order_test[order(order_test$fw_taxa),]
 
 
+fw_match_index_class <- match(fw_sci,afcd_dat_all_names$class)
+fw_match_class <- afcd_dat_all_names$class[fw_match_index_class]
+# length(fw_match_class[is.na(fw_match_class)==TRUE])
+# order_test <- data.frame(
+# 	fw_taxa=fw_sci,
+# 	match_afcd=fw_match_class
+# 	)
+# order_test[order(order_test$fw_taxa),]
 
-fw_matches <- cbind(fw_match_species,fw_match_genus,fw_match_family,fw_match_order)
-fw_matches[338,]
-
+fw_match_index_phylum <- match(fw_sci,afcd_dat_all_names$phylum)
+fw_match_phylum <- afcd_dat_all_names$phylum[fw_match_index_phylum]
+# length(fw_match_phylum[is.na(fw_match_phylum)==TRUE])
+# order_test <- data.frame(
+# 	fw_taxa=fw_sci,
+# 	match_afcd=fw_match_phylum
+# 	)
+# order_test[order(order_test$fw_taxa),]
 
 fw_match <- ifelse(is.na(fw_match_species)==TRUE,fw_match_genus,fw_match_species)
 fw_match <- ifelse(is.na(fw_match)==TRUE,fw_match_family,fw_match)
 fw_match <- ifelse(is.na(fw_match)==TRUE,fw_match_order,fw_match)
+fw_match <- ifelse(is.na(fw_match)==TRUE,fw_match_class,fw_match)
+fw_match <- ifelse(is.na(fw_match)==TRUE,fw_match_phylum,fw_match)
 
 fw_match_info <- data.frame(
 	fw_taxa_name=fw_sci,
@@ -235,8 +250,11 @@ fw_match_info <- data.frame(
 	afcd_match_species=fw_match_species,
 	afcd_match_genus=fw_match_genus,
 	afcd_match_family=fw_match_family,
-	afcd_match_order=fw_match_order
+	afcd_match_order=fw_match_order,
+	afcd_match_class=fw_match_class,
+	afcd_match_phylum=fw_match_phylum
 	)
+
 
 1-dim(fw_match_info[is.na(fw_match_info$fw_match_key)==TRUE,])[1]/dim(fw_match_info)[1]
 
@@ -269,11 +287,23 @@ mar_sci <- mar_sci[mar_sci!=""]
 mar_sci <- mar_sci[is.na(mar_sci)==FALSE]
 mar_sci <- tolower(mar_sci)
 mar_sci <- sapply(mar_sci, function(x) as.character(x))
-names(mar_sci) <- NULL
 
-length_taxa_name_sau <- sapply(strsplit(mar_sci, " "), length)
-mar_sci[length_taxa_name==4]
-mar_match_index_species <- amatch(mar_sci,afcd_dat_all_names$sci_name,maxDist=2)
+
+length_taxa_name_sau <- sapply(strsplit(mar_sci, " "), length) #calculates the # of words in each string, we don't want anything with rep
+misc_not_identified <- str_detect(mar_sci,"identified|miscellaneous") #remove miscellaneous or "not identified" taxonomic info from match (it actually finds some for marine fishes not identified)
+
+rem_dup_word <- function(x){ #function to remove duplicated words associated with subspecies (e.g., clupea pallasii pallasii)... helps with match from https://stackoverflow.com/questions/20283624/removing-duplicate-words-in-a-string-in-r
+x <- tolower(x)
+paste(unique(trimws(unlist(strsplit(x,split=" ",fixed=F,perl=T)))),collapse = 
+" ")
+}
+
+
+
+mar_match_index_species <- amatch(
+	sapply(mar_sci, function(x) rem_dup_word(x)),
+	afcd_dat_all_names$sci_name,
+	maxDist=2)
 mar_match_species <- afcd_dat_all_names$sci_name[mar_match_index_species]
 # length(mar_match_species[is.na(mar_match_species)==TRUE])
 # species_test <- data.frame(
@@ -281,7 +311,6 @@ mar_match_species <- afcd_dat_all_names$sci_name[mar_match_index_species]
 # 	match_afcd=mar_match_species
 # 	)
 # species_test[order(species_test$mar_taxa),]
-
 
 # need to figure out how to ONLY do this for values with no more than two words in each string (Marine nei etc is getting converted to morone)
 mar_match_index_genus <- amatch(sapply(strsplit(mar_sci," "), `[`, 1),afcd_dat_all_names$genus,maxDist=2)
@@ -313,13 +342,31 @@ mar_match_order <- afcd_dat_all_names$order[mar_match_index_order]
 # 	)
 # order_test[order(order_test$mar_taxa),]
 
+mar_match_index_class <- match(mar_sci,afcd_dat_all_names$class)
+mar_match_class <- afcd_dat_all_names$class[mar_match_index_class]
+# length(mar_match_class[is.na(mar_match_class)==TRUE])
+# order_test <- data.frame(
+# 	mar_taxa=mar_sci,
+# 	match_afcd=mar_match_class
+# 	)
+# order_test[order(order_test$mar_taxa),]
 
-
-
+mar_match_index_phylum <- match(mar_sci,afcd_dat_all_names$phylum)
+mar_match_phylum <- afcd_dat_all_names$phylum[mar_match_index_phylum]
+# length(mar_match_phylum[is.na(mar_match_phylum)==TRUE])
+# order_test <- data.frame(
+# 	mar_taxa=mar_sci,
+# 	match_afcd=mar_match_phylum
+# 	)
+# order_test[order(order_test$mar_taxa),]
+mar_sci[mar_sci=="cephalopoda"]
+afcd_dat_all_names$class[which(afcd_dat_all_names$class=="cephalopoda")]
 
 mar_match <- ifelse(is.na(mar_match_species)==TRUE,mar_match_genus,mar_match_species)
 mar_match <- ifelse(is.na(mar_match)==TRUE,mar_match_family,mar_match)
 mar_match <- ifelse(is.na(mar_match)==TRUE,mar_match_order,mar_match)
+mar_match <- ifelse(is.na(mar_match)==TRUE,mar_match_class,mar_match)
+mar_match <- ifelse(is.na(mar_match)==TRUE,mar_match_phylum,mar_match)
 
 mar_match_info <- data.frame(
 	mar_taxa_name=mar_sci,
@@ -327,11 +374,13 @@ mar_match_info <- data.frame(
 	afcd_match_species=mar_match_species,
 	afcd_match_genus=mar_match_genus,
 	afcd_match_family=mar_match_family,
-	afcd_match_order=mar_match_order
+	afcd_match_order=mar_match_order,
+	afcd_match_class=mar_match_class,
+	afcd_match_phylum=mar_match_phylum
 	)
 
-mar_match_info[which(mar_match_info$mar_taxa_name=="marine fishes not identified"),]
 
+mar_match_info[str_detect(mar_match_info$mar_taxa_name,"identified|miscellaneous"),][c("mar_match_key","afcd_match_genus")] <- NA
 
 write.csv(
 	mar_match_info,
@@ -354,7 +403,7 @@ names(mar_sci) <- "mar_data"
 mar_gaps <- left_join(mar_sci,mar_match_info,by=c("mar_data"="mar_match_key"))
 names(mar_gaps)[1] <- "sau_match_name"
 
-mar_gaps[which(mar_gaps=="brevoortia"),]
+mar_match_info[which(mar_match_info$afcd_match_genus=="brevoortia"),]
 # now merge this with the SAU landings data Daniel extracted
 sau_landings <- mar_dat %>%
 	select(scientific_name,tonnes) %>%
@@ -363,10 +412,10 @@ sau_landings <- mar_dat %>%
 mar_gaps <- left_join(
 	mar_match_info,
 	sau_landings,
-	by=c("mar_match_key"="scientific_name")) 
+	by=c("mar_taxa_name"="scientific_name")) 
 
 
-1-dim(mar_match_info[is.na(mar_match_info$mar_match_key)==TRUE,])[1]/dim(mar_match_info)[1]
+1-dim(mar_gaps[is.na(mar_gaps$mar_match_key)==TRUE,])[1]/dim(mar_gaps)[1]
 
 
 write.csv(
