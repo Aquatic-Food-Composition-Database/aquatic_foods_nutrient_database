@@ -155,6 +155,7 @@ afcd_dat_all_names[is.na(afcd_dat_all_names$family)==TRUE,]$class <- NA
 afcd_dat_all_names[is.na(afcd_dat_all_names$family)==TRUE,]$phylum <- NA
 
 afcd_dat_all_names[which(afcd_dat_all_names$sci_name=="gobiidae"),]
+
 write.csv(
 	afcd_dat_all_names,
 	file.path(
@@ -167,6 +168,12 @@ write.csv(
 	row.names=FALSE
 	)
 
+
+length(unique(afcd_dat_all_names$sci_name))
+length(unique(afcd_dat_all_names$genus))
+length(unique(afcd_dat_all_names$family))
+length(unique(afcd_dat_all_names$order))
+length(unique(afcd_dat_all_names$phylum))
 
 # Freshwater match
 
