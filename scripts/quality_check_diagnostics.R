@@ -40,7 +40,7 @@ library(ggridges)
 afcd_file <- "AFCD_live.csv"
 peer_review_file <- "clean_peer_review.csv" #need this to extract ONLY the peer review data we complied for the AFCD
 study_info <- "study information - Sheet1.csv"
-
+macro_peer_file <- "macro nutrients.csv"
 # work directory, set yours using wk_dir here!
 wk_dir <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Nutrition/Separate/aquatic_foods_nutrient_database"
 
@@ -68,18 +68,26 @@ peer_review_study_info <- read.csv(
   	study_info),
   header=TRUE
 )
-
+macro_peer_studies <- read.csv(
+  file.path(wk_dir,
+  	"data",
+  	"afcd_peer_review_data",
+  	"Seafood nutrients",
+  	macro_peer_file),
+  header=TRUE
+)
 
 # first extract the rows representing studies we compiled for AFCD
 peer_review_study_ids <- unique(as.character(peer_review_dat$Study.ID.number))
 peer_review_study_ids <- peer_review_study_ids[is.na(peer_review_study_ids)==FALSE]
+
+peer_sub <- merge(peer_review_study_info,peer_sub,all.y=TRUE,by="Study.ID.number")
 
 peer_sub <- afcd_dat %>%
 	filter(
 		Study.ID.number %in% peer_review_study_ids
 		)
 
-peer_sub <- merge(peer_review_study_info,peer_sub,all.y=TRUE,by="Study.ID.number")
 
 
 weird_parts <- peer_sub %>%
@@ -113,7 +121,56 @@ acid_freeze_dried_prep_lit <- peer_sub %>%
 	distinct()
 
 
+species_protein_lit <- merge(peer_review_study_info,peer_sub,all.y=TRUE,by.x="Study.ID.number",by.y="Study.ID.number") %>%
+	filter(
+		order %in% ray_fins_high_variance,
+		Preparation %in% c("dried","frozen","unknown","freeze-dried","raw"),
+		Parts %in% c("w","f","whole","flesh and skin","e")
+		) %>%
+	select(species, order,
+		Study.DOI,Study.APA.citation,
+		Protein.total.calculated.from.total.nitrogen,
+		Nitrogen.nonprotein,
+		Protein.total.calculated.from.protein.nitrogen,
+		Protein.total.method.of.determination.unknown.or.variable,
+		Conversion.factor.to.calculate.total.protein.from.nitrogen,
+		Nitrogen.protein,
+		Protein.soluble
+		) %>%
+	# filter(is.na(Protein.total.calculated.from.total.nitrogen)==FALSE) %>%
+	distinct()
 
+
+ray_fins_high_variance <- c(
+	# "trachichthyiformes",
+	# "osteoglossiformes",
+	"clupeiformes",
+	"scombriformes",
+	# "lophiiformes",
+	"cichliformes",
+	"centrarchiformes",
+	"gadiformes",
+	"siluriformes",
+	"cypriniformes",
+	"stomiiformes",
+	"argentiniformes",
+	"salmoniformes"
+	)
+peer_protein_dat <- merge(peer_review_study_info,macro_peer_studies,all.y=TRUE,by.x="Study.ID.number",by.y="X...Study.ID.number")
+	peer_protein_dat %>% filter(
+		!is.na(Protein.total.calculated.from.total.nitrogen_est) &
+		!is.na(Protein.total.calculated.from.protein.nitrogen_est) &
+		!is.na(Protein.total.method.of.determination.unknown.or.variable_est) &
+		!is.na(Conversion.factor.to.calculate.total.protein.from.nitrogen_est) &
+		!is.na(Nitrogen.protein_est) &
+		!is.na(Protein.soluble_est)
+		) %>%
+	filter(
+		order %in% ray_fins_high_variance,
+		Preparation %in% c("dried","frozen","unknown","freeze-dried","raw"),
+		Parts %in% c("w","f","whole","flesh and skin","e")
+		)
+dim(peer_protein_dat)
 
 weird_parts_lit <- select(weird_parts,Study.DOI,Study.APA.citation)
 
@@ -134,6 +191,16 @@ write.csv(
 	  	"OutputsFromR",
 	  	"quality_control",
 	  	"acid_freeze_dried_prep_lit.csv"),
+	row.names=FALSE
+	)
+
+write.csv(
+	species_protein_lit,
+	file.path(wk_dir,
+	  	"data",
+	  	"OutputsFromR",
+	  	"quality_control",
+	  	"species_ALL_protein_studies_v3.csv"),
 	row.names=FALSE
 	)
 
@@ -359,12 +426,11 @@ ray_finned_class_plot <- peer_sub %>%
 		Parts %in% c("w","f","whole","flesh and skin","e"),
 		!!classification != "NA",
 		is.na(!!nutrient_name)==FALSE,
-		class == "Actinopteri"
+		class == "actinopteri"
 		) %>%
 	mutate(
 		kingdom=str_replace(kingdom,"Metazoa","Animalia"),
 		kingdom=str_replace(kingdom,"Viridiplantae","Plantae")
-
 		) %>%
 	ggplot(
 		aes(
