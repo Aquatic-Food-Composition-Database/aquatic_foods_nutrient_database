@@ -243,7 +243,6 @@ afcd_taxa <- afcd_taxa %>%
 # also still missing information from infoods (biodiv3,latinfoods,MOZ, USA, Koriea, New Zealand (basically all the blank Scientific Names at the top)
 # this COULD be because it's cooked.... but need to look into it, just subset blank scientific names in AFCD_merged.csv to see them
 
-afcd_taxa$taxa_name[23965:24349]
 
 
 length_taxa_name <- sapply(strsplit(afcd_taxa$taxa_name, " "), length)
@@ -594,7 +593,14 @@ afcd_taxa[which(afcd_taxa$family=="sillaginidae"),][,c("order")] <- c("perciform
 afcd_taxa[which(afcd_taxa$family=="sphyraenidae"),][,c("order")] <- c("perciformes")
 
 
+afcd_taxa[which(afcd_taxa$class=="actinopteri"),][,c("class")] <- "actinopterygii"
+afcd_taxa[which(afcd_taxa$class=="teleostei"),][,c("class")] <- "actinopterygii"
+
+afcd_taxa[afcd_taxa$class=="teleostei",][,c("taxa_name","genus","family","order","class","phylum")] 
+
 afcd_taxa[which(afcd_taxa$class=="phaeophyceae"),][,c("phylum")] <- c("ochrophyta")
+
+afcd_taxa[which(afcd_taxa$order=="pristiformes/rhiniformes group"),][,c("order")] <- "rhinopristiformes"
 
 # now fill any NAs in our taxonomic data
 afcd_taxa <- setDT(as.data.frame.matrix(afcd_taxa,stringsAsFactors = FALSE))
@@ -612,6 +618,8 @@ afcd_taxa[ending_in_ae!=TRUE & length_taxa_name>1,] <- afcd_taxa[ending_in_ae!=T
 afcd_taxa[afcd_taxa$genus=="porphyra",][,c("taxa_name","genus","family","order","class","phylum")] 
 # this creates one bug that repeats over itself. There are a few hundred rows with no family information in our database 
 # so it incorrectly fills order and phylum from the last known family association. we don't want that
+
+
 
 # removes all incorrect order and phylum associations where family is NA (no known associations with information)
 afcd_taxa[is.na(afcd_taxa$family)==TRUE,]$order <- NA
@@ -641,6 +649,8 @@ afcd_taxa_names <- data.frame(
     taxa_name != "",
     taxa_name != "etc."
     )
+
+# now exclude the list of studies Marian Kjellefold identified
 
 
 
