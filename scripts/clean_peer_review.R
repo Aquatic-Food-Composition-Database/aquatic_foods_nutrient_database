@@ -17,33 +17,43 @@ directory <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Nutrition/Separate/aq
 
 
 # load nutrient information from Camille's datasets in our drive folder
-# note this uses the here package, which locates the files based on whatever folder the Rproject is stored in
 macro <- read.csv(
   file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","macro nutrients.csv"),
   header=TRUE
-)
+) %>%
+  dplyr::select(-X,-X.1,-X.2)
+
 amino <- read.csv(
   file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","amino acids.csv"),
   header=TRUE
-  )
+  ) %>%
+  rename(Study.ID.number=X...Study.ID.number) %>%
+  dplyr::select(-X)
+
 fats <- read.csv(
   file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","fatty_acids.csv"),
   header=TRUE
-) %>%
+  ) %>%
+  rename(Study.ID.number=X...Study.ID.number) %>%
   dplyr::select(-X)
+
 minerals <- read.csv(
   file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","minerals.csv"),
   header=TRUE
-)
+  ) %>%
+  rename(Study.ID.number=X...Study.ID.number) %>%
+  dplyr::select(-X,-X.1,-X.2)
+
 misc <- read.csv(
   file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","misc.csv"),
   header=TRUE
-)
+  ) %>%
+  rename(Study.ID.number=X...Study.ID.number)
 vitamin <- read.csv(
   file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","vitamins.csv"),
   header=TRUE
-)
-
+  ) %>%
+  rename(Study.ID.number=X...Study.ID.number)
 
 ##################
 # before merging, determine the metadata that we can use that to merge the data
@@ -151,13 +161,31 @@ exclude_by_study_id <- c(
   235, #"Ndome, C., Oriakpono, O., & Ogar, A. (2010). Proximate composition and nutritional values of some commonly consumed fishes from the Cross River Estuary. Journal Freshwater Biology, 19(1), 11‚Äì18.",
   99,  #"Elagba Haj Ali Mohamed. (2013). Proximate and mineral composition in muscle and head tissue of seven commercial species of the Nile fish from Sudan. Asian Journal of Science and Technology, 4(10), 62‚Äì65.",
   431, #"Beaubier, J., & Hipfner, J. M. (2013). Proximate composition and energy density of forage fish delivered to rhinoceros suklet Cerorhinca monocerata nestlings at triangle island, British Colombia. Marine Ornithology, 41, 35‚Äì39.",
-  111  #"B Chrisolite, S A Shanmugam, & S siva Senthil Arumugam. (2015). Proximate and mineral composition of fifteen freshwater fishes of Thoothukudi, Tamil NaduI. Journal of Aquaculture in the Tropics, 30(1‚Äì2), 33‚Äì43."
-  )
+  111,  #"B Chrisolite, S A Shanmugam, & S siva Senthil Arumugam. (2015). Proximate and mineral composition of fifteen freshwater fishes of Thoothukudi, Tamil NaduI. Journal of Aquaculture in the Tropics, 30(1‚Äì2), 33‚Äì43."
+  
+  # and a subset based on the findings of Marian on Omega 3 outliers
+  609, # Hill, J. C., Alam, M. S., Watanabe, W. O., Carroll, P. M., Seaton, P. J., & Bourdelais, A. J. (2019). Replacement of Menhaden Fish Meal by Poultry By-Product Meal in the Diet of Juvenile Red Porgy. North American Journal of Aquaculture, 81(1), 81–93. https://doi.org/10.1002/naaq.10074
+  48,  # Xu, J., Yan, B., Teng, Y., Lou, G., & Lu, Z. (2010). Analysis of nutrient composition and fatty acid profiles of Japanese sea bass Lateolabrax japonicus (Cuvier) reared in seawater and freshwater. Journal of Food Composition and Analysis, 23(5), 401‚Äì405. https://doi.org/10.1016/j.jfca.2010.01.010
+  692, #X.F. Liang, L. Hu, X. F. Wu, Y. C. Qin, Y. H. Zheng, D. D. Shi, M. Xue, & X. F. Liang. (2017). Substitution of fish meal by fermented soybean meal affects the growth performance and flesh quality of Japanese seabass (Lateolabrax japonicus). Animal Feed Science and Technology, 229, 1–12. https://doi.org/10.1016/j.anifeedsci.2017.03.006
+  413, #10.1016/j.jfca.2013.04.002
+  526, #Toyes-Vargas, E. A., Parrish, C. C., Viana, M. T., Carre√≥n-Palau, L., Magall√≥n-Serv√≠n, P., & Magall√≥n-Barajas, F. J. (2020). Replacement of fish oil with camelina (Camelina sativa) oil in diets for juvenile tilapia (var. GIFT Oreochromis niloticus) and its effect on growth, feed utilization and muscle lipid composition. Aquaculture, 523, 735177. https://doi.org/10.1016/j.aquaculture.2020.735177
+  586, #Soller, F., Roy, L. A., & Davis, D. A. (2019). Replacement of fish oil in plant-based diets for Pacific white shrimp, Litopenaeus vannamei, by stearine fish oil and palm oil. Journal of the World Aquaculture Society, 50(1), 186‚Äì203. https://doi.org/10.1111/jwas.12571
+  663, #Matthew R. Dawson, Md Shah Alam, Wade O. Watanabe, & Patrick M. Carroll. (2018). Evaluation of Poultry By-Product Meal as an Alternative to Fish Meal in the Diet of Juvenile Black Sea Bass Reared in a Recirculating Aquaculture System. North American Journal of Aquaculture, 80, 74–87. https://doi.org/10.1002/naaq.10009
+  516, #Madibana, M. J., Mlambo, V., Lewis, B. R., & Uys, L. (2020). Dietary seaweed ( Ulva sp.) does not alter fatty acid profiles and concentration in South African juvenile dusky kob ( Argyrosomus japonicus, Sciaenidae) fillet. Journal of Applied Animal Research, 48(1), 7‚Äì13. https://doi.org/10.1080/09712119.2020.1715223
+  487, #Lu, J., Jin, M., Luo, J., Hou, Y., & Zhou, Q. (2020). Effects of dietary fish oil substitution with blending vegetable oils on growth performance, antioxidant enzyme activities and tissue fatty acid composition of juvenile swimming crab, Portunus trituberculatus. Aquaculture Nutrition, anu.13062. https://doi.org/10.1111/anu.13062
+  617, #He, Y., Lin, G., Rao, X., Chen, L., Jian, H., Wang, M., Guo, Z., & Chen, B. (2018). Microalga Isochrysis galbana in feed for Trachinotus ovatus: Effect on growth performance and fatty acid composition of fish fillet and liver. Aquaculture International, 26(5), 1261–1280. https://doi.org/10.1007/s10499-018-0282-y
+  731, #Grigorakis, K., Alexi, N., Vasilaki, A., Giogios, I., & Fountoulaki, E. (2016). Chemical quality and sensory profile of the Mediterranean farmed fish shi drum ( Umbrina cirrosa ) as affected by its dietary protein/fat levels. Italian Journal of Animal Science, 15(4), 681–688. https://doi.org/10.1080/1828051X.2016.1222890
+  584, #Gedi, M. A., Magee, K. J., Darwish, R., Eakpetch, P., Young, I., & Gray, D. A. (2019). Impact of the partial replacement of fish meal with a chloroplast rich fraction on the growth and selected nutrient profile of zebrafish ( Danio rerio ). Food & Function, 10(2), 733‚Äì745. https://doi.org/10.1039/C8FO02109K
+
+  #unfortunately this one was described correctly. these are RELATIVE omega 3 values, but they were labeled as absolute..
+  292
+  ) 
 
 all_nutrients_no_relatives_excluded <- all_nutrients_no_relatives %>%
   filter(
     !Study.ID.number %in% exclude_by_study_id
-    )
+    ) %>%
+  mutate(Scientific.Name=as.character(Scientific.Name))
 
 ##################
 # clean for merge with existing AFCD data
@@ -170,9 +198,3 @@ write.csv(
        ),
   row.names = FALSE
 )
-
-
-
-
-
-

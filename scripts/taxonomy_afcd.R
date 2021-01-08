@@ -38,9 +38,9 @@ asfis_spec_info <- read_excel(
   sheet = "ASFIS_All_for_publishing"
   )
 
+afcd_dat[which(afcd_dat$Study.ID.number=="974") ,][c("Scientific.Name","Preparation","Iodine")]
 
 Sys.setlocale('LC_ALL','C') #sets language to eliminate multibyte error
-
 
 
 
@@ -596,11 +596,16 @@ afcd_taxa[which(afcd_taxa$family=="sphyraenidae"),][,c("order")] <- c("perciform
 afcd_taxa[which(afcd_taxa$class=="actinopteri"),][,c("class")] <- "actinopterygii"
 afcd_taxa[which(afcd_taxa$class=="teleostei"),][,c("class")] <- "actinopterygii"
 
-afcd_taxa[afcd_taxa$class=="teleostei",][,c("taxa_name","genus","family","order","class","phylum")] 
+ 
 
 afcd_taxa[which(afcd_taxa$class=="phaeophyceae"),][,c("phylum")] <- c("ochrophyta")
 
 afcd_taxa[which(afcd_taxa$order=="pristiformes/rhiniformes group"),][,c("order")] <- "rhinopristiformes"
+
+
+afcd_taxa[which(afcd_taxa$family=="platyrhinidae"),][,c("order")] <- c("myliobatiformes")
+afcd_taxa[which(afcd_taxa$family=="platyrhinidae"),][,c("phylum")] <- c("chondrichthyes")
+afcd_taxa[which(afcd_taxa$family=="platyrhinidae"),][,c("class")] <- c("chordata")
 
 # now fill any NAs in our taxonomic data
 afcd_taxa <- setDT(as.data.frame.matrix(afcd_taxa,stringsAsFactors = FALSE))
@@ -626,13 +631,17 @@ afcd_taxa[is.na(afcd_taxa$family)==TRUE,]$order <- NA
 afcd_taxa[is.na(afcd_taxa$family)==TRUE,]$class <- NA
 afcd_taxa[is.na(afcd_taxa$family)==TRUE,]$phylum <- NA
 
+afcd_taxa[which(afcd_taxa$Study.ID.number=="974" & afcd_taxa$taxa_name=="monodontidae and balaenidae") ,][,c("order")] <- "artiodactyla"
+afcd_taxa[which(afcd_taxa$Study.ID.number=="974" & afcd_taxa$taxa_name=="monodontidae and balaenidae") ,][,c("class")] <- "mammalia"
+
+afcd_taxa[which(afcd_taxa$Study.ID.number=="974" & afcd_taxa$taxa_name=="phosidae and odobenidae") ,][,c("order")] <- "carnivora"
+afcd_taxa[which(afcd_taxa$Study.ID.number=="974" & afcd_taxa$taxa_name=="phosidae and odobenidae") ,][,c("class")] <- "mammalia"
+afcd_taxa[which(afcd_taxa$Study.ID.number=="974" & afcd_taxa$class=="mammalia") ,c("species","Preparation","Iodine")]
 
 
 asfis_subs <- asfis_spec_info %>%
   select(ISSCAAP,Family,Order,Scientific_name) %>%
   distinct()
-
-
 
 
 
@@ -649,9 +658,6 @@ afcd_taxa_names <- data.frame(
     taxa_name != "",
     taxa_name != "etc."
     )
-
-# now exclude the list of studies Marian Kjellefold identified
-
 
 
 write.csv(afcd_taxa_names,

@@ -64,7 +64,6 @@ latinfoods_dat <- read.csv(
   file.path(directory,"data","OutputsFromR","cleaned_fcts",latinfoods_file)
 )
 
-
 peer_review_dat <- read.csv(
   file.path(directory,"data","OutputsFromR","cleaned_fcts",peer_review_file)
 )
@@ -94,7 +93,5 @@ afcd_bind <- bind_rows(afcd_dat,
                        india_dat,latinfoods_dat,
                        peer_review_dat
                        )
-
-dim(afcd_bind)
 
 write.csv(afcd_bind,file.path(directory,"data","OutputsFromR","AFCD_merged.csv"),row.names = FALSE)

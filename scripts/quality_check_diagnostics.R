@@ -141,21 +141,20 @@ species_protein_lit <- merge(peer_review_study_info,peer_sub,all.y=TRUE,by.x="St
 	distinct()
 
 
-ray_fins_high_variance <- c(
-	# "trachichthyiformes",
-	# "osteoglossiformes",
-	"clupeiformes",
-	"scombriformes",
-	# "lophiiformes",
-	"cichliformes",
-	"centrarchiformes",
-	"gadiformes",
-	"siluriformes",
-	"cypriniformes",
-	"stomiiformes",
-	"argentiniformes",
-	"salmoniformes"
-	)
+species_omega3_lit <- merge(peer_review_study_info,peer_sub,all.y=TRUE,by.x="Study.ID.number",by.y="Study.ID.number") %>%
+	filter(
+		# order %in% ray_fins_high_variance,
+		Preparation %in% c("dried","frozen","unknown","freeze-dried","raw"),
+		Parts %in% c("w","f","whole","flesh and skin","e"),
+		is.na(Fatty.acids.total.n3.polyunsaturated)==FALSE
+		) %>%
+	select(species, order,
+		Study.DOI,Study.APA.citation,
+		Fatty.acids.total.n3.polyunsaturated
+		) %>%
+	# filter(is.na(Protein.total.calculated.from.total.nitrogen)==FALSE) %>%
+	distinct()
+
 peer_protein_dat <- merge(peer_review_study_info,macro_peer_studies,all.y=TRUE,by.x="Study.ID.number",by.y="X...Study.ID.number")
 	peer_protein_dat %>% filter(
 		!is.na(Protein.total.calculated.from.total.nitrogen_est) &
@@ -195,12 +194,12 @@ write.csv(
 	)
 
 write.csv(
-	species_protein_lit,
+	species_omega3_lit,
 	file.path(wk_dir,
 	  	"data",
 	  	"OutputsFromR",
 	  	"quality_control",
-	  	"species_ALL_protein_studies_v3.csv"),
+	  	"species_omega3_studies.csv"),
 	row.names=FALSE
 	)
 
