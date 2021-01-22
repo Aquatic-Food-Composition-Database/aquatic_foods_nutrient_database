@@ -133,7 +133,7 @@ all_nutrients_no_relatives <- all_nutrients_4 %>%
   # where DOI exists, exclude by that 
 exclude_by_study_id <- c(
   519, #"Shimaa A. Amer, Ali Osman, Naif A. Al-Gabri, Shafika A. M. Elsayed, Ghada I. Abd El-Rahman, Mohamed Tharwat Elabbasy, Shaimaa A. A. Ahmed, & Rowida E. Ibrahim. (2019). The Effect of Dietary Replacement of Fish Meal with Whey Protein Concentrate on the Growth Performance, Fish Health, and Immune Status of Nile Tilapia Fingerlings, Oreochromis niloticus. Animals, 9(1103). https://doi.org/10.3390/ani9121003",
-  652, #"Nesrin Emre, Kazım Uysal, Yılmaz Emre, Mustafa Kavaso_lu, & Özgür Akta_. (2018). Seasonal and Sexual Variations of Total Protein, Fat and Fatty Acid Composition of an Endemic Freshwater Fish Species (Capoeta antalyensis. Aquatic Sciences and Engineering, 33(1), 6–10. https://doi.org/10.18864/ASE201802",
+  652, #"Nesrin Emre, Kazım Uysal, Yılmaz Emre, Mustafa Kavaso_lu, & Ozgur Akta_. (2018). Seasonal and Sexual Variations of Total Protein, Fat and Fatty Acid Composition of an Endemic Freshwater Fish Species (Capoeta antalyensis. Aquatic Sciences and Engineering, 33(1), 6–10. https://doi.org/10.18864/ASE201802",
   592, #Hawaibam Romharsha, & Chungkham Sarojnalini. (2019). Micro-nutrient Contents of Some Fresh Water Fish Species of Manipur, India. Oriental Journal of Chemistry, 35(4), 1426–1432. https://doi.org/10.13005/ojc/350425
   632, #"Hawaibam Romharsha, & Chungkham Sarojnalini. (2018). Proximate Composition, Total Amino Acids and Essential Mineral Elements of Some Cyprinid Fishes of Manipur, India. Current Research in Nutrition and Food Science, 6(1), 157–164. https://doi.org/10.12944/CRNFSJ.6.1.18",
   109, #"10.12692/ijb/6.5.333-342",
@@ -176,16 +176,88 @@ exclude_by_study_id <- c(
   617, #He, Y., Lin, G., Rao, X., Chen, L., Jian, H., Wang, M., Guo, Z., & Chen, B. (2018). Microalga Isochrysis galbana in feed for Trachinotus ovatus: Effect on growth performance and fatty acid composition of fish fillet and liver. Aquaculture International, 26(5), 1261–1280. https://doi.org/10.1007/s10499-018-0282-y
   731, #Grigorakis, K., Alexi, N., Vasilaki, A., Giogios, I., & Fountoulaki, E. (2016). Chemical quality and sensory profile of the Mediterranean farmed fish shi drum ( Umbrina cirrosa ) as affected by its dietary protein/fat levels. Italian Journal of Animal Science, 15(4), 681–688. https://doi.org/10.1080/1828051X.2016.1222890
   584, #Gedi, M. A., Magee, K. J., Darwish, R., Eakpetch, P., Young, I., & Gray, D. A. (2019). Impact of the partial replacement of fish meal with a chloroplast rich fraction on the growth and selected nutrient profile of zebrafish ( Danio rerio ). Food & Function, 10(2), 733‚Äì745. https://doi.org/10.1039/C8FO02109K
+  
+  # and other outliers across calcium, vitamin A, iron, protein, b12, 
+  89,  #Saher, N. U., & Kanwal, N. (2019). Assessment of some heavy metal accumulation and nutritional quality of shellfish with reference to human health and cancer risk assessment: A seafood safety approach. Environmental Science and Pollution Research, 26(5), 5189–5201. https://doi.org/10.1007/s11356-018-3764-6
+  155, #Kress, N., Herut, B., Shefer, E., & Hornung, H. (1999). Trace element levels in fish from clean and polluted coastal marine sites in the Mediterranean Sea, Red Sea and North Sea. Helgoland Marine Research, 53(3‚Äì4), 163‚Äì170. https://doi.org/10.1007/s101520050022
+  207, #Ratoe Oedjoe, M. D. (2017). Composition of Nutritional Content of Sea Cucumbers (Holothuroidea) in Mania Waters, Sabu Raijua Regency, East Nusa Tenggara. Journal of Aquaculture Research & Development, 08(07). https://doi.org/10.4172/2155-9546.1000502
+  281, #Shalaby, S., El-Dakar, A., & Ghoncim, S. (2001). Protein- sparing effect by carbohydrate in diets of rabbitfish, Siganus rivulatus. Egyptian Journal of Aquatic Biology and Fisheries, 5(4), 87‚Äì98. https://doi.org/10.21608/ejabf.2001.1710
+  298, #10.12692/ijb/4.10.115-122
+  309, #Sohail, M., Khan, M. N., Chaudhry, A. S., & Qureshi, N. A. (2016). Bioaccumulation of heavy metals and analysis of mineral element alongside proximate composition in foot, gills and mantle of freshwater mussels (Anodonta anatina). Rendiconti Lincei, 27(4), 687‚Äì696. https://doi.org/10.1007/s12210-016-0551-5
+  392, #Thomas Rosemary, Abimannan Arulkumar, Sadayan Paramasivam, Alicia Mondragon-Portocarrero, & Jose Manuel Miranda. (2019). Biochemical, Micronutrient and Physicochemical Properties of the Dried Red Seaweeds Gracilaria edulis and Gracilaria corticata. Molecules, 24. https://doi.org/doi:10.3390/molecules24122225
+  421, #Sakthivel, D., Vijayakumar, N., & Anandan, V. (2014). Biochemical composition of mangrove crab Sesarma brockii from Pondicherry Southeast of India. 3(3), 16.
+  507, #Aikaterini Kandyliari, Athanasios Mallouchos, Nikos Papandroulakis, Jaya Prakash Golla, TuKiet T. Lam, Aikaterini Sakellari, Sotirios Karavoltsos, Vasilis Vasiliou, & Maria Kapsokefalou. (2020). Nutrient Composition and Fatty Acid and Protein Profiles of Selected Fish By-Products. Foods, 9(190). https://doi.org/doi:10.3390/foods9020190
+  591, #Vivek Sharma, Abhishek Srivastava, and Vinod Kumar Vashistha. “The Effect of Ultraviolet Light Exposure on Proximate Composition, Amino Acid, Fatty Acid and Micronutrients of Cold Water Fish, ‘Barilius Vagra.’” Oriental Journal of Chemistry 35, no. 3 (2019): 1220–26. https://doi.org/10.13005/ojc/350344.
+  607, #Mahmoud A. Dar, Aisha A. Belal, & Amany G. Madkour. (2018). The differential abilities of some molluscs to accumulate heavy metalswithin their shells in the Timsah and the Great Bitter lakes, Suez Canal,Egypt. Egyptian Journal of Aquatic Research, 44, 291–298. https://doi.org/10.1016/j.ejar.2018.11.008
+  613, #Paiboon Panase, Seksan Uppapong, Siriluck Tuncharoena, Jakkaphan Tanitson, Kayanat Soontornprasit, & Payungsuk Intawicha. (2018). Partial replacement of commercial fish meal with Amazon sailfin catfish Pterygoplichthys pardalis meal in diets for juvenile Mekong giant catfish Pangasianodon gigas. Aquaculture Reports, 12, 25–29. https://doi.org/10.1016/j.aqrep.2018.08.005
+  651, #Tawali, A. B., Muhammad Asfar, Meta Mahendradatta, & Suryani Tawali. (2018). Comparison of proximate composition, amino acid, vitamin and mineral contents of whole fish poweder and fish protein concentrate from local Indonesian snakehead fish (Channa striatus). Carpathian Journal of Food Science and Technology, 10(3), 40–46.
+  688, #Sotoudeh, A., & Yeganeh, S. (2017). Effects of supplementary fennel ( Foeniculum vulgare ) essential oil in diet on growth and reproductive performance of the ornamental fish, Convict cichlid ( Cichlasoma nigrofasciatum ). Aquaculture Research, 48(8), 4284–4291. https://doi.org/10.1111/are.13249
+  746, #Enric Gisbert, Mansour Torfi Mozanzadeh, Yannis Kotzamanis, & Alicia Esteevez. (2016). Weaning wildflathead grey mullet (Mugil cephalus) fry with diets withdifferent levels offish meal substitution. Aquaculture, 462, 92–100. https://doi.org/10.1016/j.aquaculture.2016.04.035
+  748, #Sun, H., Tang, J., Yao, X., Wu, Y., Wang, X., & Liu, Y. (2016). Effects of replacement of fish meal with fermented cottonseed meal on growth performance, body composition and haemolymph indexes of Pacific white shrimp, Litopenaeus vannamei Boone, 1931. Aquaculture Research, 47(8), 2623–2632. https://doi.org/10.1111/are.12711
+  774, #Tyokumbur, E. (2016). BIOACCUMULATION OF SOME METALS IN THE FISH SAROTHERODON GALILAEUS CAUGHT FROM ALARO STREAM IN IBADAN. International Journal of Pure and Applied Zoology, 4(3), 186–188.
+  951, #Kennelly AC: A Nutrient Evaluation of Selected Nuxalk Salmon Preparations. In.; 1986.
+  1024,#Company, J. B., & Sarda, F. (1998). Metabolic rates and energy content of deep-sea benthic decapod crustaceans in the western Mediterranean Sea. Deep Sea Research Part I: Oceanographic Research Papers, 45(11), 1861-1880.
+  1209, #M.J. Turano, D.A. Davis, & C. R. Arnold. (2002). Optimization of growout diets for red drum, Sciaenops ocellatus. Aquaculture Nutrition, 8, 95–101.
 
   #unfortunately this one was described correctly. these are RELATIVE omega 3 values, but they were labeled as absolute..
   292
-  ) 
+
+  )
+
+studies_dry_weight <- c(
+  13,
+  50,
+  105,
+  132,
+  134,
+  147,
+  208,
+  250,
+  251,
+  252,
+  256,
+  261,
+  266,
+  274,
+  278,
+  284,
+  302,
+  312,
+  321,
+  322,
+  371,
+  410,
+  457,
+  461,
+  531,
+  612,
+  619,
+  651,
+  652,
+  655,
+  739,
+  749,
+  750,
+  798,
+  810,
+  918,
+  924,
+  970,
+  973,
+  1400
+  )
+
+
 
 all_nutrients_no_relatives_excluded <- all_nutrients_no_relatives %>%
   filter(
-    !Study.ID.number %in% exclude_by_study_id
+    !Study.ID.number %in% c(exclude_by_study_id)
     ) %>%
-  mutate(Scientific.Name=as.character(Scientific.Name))
+  mutate(
+    Scientific.Name=as.character(Scientific.Name)
+    )
+dim(all_nutrients_no_relatives_excluded)
+
 
 ##################
 # clean for merge with existing AFCD data
