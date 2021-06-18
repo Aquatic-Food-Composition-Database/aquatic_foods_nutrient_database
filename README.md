@@ -26,4 +26,8 @@ These scripts extracted and/or cleaned the FCT data from national and internatio
 | clean_smiling_vietnam.R | Cleans Vietnam data from the EU-SMILING project |
 
 
+## *Peer review data extraction and cleaning*
+Describes how peer review data is pulled together and cleaned.
 
+## *AFCD synthesis and cleanings*
+Describes scripts that are used to merge FCT and peer review data. This section can also include an overview of parts/processing. 
