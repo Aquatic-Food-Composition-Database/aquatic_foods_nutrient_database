@@ -17,7 +17,7 @@ These scripts extracted and/or cleaned the FCT data from national and internatio
 | clean_fao_west_africa.R | Cleans FAO's West Africa Food Composition Table dataset |
 | clean_latinfoods.R | Cleans data from the international LATINFOODS dataset |
 | clean_fct_pndb.R | Cleans data from the Pacific Nutrient Database by Pacific Community, University of Wollongong and the Food and Agriculture Organization of the United Nations |
-| clean_fct_aus | Script cleans [Australia's 2019 food composition database](https://www.foodstandards.gov.au/science/monitoringnutrients/afcd/Pages/default.aspx) and subsets for aquatic foods, appended to AFCD in another script. |
+| clean_fct_aus | Script cleans Australia's 2019 food composition database and subsets for aquatic foods, appended to AFCD in another script. |
 | extract_clean_fct_india | Extracts nutrition tables from the PDF of India's 2017 FCTs, and cleans them for appending to AFCD. |
 | clean_fct_norway.R | Cleans data from the Norwegian Food Composition Database |
 | clean_smiling_cambodia.R | Cleans Cambodia data from the EU-SMILING project |
@@ -30,5 +30,21 @@ These scripts extracted and/or cleaned the FCT data from national and internatio
 ## *Peer review data extraction and cleaning*
 Describes how peer review data is pulled together and cleaned.
 
+| Script | Description |
+| --- | --- |
+| clean_peer_review.R |  |
+
 ## *AFCD synthesis and cleanings*
 Describes scripts that are used to merge FCT and peer review data. This section can also include an overview of parts/processing. 
+
+| Script | Description |
+| --- | --- |
+| afcd_merge.R |  |
+| quality_check_outliers.R |  |
+| afcd_clean_categories.R |  |
+| taxonomy_afcd.R |  |
+| finalize.AFCD.R |  |
+
+
+
+
