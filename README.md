@@ -7,11 +7,21 @@ All raw data and outputs are included in data folder.
 
 
 ## **Scripts**
-Scripts run in order, from 1 to 2 to 3 etc. Under the script description, the data required to run each script and the output data are specified. 
+Scripts included in this repository have different functional roles, including: extracting data from the raw FCT data, cleaning of FCT data, merging of FCT data and results of the literature review, adding taxonomic information, and finally cleaning/finalizing the overall database. 
 
 
-### *1) USDA.scrape.R*
-Uses an API to query online USDA database (no data required), and cleans that USDA data for merge with existing AFCD dataset. 
+### *Extracting and cleaning FCT data*
+
+These scripts extracted and/or cleaned the FCT data from national and internatioanl databases as needed. Databases included here include all FCT databases that were available online in machine-readeable formats (e.g., .csv). We intend to continue to build on this set as more databases become available. Note that a number of FCTs were previously compiled as part of a previous project (cite Chris??), so the scripts and descriptions included in the table below pertain only to the tables added as part of this project. 
+
+| Script | Description |
+| --- | --- |
+| USDA.scrape.R | Uses an API to query online USDA database (no data required), and cleans that USDA data for merge with existing AFCD dataset. |
+| add.INFOODSandUSDA.R | Cleans and adds FAO/INFOODS Global Food Composition Database for Fish and Shellfish and FAO/INFOODS Food Composition Database for Biodiversity  |
+|  |  |
+|  |  |
+|  |  |
+ 
 
 #### Input data
 * None to create USDA dataframe
