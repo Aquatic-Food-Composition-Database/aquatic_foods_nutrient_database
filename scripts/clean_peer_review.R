@@ -27,33 +27,29 @@ amino <- read.csv(
   file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","amino acids.csv"),
   header=TRUE
   ) %>%
-  rename(Study.ID.number=X...Study.ID.number) %>%
   dplyr::select(-X)
 
 fats <- read.csv(
   file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","fatty_acids.csv"),
   header=TRUE
   ) %>%
-  rename(Study.ID.number=X...Study.ID.number) %>%
   dplyr::select(-X)
 
 minerals <- read.csv(
   file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","minerals.csv"),
   header=TRUE
   ) %>%
-  rename(Study.ID.number=X...Study.ID.number) %>%
   dplyr::select(-X,-X.1,-X.2)
 
 misc <- read.csv(
   file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","misc.csv"),
   header=TRUE
-  ) %>%
-  rename(Study.ID.number=X...Study.ID.number)
+  )
+
 vitamin <- read.csv(
   file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","vitamins.csv"),
   header=TRUE
-  ) %>%
-  rename(Study.ID.number=X...Study.ID.number)
+  ) 
 
 ##################
 # before merging, determine the metadata that we can use that to merge the data
@@ -111,10 +107,10 @@ all_nutrients_4 <- full_join(
 # for now REMOVE relative values, those are cleaned & calculated in "clean_pere_review_relative_values.R"
 ##################
 
-names(all_nutrients_4)[1] <- "Study.ID.number"
+
 
 all_nutrients_no_relatives <- all_nutrients_4 %>%
-  select(
+  dplyr::select(
     -str_subset(names(all_nutrients_4),"PAA."), #for now removes 
     -str_subset(names(all_nutrients_4),"PP."),
     -str_subset(names(all_nutrients_4),"PFA."),
