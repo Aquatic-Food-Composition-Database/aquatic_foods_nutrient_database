@@ -1,21 +1,19 @@
 # **Aquatic Food Composition Database**
 
-Welcome to the Aquatic Foods Composition Database! This repository synthesizes existing nutrient composition data for aquatic food species. These data originate from disparate sources, including national food composition tables (FCT), international datasets from FAO, and other peer reviewed published sources of nutrient composition. New FCT are dynamically added to this comprehensive database. Authorship for this database includes Christopher D. Golden, J. Zachary Koehn, Bapu Vaitla, Camille DeSisto, Kathryn J. Fiorella, Kathryn J. Fiorella, Marian Kjellevold and Shakuntala H. Thilsted. 
+Welcome to the Aquatic Food Composition Database! This repository synthesizes existing nutrient composition data for aquatic food species. These data originate from disparate sources, including national food composition tables (FCT), international datasets from FAO, and other peer reviewed published sources of nutrient composition. New FCT are dynamically added to this comprehensive database. Authorship for this database includes Christopher D. Golden, J. Zachary Koehn, Bapu Vaitla, Camille DeSisto, Kathryn J. Fiorella, Marian Kjellevold and Shakuntala H. Thilsted. 
 
 Scripts included in this repository have different functional roles, including: extracting data from the raw FCT data, cleaning of FCT data, merging of FCT data and results of the literature review, adding taxonomic information, and finally cleaning/finalizing the overall database. 
 
 The resulting database can be found at in (this repository)[https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/KI0NYM].
 
 
-
 ## *AFCD synthesis and cleaning*
-Describes scripts that are used to merge FCT and peer review data. This section can also include an overview of parts/processing. 
+Describes scripts that are used to merge FCT and peer review data. This section can also include an overview of parts/processing. Scripts are run in order from 1 to 4, with *afcd_finalize.R* outputing the final csv file. 
 
-afcd_merge.R - Merges together cleaned national and international FCT data (output from each script below) as well as the cleaned peer review data (from *clean_peer_review.R*).
-quality_check_outliers.R - 
-taxonomy_afcd.R -
-afcd_clean_categories.R - Includes all the parts and prepration categories necessary to finalize AFCD in *afcd_finalize.R* |
-afcd_finalize.R - 
+1. **afcd_merge.R** - Merges together cleaned national and international FCT data (output from each script below) as well as the cleaned peer review data (from *clean_peer_review.R*).
+2. **taxonomy_afcd.R** - Adds taxononomic information to each of the products in AFCD.
+3. **afcd_clean_categories.R** - Includes the codes and categories used to clean the parts and preparation columns in *afcd_finalize.R*
+4. **afcd_finalize.R** - This script cleans the merged AFCD data with taxonomic information. 
 
 
 ## *Extracting and cleaning FCT data*
