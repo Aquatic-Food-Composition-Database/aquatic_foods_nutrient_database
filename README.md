@@ -2,9 +2,9 @@
 
 Welcome to the Aquatic Food Composition Database! This repository synthesizes existing nutrient composition data for aquatic food species. These data originate from disparate sources, including national food composition tables (FCT), international datasets from FAO, and other peer reviewed published sources of nutrient composition. New FCT are dynamically added to this comprehensive database. Authorship for this database includes Christopher D. Golden, J. Zachary Koehn, Bapu Vaitla, Camille DeSisto, Kathryn J. Fiorella, Marian Kjellevold and Shakuntala H. Thilsted. 
 
-Scripts included in this repository have different functional roles, including: extracting data from the raw FCT data, cleaning of FCT data, merging of FCT data and results of the literature review, adding taxonomic information, and finally cleaning/finalizing the overall database. 
+Scripts included in this repository have different functional roles, including: extracting data from the raw FCT data, cleaning of FCT data, merging of FCT data and results of the literature review, adding taxonomic information, and finally cleaning/finalizing the overall database. References for this literature can be found [here]()
 
-The resulting database can be found at in (this repository)[https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/KI0NYM].
+The resulting database can be found at in [this repository](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/KI0NYM]).
 
 
 ## AFCD synthesis and cleaning
@@ -54,9 +54,8 @@ The AFCD column named "preparation_of_food" is the coded version of the column w
 | freezedried | "freeze-dried", "freeze dried","Freeze dried ", "freezedried","Freeze-dried","freeze-dried, dried", "freeze fried", "Freezedried" |
 | rehydrated | "rehydrated" |
 | unknown_preparation | "unknown","NA","b","sl","not specified",
-	"conserva","0","Control","wet","fz","fe","e","Experiment" |
-| dried | "dried","dry","d","Dry","dried and homogenized",
-           "air-dried","Dried","seco" |
+"conserva","0","Control","wet","fz","fe","e","Experiment" |
+| dried | "dried","dry","d","Dry","dried and homogenized","air-dried","Dried","seco" |
 | baked | "baked","baked","baked / broiled","al horno","broiled","bake","broiled/baked" |
 | boiled_steamed | "boil","boiled","boiled ","boiled/steamed","steamed","st","hervido","poached","precocido","cozido" |
 | fried | "fried","f","frito","frita" |
@@ -83,8 +82,7 @@ The AFCD column named "preparation_of_food" is the coded version of the column w
 | body_wall | "thalli","body wall" |
 | gills | "gills","gill","Gills" |
 | roots | "Meristematic tip","Meristem" |
-| unknown_part | "unknown","not specified","tunic coat","m","l","soma","","solids + liquid","s","Mid",
-"solids + liquids","drained solids","fhe","smoked","meat, bone + liquid","solids, liquid, bones","trunk","carne con aparato digestivo","no holdings","con espinas","contenido total","composite sample for each species" |
+| unknown_part | "unknown","not specified","tunic coat","m","l","soma","","solids + liquid","s","Mid","solids + liquids","drained solids","fhe","smoked","meat, bone + liquid","solids, liquid, bones","trunk","carne con aparato digestivo","no holdings","con espinas","contenido total","composite sample for each species" |
 | mantle | "mantle","Mantle" |
 | cephalothorax | "cephalothorax" |
 | blade | "blade","Blade" |
