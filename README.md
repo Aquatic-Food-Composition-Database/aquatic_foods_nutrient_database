@@ -53,8 +53,7 @@ The AFCD column named "preparation_of_food" is the coded version of the column w
 | raw | "raw","Raw","r","wet","crudo","cruda","cru","Fresh","flesh","flesh","sa","raw (Alaska Native),"Raw","crudo","fridge","minced" |
 | freezedried | "freeze-dried", "freeze dried","Freeze dried ", "freezedried","Freeze-dried","freeze-dried, dried", "freeze fried", "Freezedried" |
 | rehydrated | "rehydrated" |
-| unknown_preparation | "unknown","NA","b","sl","not specified",
-"conserva","0","Control","wet","fz","fe","e","Experiment" |
+| unknown_preparation | "unknown","NA","b","sl","not specified","conserva","0","Control","wet","fz","fe","e","Experiment" |
 | dried | "dried","dry","d","Dry","dried and homogenized","air-dried","Dried","seco" |
 | baked | "baked","baked","baked / broiled","al horno","broiled","bake","broiled/baked" |
 | boiled_steamed | "boil","boiled","boiled ","boiled/steamed","steamed","st","hervido","poached","precocido","cozido" |
