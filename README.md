@@ -47,7 +47,7 @@ Reporting on the parts of aquatic foods (*e.g.,* fillet, whole) and how they wer
 The AFCD column named "preparation_of_food" is the coded version of the column with the original names "Preparation", and the AFCD column named "part_of_food" is the coded version of the column with the original names "Parts". The tables below have a full explanation of what original names are included in the codes. 
 
 
-| Code | Original names for preparation included in code |
+| Preparation re-code | Original names for preparation included in code |
 | --- | --- |
 | frozen | "frozen","Frozen" |
 | raw | "raw","Raw","r","wet","crudo","cruda","cru","Fresh","flesh","flesh","sa","raw (Alaska Native),"Raw","crudo","fridge","minced" |
@@ -73,7 +73,7 @@ The AFCD column named "preparation_of_food" is the coded version of the column w
 
 
 
-| Code | Original names for parts included in code |
+| Parts re-code | Original names for parts included in code |
 | --- | --- |
 | muscle_tissue | "f","meat","muscle","fillet","Muscle ","carne","muscle ","dorsal muscle","epaxial muscle","Muscle","soft tissue", "filete","flesh","Meat","Fillet and skinned","pulpa","meat ","fillet ","muscle, dark meat", "flesh and skin","fs","Muscle and skin","filé","músculo dorsal ","d","adductor muscle","foot","foot muscle","Adductor muscle","Foot","adductor","abdominal muscle","middle cut","muscle + skin","muscles","juvenile muscle","breast","f, skin","Fillet ","Fillet with skin","light meat","meat + subcutaneous fat","Muscles","v","músculo ventral","tail muscle" |
 | whole | "w","whole","fb","whole body","Whole","Whole fish","juvenile whole","cuerpo","fingerlings","entero","entera","fhb","Whole body","animal entero","fbhe","Larvae" |
