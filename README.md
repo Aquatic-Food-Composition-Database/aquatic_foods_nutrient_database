@@ -6,6 +6,18 @@ Scripts included in this repository have different functional roles, including: 
 
 The resulting database can be found at in (this repository)[https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/KI0NYM].
 
+
+
+## *AFCD synthesis and cleaning*
+Describes scripts that are used to merge FCT and peer review data. This section can also include an overview of parts/processing. 
+
+afcd_merge.R - Merges together cleaned national and international FCT data (output from each script below) as well as the cleaned peer review data (from *clean_peer_review.R*).
+quality_check_outliers.R - 
+taxonomy_afcd.R -
+afcd_clean_categories.R - Includes all the parts and prepration categories necessary to finalize AFCD in *afcd_finalize.R* |
+afcd_finalize.R - 
+
+
 ## *Extracting and cleaning FCT data*
 
 These scripts extracted and/or cleaned the FCT data from national and internatioanl databases as needed. Databases included here include all FCT databases that were available online in machine-readeable formats (e.g., .csv). We intend to continue to build on this set as more databases become available. Note that a number of FCTs (data from Bangladesh, Canada, Mozambique, Japan, Argentina, Gambia, United Kingdom, Chile, Malaysia, Italy and Turkey) were previously compiled as part of a previous project (**Chris: what should we cite for the original 'GENuS-FISH' data, the 2016 nature paper??**), so the scripts and descriptions included in the table below pertain only to the tables added as part of this project. 
@@ -34,16 +46,6 @@ Describes how peer review data is pulled together and cleaned.
 | --- | --- |
 | clean_peer_review.R | This script brings together a number of different spreadsheets that include, and joins them by the metadata associated with each study. Where relative values of nutrients were reported, the script calculates the absolute value (e.g., the relative value of a) |
 
-## *AFCD synthesis and cleaning*
-Describes scripts that are used to merge FCT and peer review data. This section can also include an overview of parts/processing. 
-
-| Script | Description |
-| --- | --- |
-| afcd_merge.R |  |
-| quality_check_outliers.R |  |
-| afcd_clean_categories.R | Includes all the  |
-| taxonomy_afcd.R |  |
-| afcd_finalize.R |  |
 
 
 ## *Categories of aquatic foods*
@@ -55,7 +57,7 @@ The AFCD column named "prepration_of_food" is the coded version of the column wi
 | Code | Original names for preparation included in code |
 | --- | --- |
 | frozen | "frozen","Frozen" |
-| raw | "raw","Raw","r","wet","crudo","cruda","cru","Fresh","flesh","flesh","sa","raw (Alaska Native)","Raw","crudo","fridge","minced" |
+| raw | "raw","Raw","r","wet","crudo","cruda","cru","Fresh","flesh","flesh","sa","raw (Alaska Native),"Raw","crudo","fridge","minced" |
 | freezedried | "freeze-dried", "freeze dried","Freeze dried ", "freezedried","Freeze-dried","freeze-dried, dried", "freeze fried", "Freezedried" |
 | rehydrated | "rehydrated" |
 |  |  |
@@ -67,8 +69,7 @@ The AFCD column named "prepration_of_food" is the coded version of the column wi
 | Code | Original names for parts included in code |
 | --- | --- |
 | muscle_tissue | "f","meat","muscle","fillet","Muscle ","carne","muscle ","dorsal muscle","epaxial muscle","Muscle","soft tissue", "filete","flesh","Meat","Fillet and skinned","pulpa","meat ","fillet ","muscle, dark meat", "flesh and skin","fs","Muscle and skin","filé","músculo dorsal ","d","adductor muscle","foot","foot muscle","Adductor muscle","Foot","adductor","abdominal muscle","middle cut","muscle + skin","muscles","juvenile muscle","breast","f, skin","Fillet ","Fillet with skin","light meat","meat + subcutaneous fat","Muscles","v","músculo ventral","tail muscle" |
-| whole | "w","whole","fb","whole body","Whole","Whole fish","juvenile whole",
-	"cuerpo","fingerlings","entero","entera","fhb","Whole body","animal entero","fbhe","Larvae" |
+| whole | "w","whole","fb","whole body","Whole","Whole fish","juvenile whole","cuerpo","fingerlings","entero","entera","fhb","Whole body","animal entero","fbhe","Larvae" |
 | reproductive_tissue | "gonads","gonad","Ovaries","Gonad","ovary","Gonads" |
 |  |  |
 |  |  |
