@@ -18,7 +18,7 @@ Describes scripts that are used to merge FCT and peer review data. This section 
 
 ## Extracting and cleaning FCT data
 
-These scripts extracted and/or cleaned the FCT data from national and internatioanl databases as needed. Databases included here include all FCT databases that were available online in machine-readeable formats (e.g., .csv). We intend to continue to build on this set as more databases become available. Note that a number of FCTs (data from Bangladesh, Canada, Mozambique, Japan, Argentina, Gambia, United Kingdom, Chile, Malaysia, Italy and Turkey) were previously compiled as part of a previous project (**Chris: what should we cite for the original 'GENuS-FISH' data, the 2016 nature paper??**), so the scripts and descriptions included in the table below pertain only to the tables added as part of this project. 
+These scripts extracted and/or cleaned the FCT data from national and internatioanl databases as needed. Databases included here include all FCT databases that were available online in machine-readeable formats (e.g., .csv). We intend to continue to build on this set as more databases become available. Note that a number of FCTs (data from Bangladesh, Canada, Mozambique, Japan, Argentina, Gambia, United Kingdom, Chile, Malaysia, Italy and Turkey) were previously compiled as part of a previous project (**Chris: what should we cite for the original 'GENuS-FISH' data, the 2016 nature paper??**). As such, the scripts and descriptions included in the table below pertain only to the tables added as part of this project. 
 
 
  - **USDA.scrape.R** - Uses an API to query online USDA database (no data required), and cleans that USDA data for merge with existing AFCD dataset. 
@@ -53,10 +53,26 @@ The AFCD column named "preparation_of_food" is the coded version of the column w
 | raw | "raw","Raw","r","wet","crudo","cruda","cru","Fresh","flesh","flesh","sa","raw (Alaska Native),"Raw","crudo","fridge","minced" |
 | freezedried | "freeze-dried", "freeze dried","Freeze dried ", "freezedried","Freeze-dried","freeze-dried, dried", "freeze fried", "Freezedried" |
 | rehydrated | "rehydrated" |
-|  |  |
-|  |  |
-|  |  |
-| **to fill in an additional 18 codes |  |
+| unknown_preparation | "unknown","NA","b","sl","not specified",
+	"conserva","0","Control","wet","fz","fe","e","Experiment" |
+| dried | "dried","dry","d","Dry","dried and homogenized",
+           "air-dried","Dried","seco" |
+| baked | "baked","baked","baked / broiled","al horno","broiled","bake","broiled/baked" |
+| boiled_steamed | "boil","boiled","boiled ","boiled/steamed","steamed","st","hervido","poached","precocido","cozido" |
+| fried | "fried","f","frito","frita" |
+| canned | "canned","c","enlatado","canned, drained","enlatada" |
+| smoked | "smoked","sm" |
+| microwaved | "microwave","microwaved" |
+| oil | oil |
+| cooked | "cooked","cooked, dry heat","cooked, moist heat","sancochado","cocida","cocido","roasted" |
+| brined | brined |
+| grilled | "grilled","assado/40 min" |
+| acid_digestion | "acid digestion" |
+| salted | "salted","s" |
+| aged | aged |
+| curried | curried |
+| combination | "freeze-dried, aged","boiled, frozen","freeze-dried, boiled","m","ds","salted \\+ dried","boild, dried","kippered, canned","d; sm","kippered","kippered","dried \\+ smoked","smoked/dried","b;d","salted \\+ dried","freeze-dried, aged","freeze-dried, boiled","boiled, frozen","canned in oil","m","canned in oil, drained","boild, dried","kippered, canned","cooked in oil","cooked in rice","dried + smoked","smoked/dried","smoked, canned","salted \\+ rehydrated","smoked/baked","d; sm","canned with salt","salted \\+ fermented","b;d","dried, salted","salted \\+ smoked" |
+
 
 
 | Code | Original names for parts included in code |
@@ -64,7 +80,38 @@ The AFCD column named "preparation_of_food" is the coded version of the column w
 | muscle_tissue | "f","meat","muscle","fillet","Muscle ","carne","muscle ","dorsal muscle","epaxial muscle","Muscle","soft tissue", "filete","flesh","Meat","Fillet and skinned","pulpa","meat ","fillet ","muscle, dark meat", "flesh and skin","fs","Muscle and skin","filé","músculo dorsal ","d","adductor muscle","foot","foot muscle","Adductor muscle","Foot","adductor","abdominal muscle","middle cut","muscle + skin","muscles","juvenile muscle","breast","f, skin","Fillet ","Fillet with skin","light meat","meat + subcutaneous fat","Muscles","v","músculo ventral","tail muscle" |
 | whole | "w","whole","fb","whole body","Whole","Whole fish","juvenile whole","cuerpo","fingerlings","entero","entera","fhb","Whole body","animal entero","fbhe","Larvae" |
 | reproductive_tissue | "gonads","gonad","Ovaries","Gonad","ovary","Gonads" |
-|  |  |
-|  |  |
-|  |  |
-| **to fill in an additional 35 codes |  |
+| body_wall | "thalli","body wall" |
+| gills | "gills","gill","Gills" |
+| roots | "Meristematic tip","Meristem" |
+| unknown_part | "unknown","not specified","tunic coat","m","l","soma","","solids + liquid","s","Mid",
+"solids + liquids","drained solids","fhe","smoked","meat, bone + liquid","solids, liquid, bones","trunk","carne con aparato digestivo","no holdings","con espinas","contenido total","composite sample for each species" |
+| mantle | "mantle","Mantle" |
+| cephalothorax | "cephalothorax" |
+| blade | "blade","Blade" |
+| stipe | "stipe","Stipe","stipes" |
+| holdfast | "Holdfast","holdfast" |
+| eyes | "eyes" |
+| edible | "e","edible" |
+| raw | "r","raw" |
+| scale | "scale","scales" |
+| seeds | "seeds" |
+| skin | "skin","skein","Skin" |
+| liver | "liver","juvenile liver","Liver" |
+| viscera | "viscera","hepatopancreas","intestine","stomach","visceralmass","digestive gland","offal","Midgut gland","digestive tract","inteiro","g","head and viscera" |
+| leg | "leg","legs" |
+| tail | "tail","tail end" |
+| shell | "Shell","shell" |
+| roe | "eggs","roe","egg","eggs ","Fertalized eggs" |
+| blubber | "blubber","mattak","muktuk","mattack" |
+| frond | "frond","leaf" |
+| bone | "bone","vertebrate","bones","vertebrae","frame" |
+| claw | "claw" |
+| flippers | "flippers","fin","flipper (w/o skin + bone)" |
+| heart | "heart" |
+| gutted | "gutted","excluding viscera","head, rear and the middle","cleaned" |
+| fats | "oil","grease","fat","liver oil" |
+| larvae | "Larvae","larvae" |
+| head | "head","brain","head end","head, eyes, cheeks \\+ soft bones" |
+| kidney | "kidney","kidneys" |
+| combination | "muscle and liver","solids \\+ bones","eggs on kelp","whole, no liver" |
+| gelatin | gelatin |
