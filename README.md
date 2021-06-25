@@ -10,7 +10,7 @@ The resulting database can be found at in [this repository](https://doi.org/10.7
 
 ## Extracting and cleaning FCT data
 
-These scripts extracted and/or cleaned the FCT data from national and international databases as needed. Databases included here include all FCT databases that were available online in machine-readeable formats (e.g., .csv). We intend to continue to build on this set as more databases become available. Note that a number of FCTs (data from Bangladesh, Canada, Mozambique, Japan, Argentina, Gambia, United Kingdom, Chile, Malaysia, Italy and Turkey) were already compiled as part of a previous project (**Chris: what should we cite for the original 'GENuS-FISH' data, the 2016 nature paper??**). As such, the scripts and descriptions included in the table below pertain only to the tables added as part of this project. 
+These scripts extracted and/or cleaned the FCT data from national and international databases as needed. Databases included here include all FCT databases that were available online in machine-readable formats (e.g., .csv). We intend to continue to build on this set as more databases become available. Note that a number of FCTs (data from Bangladesh, Canada, Mozambique, Japan, Argentina, Gambia, United Kingdom, Chile, Malaysia, Italy and Turkey) were already compiled as part of a previous project. As such, the scripts and descriptions included in the table below pertain only to the tables added as part of this project. 
 
 
  
@@ -29,7 +29,7 @@ These scripts extracted and/or cleaned the FCT data from national and internatio
  - **usda_api.R** - Uses an API to query online USDA database (no data required), and cleans that USDA data for merge with existing AFCD dataset. 
 
 ## Peer review data extraction and cleaning
-One script, **clean_peer_review.R**, brings together a number of different spreadsheets that include, and joins them by the metadata associated with each study. Where relative values of nutrients were reported, the script calculates the absolute value (e.g., the  value of a fatty acid relative to total fat content in the sample)
+**clean_peer_review.R**, brings together a number of different spreadsheets that include, and joins them by the metadata associated with each study. Where relative values of nutrients were reported, the script calculates the absolute value (e.g., the  value of a fatty acid relative to total fat content in the sample)
 
 ## AFCD synthesis and cleaning
 Describes scripts that are used to merge FCT and peer review data. This section can also include an overview of parts/processing. Scripts are run in order from 1 to 4, with *afcd_finalize.R* outputing the final csv file. 
@@ -40,7 +40,7 @@ Describes scripts that are used to merge FCT and peer review data. This section 
 4. **afcd_finalize.R** - This script cleans the merged AFCD data with taxonomic information. 
 
 ## Categories of aquatic foods
-Reporting on the parts of aquatic foods (*e.g.,* fillet, whole) and how they were prepared (*e.g.,* raw, cooked) prior to nutrient analysis varied by peer review paper and by national and international database. We created a simplified coding scheme for the original names of the categories in the parts and preparation of aquatic food samples. The recategorizations are implememnted in the script **afcd_finalize.R**, using the code scheme defined below (and included in *afcd_clean_categories*)
+Reporting on the parts of aquatic foods (*e.g.,* fillet, whole) and how they were prepared (*e.g.,* raw, cooked) prior to nutrient analysis varied by peer review paper and by national and international database. We created a simplified coding scheme for the original names of the categories in the parts and preparation of aquatic food samples. The recategorizations are implememnted in the script **afcd_finalize.R**, using the code scheme defined below (and included in **afcd_clean_categories**)
 
 The AFCD column named "preparation_of_food" is the coded version of the column with the original names "Preparation", and the AFCD column named "part_of_food" is the coded version of the column with the original names "Parts". The tables below have a full explanation of what original names are included in the codes. 
 
