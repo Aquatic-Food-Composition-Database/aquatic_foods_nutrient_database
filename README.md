@@ -8,23 +8,13 @@ Scripts included in this repository have different functional roles, including: 
 
 The resulting database can be found at in [this repository](https://doi.org/10.7910/DVN/KI0NYM).
 
-
-## AFCD synthesis and cleaning
-Describes scripts that are used to merge FCT and peer review data. This section can also include an overview of parts/processing. Scripts are run in order from 1 to 4, with *afcd_finalize.R* outputing the final csv file. 
-
-1. **afcd_merge.R** - Merges together cleaned national and international FCT data (output from each script below) as well as the cleaned peer review data (from *clean_peer_review.R*).
-2. **taxonomy_afcd.R** - Adds taxononomic information to each of the products in AFCD.
-3. **afcd_clean_categories.R** - Includes the codes and categories used to clean the parts and preparation columns in *afcd_finalize.R*
-4. **afcd_finalize.R** - This script cleans the merged AFCD data with taxonomic information. 
-
-
 ## Extracting and cleaning FCT data
 
 These scripts extracted and/or cleaned the FCT data from national and international databases as needed. Databases included here include all FCT databases that were available online in machine-readeable formats (e.g., .csv). We intend to continue to build on this set as more databases become available. Note that a number of FCTs (data from Bangladesh, Canada, Mozambique, Japan, Argentina, Gambia, United Kingdom, Chile, Malaysia, Italy and Turkey) were already compiled as part of a previous project (**Chris: what should we cite for the original 'GENuS-FISH' data, the 2016 nature paper??**). As such, the scripts and descriptions included in the table below pertain only to the tables added as part of this project. 
 
 
- - **USDA.scrape.R** - Uses an API to query online USDA database (no data required), and cleans that USDA data for merge with existing AFCD dataset. 
- - **add.INFOODSandUSDA.R** - Cleans and adds FAO/INFOODS Global Food Composition Database for Fish and Shellfish and FAO/INFOODS Food Composition Database for Biodiversity  
+ - **usda_api.R** - Uses an API to query online USDA database (no data required), and cleans that USDA data for merge with existing AFCD dataset. 
+ - **clean_infoods_usda.R** - Cleans and adds FAO/INFOODS Global Food Composition Database for Fish and Shellfish and FAO/INFOODS Food Composition Database for Biodiversity  
  - **clean_fao_west_africa.R** - Cleans FAO's West Africa Food Composition Table dataset 
  - **clean_latinfoods.R** - Cleans data from the international LATINFOODS dataset 
  - **clean_fct_pndb.R** - Cleans data from the Pacific Nutrient Database by Pacific Community, University of Wollongong and the Food and Agriculture Organization of the United Nations 
@@ -37,11 +27,16 @@ These scripts extracted and/or cleaned the FCT data from national and internatio
  - **clean_smiling_thailand.R** - Cleans Thailand data from the EU-SMILING project 
  - **clean_smiling_vietnam.R** - Cleans Vietnam data from the EU-SMILING project 
 
-
 ## Peer review data extraction and cleaning
 One script, *clean_peer_review.R*, brings together a number of different spreadsheets that include, and joins them by the metadata associated with each study. Where relative values of nutrients were reported, the script calculates the absolute value (e.g., the  value of a fatty acid relative to total fat content in the sample)
 
+## AFCD synthesis and cleaning
+Describes scripts that are used to merge FCT and peer review data. This section can also include an overview of parts/processing. Scripts are run in order from 1 to 4, with *afcd_finalize.R* outputing the final csv file. 
 
+1. **afcd_merge.R** - Merges together cleaned national and international FCT data (output from each script below) as well as the cleaned peer review data (from *clean_peer_review.R*).
+2. **taxonomy_afcd.R** - Adds taxononomic information to each of the products in AFCD.
+3. **afcd_clean_categories.R** - Includes the codes and categories used to clean the parts and preparation columns in *afcd_finalize.R*
+4. **afcd_finalize.R** - This script cleans the merged AFCD data with taxonomic information. 
 
 ## Categories of aquatic foods
 Reporting on the parts of aquatic foods (*e.g.,* fillet, whole) and how they were prepared (*e.g.,* raw, cooked) prior to nutrient analysis varied by peer review paper and by national and international database. We created a simplified coding scheme for the original names of the categories in the parts and preparation of aquatic food samples. The recategorizations are implememnted in the script *afcd_finalize.R*, using the code scheme defined below (and included in *afcd_clean_categories*)
