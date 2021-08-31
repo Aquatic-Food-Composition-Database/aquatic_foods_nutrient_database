@@ -6,7 +6,11 @@ This repository synthesizes existing nutrient composition data for aquatic food 
 
 Scripts included in this repository have different functional roles, including: extracting data from the raw FCT data, cleaning of FCT data, merging of FCT data and results of the literature review, adding taxonomic information, and finally cleaning/finalizing the overall database. References for this literature can be found [will add link here]()
 
-The resulting database can be found at Golden, C.D., Koehn, J.Z., Vaitla, B., DeSisto, C., Kelahan, H., Manning, K., Fiorella, K.J., Kjellevold, M., Thilsted, S.H., 2021b. Aquatic Food Composition Database. Harvard Dataverse, V2. [https://doi.org/https://doi.org/10.7910/DVN/KI0NYM.](https://doi.org/10.7910/DVN/KI0NYM).
+The resulting database can be found at:
+ Golden, C.D., Koehn, J.Z., Vaitla, B., DeSisto, C., Kelahan, H., Manning, K., Fiorella, K.J., Kjellevold, M., Thilsted, S.H., 2021b. Aquatic Food Composition Database. Harvard Dataverse, V2. [https://doi.org/https://doi.org/10.7910/DVN/KI0NYM.](https://doi.org/10.7910/DVN/KI0NYM).
+
+
+(Flowchart of scripts used to create AFCD](figures/github_image.jpg)
 
 ## Extracting and cleaning FCT data
 
