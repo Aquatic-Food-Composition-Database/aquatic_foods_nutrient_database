@@ -10,7 +10,7 @@ The resulting database can be found at:
  Golden, C.D., Koehn, J.Z., Vaitla, B., DeSisto, C., Kelahan, H., Manning, K., Fiorella, K.J., Kjellevold, M., Thilsted, S.H., 2021b. Aquatic Food Composition Database. Harvard Dataverse, V2. [https://doi.org/https://doi.org/10.7910/DVN/KI0NYM.](https://doi.org/10.7910/DVN/KI0NYM).
 
 
-(Flowchart of scripts used to create AFCD](figures/github_image.jpg)
+![Flowchart of scripts used to create AFCD](figures/github_image.jpg)
 
 ## Extracting and cleaning FCT data
 
