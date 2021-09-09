@@ -17,7 +17,7 @@
 directory <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Nutrition/Separate/aquatic_foods_nutrient_database"
 
 
-library(plyr);library(dplyr);library(here)
+library(tidyverse)
 
 afcd_dat <- read.csv(
   file.path(directory,"data","OutputsFromR","afcd_with_taxa.csv"),
@@ -72,7 +72,7 @@ afcd_dat_clean <- afcd_dat %>%
       Preparation %in% fried ~ "fried",
       Preparation %in% canned ~ "canned",
       Preparation %in% smoked ~ "smoked",
-      Preparation %in% steamed ~ "steamed",
+      Preparation %in% boiled_steamed ~ "steamed",
       Preparation %in% microwaved~ "microwaved",
       Preparation %in% cooked ~ "cooked",
       Preparation %in% grilled ~ "grilled",
@@ -140,10 +140,17 @@ afcd_dat_clean <- afcd_dat %>%
   ) %>%
   filter(!Study.ID.number %in% 
            c("KHM","ISL","PER","RUS","FIN","GRE","POL","XXX") #removing from live version because we are unsure of the citation (very old data)
+  ) %>%
+  # fix error where NAs were imported as 
+  mutate(
+    Iodine = ifelse(Iodine==0 & Study.ID.number %in% c('Japan_7thRev_2015'),NA,Iodine)
   )
+ 
+afcd_dat_clean %>%
+  # filter(Study.ID.number %in% c('Japan_7thRev_2015','Australia_2019')) %>%
+  select(taxa_name,Study.ID.number,Iodine) %>%
 
-
-
+  filter(Study.ID.number %in% c('Japan_7thRev_2015'),Iodine==0)
 
 
 write.csv(afcd_dat_clean,
