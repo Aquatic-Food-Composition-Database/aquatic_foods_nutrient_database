@@ -37,6 +37,9 @@ merge_key <- read_excel(
 colnames(thailand_dat) <- thailand_dat[2,] #extract and add column names
 thailand_dat <- thailand_dat[-c(1:4),] #delete organizational rows
 thailand_dat <- thailand_dat[,-c(31:84)] # delete a bunch of empty columns
+#finally delete metadata rows that were in the bottom of the dataset  
+thailand_dat <- thailand_dat[-c(143:148),] # delete a bunch of empty columns
+
 # subset only aquatic food values using the document's subgroups
 aquatic_food_groups <- c(
   "Finfish, shellfish, aquatic animals and products"
