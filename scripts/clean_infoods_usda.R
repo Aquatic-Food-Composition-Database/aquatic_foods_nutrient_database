@@ -20,7 +20,9 @@
 # read data and load libraries
 # ________________________________________________________________________________________________
 
-library(plyr);library(tidyverse);library(here)
+library(tidyverse);
+library(here)
+library(plyr)
 
 fao.infoods.file <- "fao.infoods.ufish1.csv"
 fao.biodiv.file <- "fao.infoods.biodiv3.csv"
@@ -29,19 +31,19 @@ fao.infoods.scinames.file <- "fao.infoods.ufish.scinames.csv"
 
 # read data
 fao.global <- read.csv(
-  here("data",fao.infoods.file),
+  here::here("data",fao.infoods.file),
   header = T,stringsAsFactors = F)
 
 fao.biodiv <- read.csv(
-  here("data",fao.biodiv.file),
+  here::here("data",fao.biodiv.file),
   header = T,stringsAsFactors = F)
 
 AFCD.for.bind.dat <- read.csv(
-  here("data",AFCD.file),
+  here::here("data",AFCD.file),
   stringsAsFactors = F,header = T)
 
 fao.infoods.scinames <- read.csv(
-  here("data",fao.infoods.scinames.file),
+  here::here("data",fao.infoods.scinames.file),
   header=T,stringsAsFactors = F)
 
 
@@ -242,7 +244,7 @@ for(i in 1:length(AFCD.w.FAO.USDA[,1])) {
 # export finalized dataset
 write.csv(
   AFCD.w.FAO.USDA, 
-  here("data","OutputsFromR","AFCD.w.FAO.USDA.csv"),
+  here::here("data","OutputsFromR","AFCD.w.FAO.USDA.csv"),
   row.names = FALSE
 )
 
