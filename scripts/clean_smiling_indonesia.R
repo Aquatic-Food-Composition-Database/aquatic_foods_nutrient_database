@@ -5,7 +5,7 @@
 #Name: J. Zachary (Zach) Koehn
 #Email: zkoehn@stanford.edu
 #Date started: 05/22/2020
-#Revised: 05/28/2020
+#Revised: 09/13/2020
 #============================================================
 
 #__________________________________________
@@ -15,7 +15,6 @@ library(tidyverse);library(dplyr);library(here);library(readxl);library(data.tab
 
 # source script of functions
 source(here("scripts","functions","func_cleaning_fct.R"))
-
 
 indonesia_file <- "D3_5a_SMILING_FCT_Indonesia_070813_protected.xlsx"
 merge_key_file <- "database_merge_key.xlsx"
@@ -70,14 +69,11 @@ name_match <- intersect(names(smiling_indonesia_aquatic_foods_dat), names(coefs)
 smiling_indonesia_aquatic_foods_dat[name_match] <- sweep(smiling_indonesia_aquatic_foods_dat[name_match], 2, unlist(coefs[name_match]), `*`)
 
 
-
-
 # finally, change names so that it can be readily merged with AFCD
 
 # use function in "functions/func_cleaning_fct.r" create dataframe that 
 # includes variable names to change from Aus to AFCD
 smiling_indonesia_names_to_convert_to_afcd <- convert_nutrient_names("smiling_indonesia_variable_name") 
-
 
 smiling_indonesia_aquatic_foods_dat_clean <- smiling_indonesia_aquatic_foods_dat %>%
   data.table::setnames(
@@ -87,7 +83,6 @@ smiling_indonesia_aquatic_foods_dat_clean <- smiling_indonesia_aquatic_foods_dat
 # variables is wrong. 
 
 smiling_indonesia_aquatic_foods_dat_clean$Country.ISO3 <- "smiling_indonesia" #adds classification for PNDB
-
 
 
 # save the modified data frames to the folder
