@@ -36,7 +36,8 @@ merge_key <- read_excel(
 
 #__________________________________________
 # clean up extra rows, and subset aquatic foods
-# _________________________________________colnames(vietnam_dat) <- vietnam_dat[2,] #extract and add column names
+# _________________________________________
+colnames(vietnam_dat) <- vietnam_dat[2,] #extract and add column names
 vietnam_dat <- vietnam_dat[-c(1:2),] #delete organizational rows
 # subset only aquatic food values using the document's subgroups
 aquatic_food_groups <- c(
@@ -67,6 +68,9 @@ smiling_vietnam_conversion_coefs <- coefs_convert_unit_fct(key=merge_key,
                                                             original_unit="smiling_vietnam_unit",
                                                             convert_to_unit="AFCD_unit",
                                                             variables_to_convert="smiling_vietnam_variable_name") %>%
+  filter(
+    !is.na(coefs)
+  ) %>%
   select(smiling_vietnam_variable_name,coefs) #just select the variable name and conversion coefficient
 
 
@@ -93,7 +97,7 @@ smiling_vietnam_aquatic_foods_dat_clean <- smiling_vietnam_aquatic_foods_dat %>%
   data.table::setnames(
     old=smiling_vietnam_names_to_convert_to_afcd$original_dataset,
     new=smiling_vietnam_names_to_convert_to_afcd$AFCD_variable_name)
-# if this throws an error related to teh old not being int he new... it's usually because the formatting of those 
+# if this throws an error related to the old not being in the new... it's usually because the formatting of those 
 # variables is wrong. 
 
 smiling_vietnam_aquatic_foods_dat_clean$Country.ISO3 <- "smiling_vietnam" #adds classification for PNDB
