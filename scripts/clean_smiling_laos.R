@@ -5,8 +5,10 @@
 #Name: J. Zachary (Zach) Koehn
 #Email: zkoehn@stanford.edu
 #Date started: 05/22/2020
-#Revised: 05/28/2020
+#Revised: 09/13/2021
 #============================================================
+
+
 
 #__________________________________________
 # read data and load libraries directory defaults
@@ -30,7 +32,10 @@ merge_key <- read_excel(
   sheet="key"
 )
 
-
+#__________________________________________
+# extract aquatic foods information and 
+# cleaning variable names
+# _________________________________________
 # subset only aquatic food values using the document's subgroups
 aquatic_food_groups <- c(
   "Fish without bones",
@@ -42,6 +47,11 @@ smiling_laos_aquatic_foods_dat <- laos_dat %>%
   filter(FOOD_SUB_GROUP %in% aquatic_food_groups) %>%
   select(-FOOD_GROUP,-FOOD_SUB_GROUP,-COUNTRY,-'SECONDARY SOURCE AND FOOD CODE'	,-'RETENTION FACTOR, if applicable'	,-'Match 1=exact 2=similar')
 
+
+
+#__________________________________________
+# Convert nutrient units to those used in AFCD (using merge_key file)
+# _________________________________________
 # now format nutrient columsn (to numeric)
 smiling_laos_aquatic_foods_dat[,5:dim(smiling_laos_aquatic_foods_dat)[2]] <- sapply(
   smiling_laos_aquatic_foods_dat[,5:dim(smiling_laos_aquatic_foods_dat)[2]], 
@@ -68,9 +78,9 @@ smiling_laos_aquatic_foods_dat[name_match] <- sweep(smiling_laos_aquatic_foods_d
 
 
 
-
-# finally, change names so that it can be readily merged with AFCD
-
+#__________________________________________
+# Convert nutrient names to those used in AFCD (using merge_key file)
+# _________________________________________
 # use function in "functions/func_cleaning_fct.r" create dataframe that 
 # includes variable names to change from Aus to AFCD
 smiling_laos_names_to_convert_to_afcd <- convert_nutrient_names("smiling_laos_variable_name") 
@@ -87,11 +97,9 @@ smiling_laos_aquatic_foods_dat_clean$Country.ISO3 <- "smiling_laos" #adds classi
 
 
 
-
-
-
-
+#__________________________________________
 # save the modified data frames to the folder
+# _________________________________________
 write.csv(smiling_laos_aquatic_foods_dat_clean,here("data","OutputsFromR","cleaned_fcts","clean_fct_smiling_laos.csv"),row.names = FALSE)
 
 
