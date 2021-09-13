@@ -101,7 +101,6 @@ smiling_indonesia_aquatic_foods_dat_clean$Country.ISO3 <- "smiling_indonesia" #a
 #__________________________________________
 # save the modified data frames to the folder
 # _________________________________________
-# save the modified data frames to the folder
 write.csv(smiling_indonesia_aquatic_foods_dat_clean,here("data","OutputsFromR","cleaned_fcts","clean_fct_smiling_indonesia.csv"),row.names = FALSE)
 
 
