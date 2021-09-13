@@ -14,7 +14,6 @@
 # read data and load libraries directory defaults
 # _________________________________________
 library(dplyr);library(here);library(readxl)
-Sys.setlocale('LC_ALL','C') #sets language to eliminate multibyte error if it arrises
 
 # source script of functions
 source(here("scripts","functions","func_cleaning_fct.R"))
@@ -32,7 +31,7 @@ merge_key <- read_excel(
 )
 
 food_details_dat <- read_excel(
-  here("data",fao_west_africa_file), 
+  here("data","fao_western_africa_2019",fao_west_africa_file), 
   sheet="06 NV_stat_57 (per 100g EP)",
   col_names = FALSE
   ) 
