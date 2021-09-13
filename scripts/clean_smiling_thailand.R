@@ -5,7 +5,7 @@
 #Name: J. Zachary (Zach) Koehn
 #Email: zkoehn@stanford.edu
 #Date started: 05/28/2020
-#Revised: 05/28/2020
+#Revised: 09/13/2021
 #============================================================
 
 #__________________________________________
@@ -30,6 +30,9 @@ merge_key <- read_excel(
   sheet="key"
 )
 
+#__________________________________________
+# clean up extra rows, and subset aquatic foods
+# _________________________________________
 # clean up rows
 colnames(thailand_dat) <- thailand_dat[2,] #extract and add column names
 thailand_dat <- thailand_dat[-c(1:4),] #delete organizational rows
@@ -42,7 +45,12 @@ aquatic_food_groups <- c(
 smiling_thailand_aquatic_foods_dat <- thailand_dat %>%
   filter(Group %in% aquatic_food_groups) 
 
-# now format nutrient columsn (to numeric)
+
+
+#__________________________________________
+# Convert nutrient units to those used in AFCD (using merge_key file)
+# _________________________________________
+# now format nutrient coluns (to numeric)
 smiling_thailand_aquatic_foods_dat[,6:dim(smiling_thailand_aquatic_foods_dat)[2]] <- sapply(
   smiling_thailand_aquatic_foods_dat[,6:dim(smiling_thailand_aquatic_foods_dat)[2]], 
   as.numeric
@@ -68,9 +76,9 @@ smiling_thailand_aquatic_foods_dat[name_match] <- sweep(smiling_thailand_aquatic
 
 
 
-
-# finally, change names so that it can be readily merged with AFCD
-
+#__________________________________________
+# Convert nutrient names to those used in AFCD (using merge_key file)
+# _________________________________________
 # use function in "functions/func_cleaning_fct.r" create dataframe that 
 # includes variable names to change from Aus to AFCD
 smiling_thailand_names_to_convert_to_afcd <- convert_nutrient_names("smiling_thailand_variable_name") 
@@ -91,6 +99,7 @@ smiling_thailand_aquatic_foods_dat_clean$Edible.portion.coefficient <- 1 #all nu
 
 
 
+#__________________________________________
 # save the modified data frames to the folder
-write.csv(smiling_thailand_aquatic_foods_dat_clean,here("data","OutputsFromR","cleaned_fcts","clean_fct_smiling_thailand.csv"),row.names = FALSE)
+# _________________________________________write.csv(smiling_thailand_aquatic_foods_dat_clean,here("data","OutputsFromR","cleaned_fcts","clean_fct_smiling_thailand.csv"),row.names = FALSE)
 
