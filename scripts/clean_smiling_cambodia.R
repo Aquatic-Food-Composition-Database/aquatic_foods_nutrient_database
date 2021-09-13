@@ -5,8 +5,10 @@
 #Name: J. Zachary (Zach) Koehn
 #Email: zkoehn@stanford.edu
 #Date started: 05/22/2020
-#Revised: 05/22/2020
+#Revised: 09/13/2020
 #============================================================
+
+
 
 #__________________________________________
 # read data and load libraries directory defaults
@@ -30,16 +32,26 @@ merge_key <- read_excel(
   sheet="key"
 )
 
+
+
+#__________________________________________
+# extract aquatic foods information and 
+# cleaning variable names
+# _________________________________________
 # set colnames and clean up the formatting a bit
 colnames(cambodia_dat) <- as.character(cambodia_dat[2,]) 
 cambodia_dat <- cambodia_dat[-1:-2,]
 
 
-# ID_Code for fish starts with J
-
+# ID_Code for fish starts with J, so extract those names
 smiling_cambodia_aquatic_foods_dat <- cambodia_dat[grep("^J", cambodia_dat$'ID Code'),]
 
-# now format nutrient columsn (to numeric)
+
+
+#__________________________________________
+# Convert nutrient units to those used in AFCD (using merge_key file)
+# _________________________________________
+# now format nutrient columns (to numeric)
 smiling_cambodia_aquatic_foods_dat[,14:dim(smiling_cambodia_aquatic_foods_dat)[2]] <- sapply(
   smiling_cambodia_aquatic_foods_dat[,14:dim(smiling_cambodia_aquatic_foods_dat)[2]], 
   as.numeric
@@ -66,33 +78,28 @@ smiling_cambodia_aquatic_foods_dat[name_match] <- sweep(smiling_cambodia_aquatic
 
 
 
-
-# finally, change names so that it can be readily merged with AFCD
-
+#__________________________________________
+# Convert nutrient names to those used in AFCD (using merge_key file)
+# _________________________________________
 # use function in "functions/func_cleaning_fct.r" create dataframe that 
 # includes variable names to change from Aus to AFCD
 smiling_cambodia_names_to_convert_to_afcd <- convert_nutrient_names("smiling_cambodia_variable_name") 
 
-
 smiling_cambodia_aquatic_foods_dat_clean <- smiling_cambodia_aquatic_foods_dat %>%
   data.table::setnames(
     old=smiling_cambodia_names_to_convert_to_afcd$original_dataset,
-    new=smiling_cambodia_names_to_convert_to_afcd$AFCD_variable_name)
-# if this throws an error related to teh old not being int he new... it's usually because the formatting of those 
+    new=smiling_cambodia_names_to_convert_to_afcd$AFCD_variable_name,
+    skip_absent = TRUE)
+# if this throws an error related to the old not being in the new... it's usually because the formatting of those 
 # variables is wrong. 
 
 smiling_cambodia_aquatic_foods_dat_clean$Country.ISO3 <- "smiling_cambodia" #adds classification for PNDB
 
 
 
-
-# change names of all the values to align with names in AFCD
-
-
-
-
-
+#__________________________________________
 # save the modified data frames to the folder
+# _________________________________________
 write.csv(smiling_cambodia_aquatic_foods_dat_clean,here("data","OutputsFromR","cleaned_fcts","clean_fct_smiling_cambodia.csv"),row.names = FALSE)
 
 
