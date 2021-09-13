@@ -5,8 +5,10 @@
 #Name: J. Zachary (Zach) Koehn
 #Email: zkoehn@stanford.edu
 #Date started: 05/22/2020
-#Revised: 05/28/2020
+#Revised: 09/13/2021
 #============================================================
+
+
 
 #__________________________________________
 # read data and load libraries directory defaults
@@ -30,8 +32,11 @@ merge_key <- read_excel(
   sheet="key"
 )
 
-# clean up rows
-colnames(vietnam_dat) <- vietnam_dat[2,] #extract and add column names
+
+
+#__________________________________________
+# clean up extra rows, and subset aquatic foods
+# _________________________________________colnames(vietnam_dat) <- vietnam_dat[2,] #extract and add column names
 vietnam_dat <- vietnam_dat[-c(1:2),] #delete organizational rows
 # subset only aquatic food values using the document's subgroups
 aquatic_food_groups <- c(
@@ -46,7 +51,12 @@ smiling_vietnam_aquatic_foods_dat <- vietnam_dat %>%
   filter(FOOD_SUB_GROUP %in% aquatic_food_groups) %>%
   select(-FOOD_GROUP,-FOOD_SUB_GROUP)
 
-# now format nutrient columsn (to numeric)
+
+
+#__________________________________________
+# Convert nutrient units to those used in AFCD (using merge_key file)
+# _________________________________________
+# now format nutrient columns (to numeric)
 smiling_vietnam_aquatic_foods_dat[,4:dim(smiling_vietnam_aquatic_foods_dat)[2]] <- sapply(
   smiling_vietnam_aquatic_foods_dat[,4:dim(smiling_vietnam_aquatic_foods_dat)[2]], 
   as.numeric
@@ -71,9 +81,9 @@ smiling_vietnam_aquatic_foods_dat[name_match] <- sweep(smiling_vietnam_aquatic_f
 
 
 
-
-# finally, change names so that it can be readily merged with AFCD
-
+#__________________________________________
+# Convert nutrient names to those used in AFCD (using merge_key file)
+# _________________________________________
 # use function in "functions/func_cleaning_fct.r" create dataframe that 
 # includes variable names to change from Aus to AFCD
 smiling_vietnam_names_to_convert_to_afcd <- convert_nutrient_names("smiling_vietnam_variable_name") 
@@ -91,8 +101,9 @@ smiling_vietnam_aquatic_foods_dat_clean$Edible.portion.coefficient <- 1 #all nut
 
 
 
-
-
-
+#__________________________________________
 # save the modified data frames to the folder
+# _________________________________________
 write.csv(smiling_vietnam_aquatic_foods_dat_clean,here("data","OutputsFromR","cleaned_fcts","clean_fct_smiling_vietnam.csv"),row.names = FALSE)
+
+
