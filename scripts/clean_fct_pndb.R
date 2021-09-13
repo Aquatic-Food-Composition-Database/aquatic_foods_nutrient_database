@@ -73,7 +73,6 @@ dat_pac_blue[,15:68] <- apply(dat_pac_blue[,15:68],2,function(x) as.numeric(x)) 
 
 
 # because we are adding the New Zealand and new Australian FCT, remove that data here
-
 dat_pac_blue_no_overlap <- dat_pac_blue %>%
   filter(
     grepl("U1",source_nutrient_profile)
@@ -88,7 +87,7 @@ other_databases_to_remove <- c(aus_rows,nz_rows,usa_rows)
 dat_pac_blue_no_overlap <- dat_pac_blue[-other_databases_to_remove,]
 
 # run user-written function that converts nutrient measurement units if needed
-
+# this is all coming from the merge_key file loaded at the top
 PNDB_conversion_coefs <- coefs_convert_unit_fct(key=merge_key,
                                                original_unit="PNDB_unit",
                                                convert_to_unit="AFCD_unit",
@@ -108,7 +107,6 @@ dat_pac_blue_no_overlap[name_match] <- sweep(dat_pac_blue_no_overlap[name_match]
 
 
 
-
 # finally, change names so that it can be readily merged with AFCD
 
 # use function in "functions/func_cleaning_fct.r" create dataframe that 
@@ -125,5 +123,5 @@ dat_pac_blue_clean <- dat_pac_blue_no_overlap %>%
 dat_pac_blue_clean$Country.ISO3 <- "PNDB" #adds classification for PNDB
 
 
-write.csv(dat_pac_blue_clean,here("data","OutputsFromR","cleaned_fcts","clean_fct_pndb.csv"),row.names = FALSE)
+write.csv(dat_pac_blue_clean,file.path(directory,"data","OutputsFromR","cleaned_fcts","clean_fct_pndb.csv"),row.names = FALSE)
 
