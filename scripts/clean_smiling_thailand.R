@@ -96,10 +96,8 @@ smiling_thailand_aquatic_foods_dat_clean$Edible.portion.coefficient <- 1 #all nu
 
 
 
-
-
-
 #__________________________________________
 # save the modified data frames to the folder
-# _________________________________________write.csv(smiling_thailand_aquatic_foods_dat_clean,here("data","OutputsFromR","cleaned_fcts","clean_fct_smiling_thailand.csv"),row.names = FALSE)
+# _________________________________________
+write.csv(smiling_thailand_aquatic_foods_dat_clean,here("data","OutputsFromR","cleaned_fcts","clean_fct_smiling_thailand.csv"),row.names = FALSE)
 
