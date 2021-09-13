@@ -29,9 +29,14 @@ merge_key <- read_excel(
   sheet="key"
 )
 
+
+
+#__________________________________________
+# extract aquatic foods information and 
+# cleaning variable names
+# _________________________________________
 # set colnames and clean up the formatting a bit
 indonesia_dat <- indonesia_dat[-1,]
-
 
 # subset only aquatic food values using the document's subgroups
 aquatic_food_groups <- c(
@@ -44,7 +49,12 @@ smiling_indonesia_aquatic_foods_dat <- indonesia_dat %>%
   filter(FOOD_SUBGRP_Optifood %in% aquatic_food_groups) %>%
   select(-FOOD_GRP_Optifood,-FOOD_SUBGRP_Optifood,-'Brand or description',-Recipe)
 
-# now format nutrient columsn (to numeric)
+
+
+#__________________________________________
+# Convert nutrient units to those used in AFCD (using merge_key file)
+# _________________________________________
+# now format nutrient columns (to numeric)
 smiling_indonesia_aquatic_foods_dat[,5:dim(smiling_indonesia_aquatic_foods_dat)[2]] <- sapply(
   smiling_indonesia_aquatic_foods_dat[,5:dim(smiling_indonesia_aquatic_foods_dat)[2]], 
   as.numeric
@@ -69,8 +79,10 @@ name_match <- intersect(names(smiling_indonesia_aquatic_foods_dat), names(coefs)
 smiling_indonesia_aquatic_foods_dat[name_match] <- sweep(smiling_indonesia_aquatic_foods_dat[name_match], 2, unlist(coefs[name_match]), `*`)
 
 
-# finally, change names so that it can be readily merged with AFCD
 
+#__________________________________________
+# Convert nutrient names to those used in AFCD (using merge_key file)
+# _________________________________________
 # use function in "functions/func_cleaning_fct.r" create dataframe that 
 # includes variable names to change from Aus to AFCD
 smiling_indonesia_names_to_convert_to_afcd <- convert_nutrient_names("smiling_indonesia_variable_name") 
@@ -85,6 +97,10 @@ smiling_indonesia_aquatic_foods_dat_clean <- smiling_indonesia_aquatic_foods_dat
 smiling_indonesia_aquatic_foods_dat_clean$Country.ISO3 <- "smiling_indonesia" #adds classification for PNDB
 
 
+
+#__________________________________________
+# save the modified data frames to the folder
+# _________________________________________
 # save the modified data frames to the folder
 write.csv(smiling_indonesia_aquatic_foods_dat_clean,here("data","OutputsFromR","cleaned_fcts","clean_fct_smiling_indonesia.csv"),row.names = FALSE)
 
