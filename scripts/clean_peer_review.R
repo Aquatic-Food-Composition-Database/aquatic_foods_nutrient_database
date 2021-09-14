@@ -194,10 +194,16 @@ exclude_by_study_id <- c(
   951, #Kennelly AC: A Nutrient Evaluation of Selected Nuxalk Salmon Preparations. In.; 1986.
   1024,#Company, J. B., & Sarda, F. (1998). Metabolic rates and energy content of deep-sea benthic decapod crustaceans in the western Mediterranean Sea. Deep Sea Research Part I: Oceanographic Research Papers, 45(11), 1861-1880.
   1209, #M.J. Turano, D.A. Davis, & C. R. Arnold. (2002). Optimization of growout diets for red drum, Sciaenops ocellatus. Aquaculture Nutrition, 8, 95–101.
-
-  #unfortunately this one was described correctly. these are RELATIVE omega 3 values, but they were labeled as absolute..
-  292
-
+  949, #massive values, cannot validate Ackman RG: Nutritional Composition of Fats in Seafoods. Progress in Food and Nutrition Science 1989, 13:161-241.
+  
+  # these values need to be double checked, especially the %relative fatty acid methyl ester based fat observations,
+  # excluding for now
+  1004, #feeding study, data also incorrectly entered into database :( 10.1016/j.aquaculture.2005.06.009
+  499, # peer reviewer RAs included this incorrectly, this used % total fatty acid methyl esters.... (10.3390/ijerph17072545)
+  270, #peer reviewer RAs used wrong data point (used relative value, not g/100g of edible in Table 2b) 10.1006/jfca.1996.0024 #FAME
+  271, # peer reviewer RAs included this incorrectly, this used % total fatty acid methyl esters....
+  292 #unfortunately this one was inputed incorrectly. these are RELATIVE omega 3 values, but they were labeled as absolute..
+  
   )
 
 studies_dry_weight <- c(
