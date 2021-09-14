@@ -13,22 +13,23 @@
 
 #_____________________________________________________________________________________________
 # read data and load libraries directory defaults
-# ________________________________________________________________________________________________
-directory <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Nutrition/Separate/aquatic_foods_nutrient_database"
-
-
-library(tidyverse)
+# ____________________________________________________________________________________________
+library(tidyverse);library(here)
 
 afcd_dat <- read.csv(
-  file.path(directory,"data","OutputsFromR","afcd_with_taxa.csv"),
-  header = TRUE)
-
+  here::here("data","OutputsFromR","afcd_with_taxa.csv"),
+  header = TRUE
+  )
 
 
 source(
-  file.path(directory,"scripts","afcd_clean_categories.R")
+  here::here("scripts","afcd_clean_categories.R")
 )
 
+#_____________________________________________________________________________________________
+# simplify the categories for the part of the food analysed and the preparation of the food,
+# using afcd_clean_categories.R
+# ____________________________________________________________________________________________
 afcd_dat_clean <- afcd_dat %>%
   mutate(
     parts_of_food = case_when(
@@ -136,25 +137,52 @@ afcd_dat_clean <- afcd_dat %>%
     Study.ID.number=str_replace_all(Study.ID.number,"TUR","Turkey_FCT_2014"), 
     # Unclear what these are!!
     # Study.ID.number=str_replace_all(Study.ID.number,"",""),
-    Study.ID.number=str_replace_all(Study.ID.number,"XXX","XXX")
+    Study.ID.number=str_replace_all(Study.ID.number,"XXX","XXX"),
+    edible.portion.coefficient=ifelse(Edible.portion.coefficient>1,Edible.portion.coefficient*0.01,Edible.portion.coefficient),
+    Dry.Matter=as.numeric(Dry.Matter),
+    Dry.matter=ifelse(is.na(Dry.matter)==TRUE,Dry.Matter,Dry.matter),
+    Dry.matter=Dry.matter*0.01
   ) %>%
-  filter(!Study.ID.number %in% 
-           c("KHM","ISL","PER","RUS","FIN","GRE","POL","XXX") #removing from live version because we are unsure of the citation (very old data)
-  ) %>%
+  filter(
+    !Study.ID.number %in% c("KHM","ISL","PER","RUS","FIN","GRE","POL","XXX"), #removing from live version because we are unsure of the citation (very old data)
+    Dry.matter<=1
+    ) %>%
   # fix error where NAs were imported as 
   mutate(
     Iodine = ifelse(Iodine==0 & Study.ID.number %in% c('Japan_7thRev_2015'),NA,Iodine)
-  )
- 
-afcd_dat_clean %>%
-  # filter(Study.ID.number %in% c('Japan_7thRev_2015','Australia_2019')) %>%
-  select(taxa_name,Study.ID.number,Iodine) %>%
+  ) %>%
+  # now remove columns that were either simplified or were not updated from the original dataset
+  select(-c(
+    Parts,Preparation,Wild.Farmed,Processing,Edible.portion.coefficient,Dry.Matter,#updated, so remove
+    Class.worms,Order.worms,Family.worms,Genus.worms,species, #updated, so remove
+    GBD.Macro,GBD.Sub, FishBase.SAU.Code,ISSCAAP,EDIBLE,FAO.Taxon.Code,Code:Latest.revision.in.version,
+    alt.scinames,Component.name #in the original dataset, not needed here
+    )) %>%
+  select(taxa_name,kingdom:genus,taxa_id,taxa_db,parts_of_food:production_category,edible.portion.coefficient,Study.ID.number,peer_review,everything(.))
 
-  filter(Study.ID.number %in% c('Japan_7thRev_2015'),Iodine==0)
+#_____________________________________________________________________________________________
+# clean up names
+# removing '.' in title, as this is a special chracter, 
+# and then make all variable names proper
+# ____________________________________________________________________________________________
+afcd_names <- names(afcd_dat_clean)
+afcd_names_clean <- str_replace_all(afcd_names,"\\.","_")
+afcd_names_clean <- str_to_title(afcd_names_clean)
 
+names(afcd_dat_clean) <- afcd_names_clean
 
+afcd_dat_clean <- afcd_dat_clean %>%
+  rename(
+    Cholecalciferol_d3=Cholecalciferol_d3_,
+    Ergocalciferol_d2=Ergocalciferol_d2_,
+    Vitamin_d_d2_d3=Vitamin_d_d2_d3_
+    )
+
+#_____________________________________________________________________________________________
+# write to file
+# ____________________________________________________________________________________________
 write.csv(afcd_dat_clean,
-          file.path(directory,"data","OutputsFromR","aquatic_food_composition_database","AFCD_live.csv"),
+          here("data","OutputsFromR","aquatic_food_composition_database","AFCD_live.csv"),
           row.names=FALSE
 )
 
