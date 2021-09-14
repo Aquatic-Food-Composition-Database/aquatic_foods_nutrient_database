@@ -20,7 +20,7 @@ norway_file <-  "clean_fct_norway_2019.csv"
 india_file <- "clean_fct_india_2017.csv"
 latinfoods_file <- "clean_latinfoods.csv"
 peer_review_file <- "clean_peer_review.csv"
-#__________________________________________str
+#__________________________________________
 # read data and load libraries directory defaults
 # _________________________________________
 library(tidyverse);library(dplyr)
@@ -103,11 +103,13 @@ latinfoods_dat <- read.csv(
   mutate(
     Study.ID.number="LATINFOODS"
   )
-
 peer_review_dat <- read.csv(
   file.path(directory,"data","OutputsFromR","cleaned_fcts",peer_review_file)
 )
 
+#__________________________________________
+# clean up the 
+# _________________________________________
 # a few of the FCT food codes do not have preceding character so read in as integers, need to convert to character
 smiling_laos_dat$Original.FCT.Food.Code <- as.character(smiling_laos_dat$Original.FCT.Food.Code)
 smiling_thailand_dat$Original.FCT.Food.Code <- as.character(smiling_thailand_dat$Original.FCT.Food.Code)
@@ -125,7 +127,9 @@ peer_review_dat<- peer_review_dat %>%
     )
 
 
-# binds together all variables
+#__________________________________________
+# bind together all the variables
+# _________________________________________
 afcd_bind <- bind_rows(afcd_dat,
                        aus_dat,pndb_dat,fao_wa_dat,
                        smiling_cambodia_dat,smiling_indonesia_dat,
@@ -135,13 +139,22 @@ afcd_bind <- bind_rows(afcd_dat,
                        peer_review_dat
                        )
 
+#__________________________________________
+# remove variables for which there was no 
+# overlap with the nutrients included in AFCD
+# _________________________________________
+afcd_names <- names(afcd_dat)
+
+no_afcd_names <- setdiff(names(afcd_bind),afcd_names)
+no_afcd_names <- no_afcd_names[1:601] # remove peer review
 
 
-# now categorize study id
 
-# as it is now, all the FCTs have "" in their Study.ID.Number, and the country iso code indicates 
-# their origin (in some cases individual countries, in others FAO regional)
-
+afcd_bind_clean <- afcd_bind %>%
+  select(-all_of(no_afcd_names))
 
 
-write.csv(afcd_bind,file.path(directory,"data","OutputsFromR","AFCD_merged.csv"),row.names = FALSE)
+#__________________________________________
+# write data frame to folder
+# _________________________________________
+write.csv(afcd_bind_clean,file.path(directory,"data","OutputsFromR","AFCD_merged.csv"),row.names = FALSE)
