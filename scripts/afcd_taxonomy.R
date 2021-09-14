@@ -42,14 +42,9 @@ asfis_spec_info <- read_excel(
 Sys.setlocale('LC_ALL','C') #sets language to eliminate multibyte error
 
 
-
-
-
-
 #_____________________________________________________________________________________________
 # Adds taxonomic information to dataset
 # using the package "taxize"
-# Tutorial: 
 # ________________________________________________________________________________________________
 afcd_taxa <- afcd_dat %>%
   select(Scientific.Name) %>%
@@ -113,16 +108,17 @@ identify_empty_rows_func <- function(x) {
 empty <- unlist(lapply(class_itis, identify_empty_rows_func))
 empty_itis <- names(empty)[empty==TRUE]
 class_itis_remove_bad_ids <- class_itis[!(names(class_itis) %in% empty_itis)]
-## remove the empties
+
+## remove the empties, this will create some list-col warnings, but that will be addressed below
 list_gbif <- pblapply(1:length(class_gbif), function(i) widen_taxa_func(class_list=class_gbif,i=i))
 list_itis <- pblapply(1:length(class_itis_remove_bad_ids), function(i) widen_taxa_func(class_list=class_itis_remove_bad_ids,i=i))
 list_ncbi <- pblapply(1:length(class_ncbi), function(i) widen_taxa_func(class_list=class_ncbi,i=i))
 
-
+# bind the lists
 taxa_ncbi <- plyr::rbind.fill(list_ncbi)
 taxa_itis <- plyr::rbind.fill(list_itis)
 taxa_gbif <- plyr::rbind.fill(list_ncbi)
-
+# add database names so we know where they came from
 taxa_ncbi$taxa_db <- "ncbi"
 taxa_itis$taxa_db <- "itis"
 taxa_gbif$taxa_db <- "gbif"
@@ -144,6 +140,7 @@ taxa_taxize <- taxa_taxize[order(taxa_taxize$taxa_db,decreasing = TRUE),]  #had 
 taxa_taxize_unique <- taxa_taxize[!duplicated(taxa_taxize$species),] 
 
 
+# merges thee xtracted taxonomic information in with afcd (placing taxonomic info first )
 afcd_taxa <- merge(taxa_taxize_unique,afcd_dat,all.y=TRUE,by.x="species",by.y="Scientific.Name")
 
 
@@ -244,6 +241,9 @@ afcd_taxa <- afcd_taxa %>%
 
 
 
+#__________________________________________
+# clean up taxonomic names in the database, and fill where needed
+# _________________________________________
 length_taxa_name <- sapply(strsplit(afcd_taxa$taxa_name, " "), length)
 ending_in_ae <- str_detect(afcd_taxa$taxa_name,"ae$")
 ending_in_ae <- ifelse(is.na(ending_in_ae)==TRUE,FALSE,ending_in_ae)
@@ -643,6 +643,9 @@ asfis_subs <- asfis_spec_info %>%
   distinct()
 
 
+#__________________________________________
+# collect all the cleaned taxa names
+# _________________________________________
 
 afcd_taxa_names <- data.frame(
     taxa_name = tolower(afcd_taxa$taxa_name),
@@ -658,6 +661,9 @@ afcd_taxa_names <- data.frame(
     taxa_name != "etc."
     )
 
+#__________________________________________
+# write to folder
+# _________________________________________
 
 write.csv(afcd_taxa_names,
     file.path(directory,"data","OutputsFromR","aquatic_food_composition_database","afcd_taxonomic_names_only.csv"),
@@ -665,7 +671,4 @@ write.csv(afcd_taxa_names,
   )
 
 write.csv(afcd_taxa,file.path(directory,"data","OutputsFromR","afcd_with_taxa.csv"),row.names = FALSE)
-
-
-
 
