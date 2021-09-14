@@ -106,9 +106,6 @@ all_nutrients_4 <- full_join(
 ##################
 # for now REMOVE relative values, those are cleaned & calculated in "clean_pere_review_relative_values.R"
 ##################
-
-
-
 all_nutrients_no_relatives <- all_nutrients_4 %>%
   dplyr::select(
     -str_subset(names(all_nutrients_4),"PAA."), #for now removes 
