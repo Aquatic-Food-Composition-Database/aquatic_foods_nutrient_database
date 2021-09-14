@@ -30,8 +30,10 @@ merge_key <- read_excel(
 )
 
 
-# subset for aquatic foods
-
+#__________________________________________
+# extract aquatic foods information and 
+# cleaning variable names
+# _________________________________________
 unique(india_dat$grup) # determine what foods to include
 aquatic_food_groups <- c( #does not appear to be a seafoo d
   "Marine Shellfish",
@@ -42,6 +44,11 @@ aquatic_food_groups <- c( #does not appear to be a seafoo d
 
 india_aquatic_foods_dat <- india_dat %>%
   filter(grup %in% aquatic_food_groups)
+
+
+#__________________________________________
+# Convert nutrient units to those used in AFCD (using merge_key file)
+# _________________________________________
 # run user-written function that converts nutrient measurement units if needed
 
 india_conversion_coefs <- coefs_convert_unit_fct(key=merge_key,
@@ -63,8 +70,9 @@ india_aquatic_foods_dat[name_match] <- sweep(india_aquatic_foods_dat[name_match]
 
 
 
-# finally, change names so that it can be readily merged with AFCD
-
+#__________________________________________
+# Convert nutrient names to those used in AFCD (using merge_key file)
+# _________________________________________
 # use function in "functions/func_cleaning_fct.r" create dataframe that 
 # includes variable names to change from Aus to AFCD
 india_names_to_convert_to_afcd <- convert_nutrient_names("india_variable_name") 
@@ -88,7 +96,9 @@ india_aquatic_foods_dat_clean$Country.ISO3 <- "IND" #adds classification for PND
 
 
 
+#__________________________________________
 # save the modified data frames to the folder
+# _________________________________________
 write.csv(india_aquatic_foods_dat_clean,here("data","OutputsFromR","cleaned_fcts","clean_fct_india_2017.csv"),row.names = FALSE)
 
 
