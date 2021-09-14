@@ -144,8 +144,7 @@ afcd_dat_clean <- afcd_dat %>%
     Dry.matter=Dry.matter*0.01
   ) %>%
   filter(
-    !Study.ID.number %in% c("KHM","ISL","PER","RUS","FIN","GRE","POL","XXX"), #removing from live version because we are unsure of the citation (very old data)
-    Dry.matter<=1
+    !Study.ID.number %in% c("KHM","ISL","PER","RUS","FIN","GRE","POL","XXX") #removing from live version because we are unsure of the citation (very old data)
     ) %>%
   # fix error where NAs were imported as 
   mutate(
@@ -182,7 +181,7 @@ afcd_dat_clean <- afcd_dat_clean %>%
 # write to file
 # ____________________________________________________________________________________________
 write.csv(afcd_dat_clean,
-          here("data","OutputsFromR","aquatic_food_composition_database","AFCD_live.csv"),
+          here("data","OutputsFromR","aquatic_food_composition_database","20210914_AFCD.csv"),
           row.names=FALSE
 )
 
