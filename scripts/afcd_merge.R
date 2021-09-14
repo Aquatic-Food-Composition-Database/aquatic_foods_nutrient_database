@@ -28,7 +28,7 @@ library(tidyverse);library(dplyr)
 directory <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Nutrition/Separate/aquatic_foods_nutrient_database"
 # now use here package to navigate from working directory to specific food file
 afcd_dat <- read.csv(
-  file.path(directory,"data","OutputsFromR",afcd_file)
+  here("data","OutputsFromR",afcd_file)
   ) %>%
   mutate(
     Study.ID.number=case_when(
@@ -38,73 +38,73 @@ afcd_dat <- read.csv(
     )
   )
 aus_dat <- read.csv(
-  file.path(directory,"data","OutputsFromR","cleaned_fcts",aus_file)
+  here("data","OutputsFromR","cleaned_fcts",aus_file)
   ) %>%
   mutate(
     Study.ID.number="Australia_2019"
   )
 pndb_dat <- read.csv(
-  file.path(directory,"data","OutputsFromR","cleaned_fcts",pndb_file)
+  here("data","OutputsFromR","cleaned_fcts",pndb_file)
   ) %>%
   mutate(
     Study.ID.number="PNDB_2020"
   )
 fao_wa_dat <- read.csv(
-  file.path(directory,"data","OutputsFromR","cleaned_fcts",fao_wa_file)
+  here("data","OutputsFromR","cleaned_fcts",fao_wa_file)
   ) %>%
   mutate(
     Study.ID.number="FAO_WestAfrica_2019"
   )
 smiling_cambodia_dat <- read.csv(
-  file.path(directory,"data","OutputsFromR","cleaned_fcts",smiling_cambodia_file)
+  here("data","OutputsFromR","cleaned_fcts",smiling_cambodia_file)
   ) %>%
   mutate(
     Study.ID.number="SMILING_Cambodia"
   )
 smiling_indonesia_dat <- read.csv(
-  file.path(directory,"data","OutputsFromR","cleaned_fcts",smiling_indonesia_file)
+  here("data","OutputsFromR","cleaned_fcts",smiling_indonesia_file)
   ) %>%
   mutate(
     Study.ID.number="SMILING_Indonesia"
   )
 smiling_laos_dat <- read.csv(
-  file.path(directory,"data","OutputsFromR","cleaned_fcts",smiling_laos_file)
+  here("data","OutputsFromR","cleaned_fcts",smiling_laos_file)
 ) %>%
   mutate(
     Study.ID.number="SMILING_Laos"
   )
 smiling_thailand_dat <- read.csv(
-  file.path(directory,"data","OutputsFromR","cleaned_fcts",smiling_thailand_file)
+  here("data","OutputsFromR","cleaned_fcts",smiling_thailand_file)
 ) %>%
   mutate(
     Study.ID.number="SMILING_Thailand"
   )
 smiling_vietnam_dat <- read.csv(
-  file.path(directory,"data","OutputsFromR","cleaned_fcts",smiling_vietnam_file)
+  here("data","OutputsFromR","cleaned_fcts",smiling_vietnam_file)
 ) %>%
   mutate(
     Study.ID.number="SMILING_Vietnam"
   )
 norway_dat <- read.csv(
-  file.path(directory,"data","OutputsFromR","cleaned_fcts",norway_file)
+  here("data","OutputsFromR","cleaned_fcts",norway_file)
 ) %>%
   mutate(
     Study.ID.number="Norway_2019"
   )
 india_dat <- read.csv(
-  file.path(directory,"data","OutputsFromR","cleaned_fcts",india_file)
+  here("data","OutputsFromR","cleaned_fcts",india_file)
   ) %>%
   mutate(
     Study.ID.number="India_2017"
   )
 latinfoods_dat <- read.csv(
-  file.path(directory,"data","OutputsFromR","cleaned_fcts",latinfoods_file)
+  here("data","OutputsFromR","cleaned_fcts",latinfoods_file)
   ) %>%
   mutate(
     Study.ID.number="LATINFOODS"
   )
 peer_review_dat <- read.csv(
-  file.path(directory,"data","OutputsFromR","cleaned_fcts",peer_review_file)
+  here("data","OutputsFromR","cleaned_fcts",peer_review_file)
 )
 
 #__________________________________________
@@ -157,4 +157,4 @@ afcd_bind_clean <- afcd_bind %>%
 #__________________________________________
 # write data frame to folder
 # _________________________________________
-write.csv(afcd_bind_clean,file.path(directory,"data","OutputsFromR","AFCD_merged.csv"),row.names = FALSE)
+write.csv(afcd_bind_clean,here("data","OutputsFromR","AFCD_merged.csv"),row.names = FALSE)
