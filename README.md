@@ -4,7 +4,7 @@ Welcome to the Aquatic Food Composition Database!
 
 This repository synthesizes existing nutrient composition data for aquatic food species. These data originate from disparate sources, including national food composition tables (FCT), international datasets from FAO, and other peer reviewed published sources of nutrient composition. New FCT are dynamically added to this comprehensive database. Authorship for this database includes Christopher D. Golden, J. Zachary Koehn, Bapu Vaitla, Camille DeSisto, Kathryn J. Fiorella, Marian Kjellevold and Shakuntala H. Thilsted. 
 
-Scripts included in this repository have different functional roles, including: extracting data from the raw FCT data, cleaning of FCT data, merging of FCT data and results of the literature review, adding taxonomic information, and finally cleaning/finalizing the overall database. References for this literature can be found [will add link here]()
+Scripts included in this repository have different functional roles, including: extracting data from the raw FCT data, cleaning of FCT data, merging of FCT data and results of the literature review, adding taxonomic information, and finally cleaning/finalizing the overall database. References for this literature can be found [here](https://docs.google.com/spreadsheets/d/18pdnRo4YRhHoqYscke5tRJ5VKvsj5YjO/edit?usp=sharing&ouid=113780279741164989313&rtpof=true&sd=true).
 
 The resulting database can be found at:
  Golden, C.D., Koehn, J.Z., Vaitla, B., DeSisto, C., Kelahan, H., Manning, K., Fiorella, K.J., Kjellevold, M., Thilsted, S.H., 2021b. Aquatic Food Composition Database. Harvard Dataverse, V2. [https://doi.org/https://doi.org/10.7910/DVN/KI0NYM.](https://doi.org/10.7910/DVN/KI0NYM).
