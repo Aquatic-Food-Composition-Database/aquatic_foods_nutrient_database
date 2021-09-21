@@ -155,9 +155,9 @@ afcd_dat_clean <- afcd_dat %>%
     Parts,Preparation,Wild.Farmed,Processing,Edible.portion.coefficient,Dry.Matter,#updated, so remove
     Class.worms,Order.worms,Family.worms,Genus.worms,species, #updated, so remove
     GBD.Macro,GBD.Sub, FishBase.SAU.Code,ISSCAAP,EDIBLE,FAO.Taxon.Code,Code:Latest.revision.in.version,
-    alt.scinames,Component.name #in the original dataset, not needed here
+    FAO.3A_CODE,alt.scinames,Component.name #in the original dataset, not needed here
     )) %>%
-  select(taxa_name,kingdom:genus,taxa_id,taxa_db,parts_of_food:production_category,edible.portion.coefficient,Study.ID.number,peer_review,everything(.))
+  select(taxa_name,kingdom:genus,taxa_db,taxa_id,parts_of_food:production_category,edible.portion.coefficient,Study.ID.number,peer_review,everything(.))
 
 #_____________________________________________________________________________________________
 # clean up names
@@ -181,7 +181,7 @@ afcd_dat_clean <- afcd_dat_clean %>%
 # write to file
 # ____________________________________________________________________________________________
 write.csv(afcd_dat_clean,
-          here("data","OutputsFromR","aquatic_food_composition_database","20210914_AFCD.csv"),
+          here("data","OutputsFromR","aquatic_food_composition_database","20210921_AFCD.csv"),
           row.names=FALSE
 )
 
