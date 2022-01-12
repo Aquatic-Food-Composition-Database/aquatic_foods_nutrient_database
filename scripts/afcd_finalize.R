@@ -92,7 +92,6 @@ afcd_dat_clean <- afcd_dat %>%
     parts_of_food = ifelse(is.na(parts_of_food),"small sample",parts_of_food),
     preparation_of_food = ifelse(is.na(preparation_of_food),"small sample",preparation_of_food)
   ) %>%
-  # select(-Wild.Farmed,-Parts,-Preparation) %>%
   mutate(
     Study.ID.number=ifelse(is.na(Study.ID.number),Country.ISO3,Study.ID.number),
     Study.ID.number=str_replace_all(Study.ID.number,"BGD","Bangladesh_2013"),
@@ -141,21 +140,56 @@ afcd_dat_clean <- afcd_dat %>%
     edible.portion.coefficient=ifelse(Edible.portion.coefficient>1,Edible.portion.coefficient*0.01,Edible.portion.coefficient),
     Dry.Matter=as.numeric(Dry.Matter),
     Dry.matter=ifelse(is.na(Dry.matter)==TRUE,Dry.Matter,Dry.matter),
-    Dry.matter=Dry.matter*0.01
+    Dry.matter=Dry.matter*0.01,
+    Original.FCT.Food.Code=ifelse(Study.ID.number=="USA_USDA_2019",USDA.ndbno,Original.FCT.Food.Code)
   ) %>%
   filter(
-    !Study.ID.number %in% c("KHM","ISL","PER","RUS","FIN","GRE","POL","XXX") #removing from live version because we are unsure of the citation (very old data)
+    !Study.ID.number %in% c("KHM","ISL","PER","RUS","FIN","GRE","POL","XXX"), #removing from live version because we are unsure of the citation (very old data)
+    !(Study.ID.number=="" & Original.FCT.Food.Code=="")
     ) %>%
   # fix error where NAs were imported as 
   mutate(
-    Iodine = ifelse(Iodine==0 & Study.ID.number %in% c('Japan_7thRev_2015'),NA,Iodine)
-  ) %>%
+    Iodine = ifelse(Iodine==0 & Study.ID.number %in% c('Japan_7thRev_2015'),NA,Iodine),
+    Aluminum = ifelse(is.na(Aluminum)==TRUE & is.na(Aluminium)==FALSE,Aluminium,Aluminum),
+    Aspartic.acid = ifelse(is.na(Aspartic.acid)==TRUE & is.na(Aspartic.acid.1)==FALSE,Aspartic.acid.1,Aspartic.acid),
+    Fatty.acids.not.identified = ifelse(is.na(Fatty.acids.not.identified)==TRUE,Other.fatty.acids.not.specifiied,Fatty.acids.not.identified),
+    Fatty.acid.18.2.n6 = ifelse(is.na(Fatty.acid.18.2.n6)==TRUE,Fatty.acid.18.2.n6.1,Fatty.acid.18.2.n6),
+    Glutamine.plus.Glutamic.Acid = ifelse( (is.na(Glutamine.plus.Glutamic.Acid) == TRUE & is.na(Glutamine.gluamic.acid)==FALSE),Glutamine.gluamic.acid,Glutamine.plus.Glutamic.Acid),
+    Glutamine.plus.Glutamic.Acid = ifelse( (Study.ID.number=="Bangladesh_2013" & is.na(Glutamine.plus.Glutamic.Acid) == FALSE ),NA,Glutamine.plus.Glutamic.Acid),
+    # Nitrogen nonprotein investigation: Set to NA: 378, 5,612 (%) 696 (unknown vaues) 81 (protein, not nitrogen)
+    Nitrogen.nonprotein = ifelse( (Study.ID.number%in%c("378", "5","612","81") & is.na(Nitrogen.nonprotein) == FALSE ),NA,Nitrogen.nonprotein),
+    #  Nitrogen non-protein values that need unit conversions: Keep: Biodiv in (mg/100g) ,47 (% per 100g)... already good: 1,10,35,39,40,63 (g/100g
+    Nitrogen.nonprotein = ifelse( (Study.ID.number%in%c("FAO_Biodiversity") & is.na(Nitrogen.nonprotein) == FALSE ),Nitrogen.nonprotein*1e-3,Nitrogen.nonprotein),
+    Nitrogen.nonprotein = ifelse( (Study.ID.number%in%c("47") & is.na(Nitrogen.nonprotein) == FALSE ),Nitrogen.nonprotein*1e-2,Nitrogen.nonprotein),
+    # Nitrogen total values to be removed b/c they have  uncertain values or units (266,64) or are % with no anchor points   (430,1017,1030,126,176,391,130, 461, 495)  
+    Nitrogen.total = ifelse( (Study.ID.number%in%c("266","64","430","1017","1030","126","176","391","130", "461", "495") & is.na(Nitrogen.total) == FALSE ),NA,Nitrogen.total),
+    # Nitrogen total values to be removed keep but convert to g/100g: 385,361,378 (mg),
+    Nitrogen.total = ifelse( (Study.ID.number%in%c("385","361","378") & is.na(Nitrogen.total) == FALSE ),Nitrogen.total*1e-3,Nitrogen.total),
+    Fatty.acid.20.1.n11 = ifelse( (is.na(Fatty.acid.20.1.n11) == TRUE & is.na(Fatty.acid.20.1.n9.fatty.acid.20.1.n11)==FALSE),Fatty.acid.20.1.n9.fatty.acid.20.1.n11,Fatty.acid.20.1.n11),
+    Fatty.acid.20.1.n9 = ifelse( (is.na(Fatty.acid.20.1.n9) == TRUE & is.na(Fatty.acid.18.1.n11.fatty.acid.20.1.n9)==FALSE),Fatty.acid.18.1.n11.fatty.acid.20.1.n9,Fatty.acid.20.1.n9),
+    Fatty.acid.22.1.n11 = ifelse( (is.na(Fatty.acid.22.1.n11) == TRUE & is.na(Fatty.acid.22.1.n9.fatty.acid.22.1.n11)==FALSE),Fatty.acid.22.1.n9.fatty.acid.22.1.n11,Fatty.acid.22.1.n11),
+    Original.FCT.Food.Code = ifelse( (is.na(Original.FCT.Food.Code)==TRUE & !is.na(Food.Item.ID)),Food.Item.ID,Original.FCT.Food.Code),
+    Study.ID.number = ifelse(Study.ID.number == "" & str_detect(Original.FCT.Food.Code,"09_")==TRUE,"Bangladesh_2013",Study.ID.number),
+    Study.ID.number = ifelse(Study.ID.number == "" & str_detect(Original.FCT.Food.Code,"J0*|H0*")==TRUE,"FAO_Pacific_2004",Study.ID.number)
+    ) %>%
   # now remove columns that were either simplified or were not updated from the original dataset
   select(-c(
     Parts,Preparation,Wild.Farmed,Processing,Edible.portion.coefficient,Dry.Matter,#updated, so remove
     Class.worms,Order.worms,Family.worms,Genus.worms,species, #updated, so remove
     GBD.Macro,GBD.Sub, FishBase.SAU.Code,ISSCAAP,EDIBLE,FAO.Taxon.Code,Code:Latest.revision.in.version,
-    FAO.3A_CODE,alt.scinames,Component.name #in the original dataset, not needed here
+    Fatty.acid.18.1.n7.1,Fatty.acid.18.2.n6.1, #remove these duplicated names
+    Aluminium, #remove duplicated name with Aluminum
+    Aspartic.acid.1, #remove duplicated name with Aspartic Acid
+    Asparagine.aspartic.acid, ##remove duplicated name with Asperagine plus aspartic Acid
+    Glutamine.gluamic.acid, # remove duplicated name with Glutamine plus glutamic acid (also mispelled :) )
+    fatty.acids.total.n3.longchain.polyunsaturated.in.cis.configuration,fatty.acids.total.n3.polyunsaturated.in.cis.configuration,Other.fatty.acids.not.specifiied,# no numeric values (all NAs)
+    Fatty.acid.18.1.n7.fatty.acid.18.1.n9,Fatty.acid.22.1.n11.fatty.acid.22.1.n13,Fatty.acid.20.1.n11.fatty.acid.20.1.n13,
+    Fatty.acid.20.1.n11.fatty.acid.20.1.n13,Fatty.acid.22.1.n11.fatty.acid.22.1.n13.1,
+    Fatty.acid.20.1.n9.fatty.acid.20.1.n11, #this was incorrectly specified (should be C20.1n11) so has been moved to C20.1 n11 and removed here.
+    Fatty.acid.18.1.n11.fatty.acid.20.1.n9, #this was incorrectly specified (should be C20.1n9) so has been moved to C20.1 n9 and removed here.
+    Fatty.acid.22.1.n9.fatty.acid.22.1.n11, #this was incorrectly specified (should be C22.1n11) so has been moved to C22.1 n11 and removed here.
+    USDA.ndbno,Food.Item.ID, #remove as this is now a part of Original.FCT.Food.Code
+    FAO.3A_CODE,alt.scinames,Habitat,Component.name #in the original dataset, not needed here
     )) %>%
   select(taxa_name,kingdom:genus,taxa_db,taxa_id,parts_of_food:production_category,edible.portion.coefficient,Study.ID.number,peer_review,everything(.))
 
@@ -174,14 +208,49 @@ afcd_dat_clean <- afcd_dat_clean %>%
   rename(
     Cholecalciferol_d3=Cholecalciferol_d3_,
     Ergocalciferol_d2=Ergocalciferol_d2_,
-    Vitamin_d_d2_d3=Vitamin_d_d2_d3_
+    Vitamin_d_d2_d3=Vitamin_d_d2_d3_,
+    Isoleucine=Isoleucin,
+    retinol_13_cis=X13cis_retinol
     )
+
+
+#for finding outliers/ incorrectly specified values
+afcd_dat_clean %>%
+  select(Study_id_number,Nitrogen_total) %>%
+  drop_na(Nitrogen_total) %>%
+  filter(Study_id_number=="391")
+
+
+test <- afcd_dat_clean %>%
+  select(
+    Study_id_number,
+    # Original_fct_food_code,
+    Nitrogen_total
+    ) %>%
+  pivot_longer(-c(
+    # Original_fct_food_code,
+    Study_id_number)
+    ,names_to = "nutrient",values_to = "values") %>%
+  drop_na(values) %>%
+  distinct() %>%
+  group_by(Study_id_number,nutrient) %>%
+  summarize(
+    median=median(values),
+    sd=sd(values),
+    max=max(values),
+    min=min(values),
+    n=length(values)
+    ) %>%
+  filter(
+    Study_id_number %in% c("FAO_Biodiversity","FAO_Infoods_Ufish")
+  )
+  pivot_wider(names_from=nutrient,values_from=values)
 
 #_____________________________________________________________________________________________
 # write to file
 # ____________________________________________________________________________________________
 write.csv(afcd_dat_clean,
-          here("data","OutputsFromR","aquatic_food_composition_database","20210921_AFCD.csv"),
+          here("data","OutputsFromR","aquatic_food_composition_database","20220103_AFCD.csv"),
           row.names=FALSE
 )
 
