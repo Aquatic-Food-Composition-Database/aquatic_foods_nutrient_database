@@ -156,6 +156,15 @@ exclude_by_study_id <- c(
   431, #"Beaubier, J., & Hipfner, J. M. (2013). Proximate composition and energy density of forage fish delivered to rhinoceros suklet Cerorhinca monocerata nestlings at triangle island, British Colombia. Marine Ornithology, 41, 35‚Äì39.",
   111,  #"B Chrisolite, S A Shanmugam, & S siva Senthil Arumugam. (2015). Proximate and mineral composition of fifteen freshwater fishes of Thoothukudi, Tamil NaduI. Journal of Aquaculture in the Tropics, 30(1‚Äì2), 33‚Äì43."
   
+  # And values that are relative only (percentage of weight with no consistent weight) or experimental
+  130, # Baghel, R. S., Kumari, P., Reddy, C. R. K., & Jha, B. (2014). Growth, pigments, and biochemical composition of marine red alga Gracilaria crassa. Journal of Applied Phycology, 26(5), 2143‚Äì2150. https://doi.org/10.1007/s10811-014-0250-5
+  495, # Jia, R.-B., Wu, J., Li, Z.-R., Ou, Z.-R., Zhu, Q., Sun, B., Lin, L., & Zhao, M. (2020). Comparison of physicochemical properties and antidiabetic effects of polysaccharides extracted from three seaweed species. International Journal of Biological Macromolecules, 149, 81‚Äì92. https://doi.org/10.1016/j.ijbiomac.2020.01.111
+  543, # Tracey A. Beacham, Isobel S. Cole, Louisa S. DeDross, Sofia Raikova, Christopher J. Chuck, John Macdonald, Leopoldo Herrera, Tariq Ali, Ruth L. Airs, Andrew Landels, & Michael J. Allen. (2019). Analysis of Seaweeds from SouthWest England as a Biorefinery Feedstock. Applied Sciences, 9(4456). https://doi.org/:10.3390/app9204456
+  101, # D Robledo, & Y Freile Pelegr√≠n. (1997). Chemical and mineral composition of six potentially edible seaweed species of Yucatan. Botanica Marina, 40, 301‚Äì306.
+  16,  # Zhang, W., Xu, Y., Tahir, H. E., Zou, X., & Wang, P. (2017). Rapid and wide-range determination of Cd(II), Pb(II), Cu(II) and Hg(II) in fish tissues using light addressable potentiometric sensor. Food Chemistry, 221, 541‚Äì547. https://doi.org/10.1016/j.foodchem.2016.11.141
+  398, # Hanan Hafez Omar, Batoul Mohamed Abdullatif, Molouk Mohamed El-Kazan, & Adel Mansour El-Gendy. (2013). Red Sea Water and Biochemical Composition of Seaweeds at Southern Coast of Jeddah, Saudi Arabia. Life Science Journal, 10(4), 1073‚Äì1080.
+  391, # Karla J McDermid, Brooke Stuercke, & George H Balazs. (2007). Nutritional composition of marine plants in the diet of the green sea turtle (Chelonia mydas) in the Hawaiian Islands. Bulletin of Marine Science, (1), 55‚Äì71.
+  
   # and a subset based on the findings of Marian on Omega 3 outliers
   609, # Hill, J. C., Alam, M. S., Watanabe, W. O., Carroll, P. M., Seaton, P. J., & Bourdelais, A. J. (2019). Replacement of Menhaden Fish Meal by Poultry By-Product Meal in the Diet of Juvenile Red Porgy. North American Journal of Aquaculture, 81(1), 81–93. https://doi.org/10.1002/naaq.10074
   48,  # Xu, J., Yan, B., Teng, Y., Lou, G., & Lu, Z. (2010). Analysis of nutrient composition and fatty acid profiles of Japanese sea bass Lateolabrax japonicus (Cuvier) reared in seawater and freshwater. Journal of Food Composition and Analysis, 23(5), 401‚Äì405. https://doi.org/10.1016/j.jfca.2010.01.010
