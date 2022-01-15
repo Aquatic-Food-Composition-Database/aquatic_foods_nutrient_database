@@ -155,6 +155,8 @@ exclude_by_study_id <- c(
   99,  #"Elagba Haj Ali Mohamed. (2013). Proximate and mineral composition in muscle and head tissue of seven commercial species of the Nile fish from Sudan. Asian Journal of Science and Technology, 4(10), 62‚Äì65.",
   431, #"Beaubier, J., & Hipfner, J. M. (2013). Proximate composition and energy density of forage fish delivered to rhinoceros suklet Cerorhinca monocerata nestlings at triangle island, British Colombia. Marine Ornithology, 41, 35‚Äì39.",
   111,  #"B Chrisolite, S A Shanmugam, & S siva Senthil Arumugam. (2015). Proximate and mineral composition of fifteen freshwater fishes of Thoothukudi, Tamil NaduI. Journal of Aquaculture in the Tropics, 30(1‚Äì2), 33‚Äì43."
+  # experimental
+  759, # Bell, J. G., Strachan, F., Roy, W. J., Matthew, C., McDonald, P., Barrows, F. T., & Sprague, M. (2016). Evaluation of barley protein concentrate and fish protein concentrate, made from trimmings, as sustainable ingredients in Atlantic salmon ( Salmo salar L.) feeds. Aquaculture Nutrition, 22(2), 326–334. https://doi.org/10.1111/anu.12250
   
   # And values that are relative only (percentage of weight with no consistent weight) or experimental
   130, # Baghel, R. S., Kumari, P., Reddy, C. R. K., & Jha, B. (2014). Growth, pigments, and biochemical composition of marine red alga Gracilaria crassa. Journal of Applied Phycology, 26(5), 2143‚Äì2150. https://doi.org/10.1007/s10811-014-0250-5
@@ -164,6 +166,8 @@ exclude_by_study_id <- c(
   16,  # Zhang, W., Xu, Y., Tahir, H. E., Zou, X., & Wang, P. (2017). Rapid and wide-range determination of Cd(II), Pb(II), Cu(II) and Hg(II) in fish tissues using light addressable potentiometric sensor. Food Chemistry, 221, 541‚Äì547. https://doi.org/10.1016/j.foodchem.2016.11.141
   398, # Hanan Hafez Omar, Batoul Mohamed Abdullatif, Molouk Mohamed El-Kazan, & Adel Mansour El-Gendy. (2013). Red Sea Water and Biochemical Composition of Seaweeds at Southern Coast of Jeddah, Saudi Arabia. Life Science Journal, 10(4), 1073‚Äì1080.
   391, # Karla J McDermid, Brooke Stuercke, & George H Balazs. (2007). Nutritional composition of marine plants in the diet of the green sea turtle (Chelonia mydas) in the Hawaiian Islands. Bulletin of Marine Science, (1), 55‚Äì71.
+  1217, # Papaioannou, C. D., Sinanoglou, V. J., Strati, I. F., Proestos, C., Kyrana, V. R., & Lougovois, V. P. (2016). Impact of different preservation treatments on lipids of the smooth clam Callista chione. International Journal of Food Science & Technology, 51(2), 325–332. https://doi.org/10.1111/ijfs.12972
+  1025, # García, J. R., Kalinowski, C. T. H., Izquierdo, M. S. L., & Robaina, L. E. R. (2010). Marine and freshwater crab meals in diets for red porgy (Pagrus pagrus): effect on growth, fish composition and skin colour.Aquaculture Research,41(12), 1759-1769.
   
   # and a subset based on the findings of Marian on Omega 3 outliers
   609, # Hill, J. C., Alam, M. S., Watanabe, W. O., Carroll, P. M., Seaton, P. J., & Bourdelais, A. J. (2019). Replacement of Menhaden Fish Meal by Poultry By-Product Meal in the Diet of Juvenile Red Porgy. North American Journal of Aquaculture, 81(1), 81–93. https://doi.org/10.1002/naaq.10074
