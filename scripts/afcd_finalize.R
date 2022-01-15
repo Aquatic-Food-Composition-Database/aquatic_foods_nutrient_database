@@ -163,11 +163,27 @@ afcd_dat_clean <- afcd_dat %>%
     Nitrogen.nonprotein = ifelse( (Study.ID.number%in%c("47") & is.na(Nitrogen.nonprotein) == FALSE ),Nitrogen.nonprotein*1e-2,Nitrogen.nonprotein),
     # Nitrogen total values to be removed b/c they have  uncertain values or units (266,64) or are % with no anchor points   (430,1017,1030,126,176,391,130, 461, 495)  
     Nitrogen.total = ifelse( (Study.ID.number%in%c("266","64","430","1017","1030","126","176","391","130", "461", "495") & is.na(Nitrogen.total) == FALSE ),NA,Nitrogen.total),
-    # Nitrogen total values to be removed keep but convert to g/100g: 385,361,378 (mg),
+    # Nitrogen total values to be removed keep but convert to g/100g s: 385,361,378 (mg),
     Nitrogen.total = ifelse( (Study.ID.number%in%c("385","361","378") & is.na(Nitrogen.total) == FALSE ),Nitrogen.total*1e-3,Nitrogen.total),
+    Neoxanthin = ifelse( (Study.ID.number%in%c("525","543") & is.na(Neoxanthin) == FALSE ),Neoxanthin*1e3,Neoxanthin),
+    Violaxanthin = ifelse( (Study.ID.number%in%c("525","543") & is.na(Violaxanthin) == FALSE ),Violaxanthin*1e3,Violaxanthin),
+    Sterols.total = ifelse( (Study.ID.number%in%c("268") & is.na(Ergosterol) == FALSE ),Ergosterol,Sterols.total),
+    # Carotenoid total value needs to be converted to mg (already 100g)
+    carotenoids.total = ifelse( (Study.ID.number%in%c("525","708","562","1031","672","349","376","750","736","611","364","52") & is.na(carotenoids.total) == FALSE ),carotenoids.total*1e3,carotenoids.total),
+    # Carotenoid total value needs to be converted to mg per 100 g (currently mg/g)
+    carotenoids.total = ifelse( (Study.ID.number%in%c("1217") & is.na(carotenoids.total) == FALSE ),carotenoids.total*1e2*1e3,carotenoids.total),
     Fatty.acid.20.1.n11 = ifelse( (is.na(Fatty.acid.20.1.n11) == TRUE & is.na(Fatty.acid.20.1.n9.fatty.acid.20.1.n11)==FALSE),Fatty.acid.20.1.n9.fatty.acid.20.1.n11,Fatty.acid.20.1.n11),
     Fatty.acid.20.1.n9 = ifelse( (is.na(Fatty.acid.20.1.n9) == TRUE & is.na(Fatty.acid.18.1.n11.fatty.acid.20.1.n9)==FALSE),Fatty.acid.18.1.n11.fatty.acid.20.1.n9,Fatty.acid.20.1.n9),
     Fatty.acid.22.1.n11 = ifelse( (is.na(Fatty.acid.22.1.n11) == TRUE & is.na(Fatty.acid.22.1.n9.fatty.acid.22.1.n11)==FALSE),Fatty.acid.22.1.n9.fatty.acid.22.1.n11,Fatty.acid.22.1.n11),
+    Fatty.acid.conversion.factor = ifelse( (is.na(Fatty.acid.conversion.factor) == TRUE & is.na(Fatty.acid.conversion.factor.for.internal.use)==FALSE),Fatty.acid.conversion.factor.for.internal.use,Fatty.acid.conversion.factor),
+    # saponin values come from a single study reporting values as % with no anchor point. 
+    Saponins = ifelse( (Study.ID.number%in%c("30") & is.na(Saponins) == FALSE ),NA,Saponins),
+    # Convert/keep: 732 (iu/100g (1IU=0.025mcg), 531, 218,932, 113, 914,906,970,46,459,4,465 (mg/100g - all peer review)
+    Vitamin.D = ifelse((Study.ID.number%in%c("531","218","932","113","914","906","970","46","459","4","465") & is.na(Vitamin.D) == FALSE ),Vitamin.D*1000,Vitamin.D),
+    Vitamin.D = ifelse((Study.ID.number%in%c("732") & is.na(Vitamin.D) == FALSE ),Vitamin.D*0.025,Vitamin.D),
+    # now combine Vitamin.D with Vitamin.D.D2.D3., as these represent the same values
+    Vitamin.D = ifelse( (is.na(Vitamin.D)==TRUE & is.na(Vitamin.D.D2.D3.)==FALSE) ,Vitamin.D.D2.D3.,Vitamin.D),
+    XN = ifelse( (is.na(XN) == TRUE & is.na(Conversion.factor.to.calculate.total.protein.from.nitrogen)==FALSE),Conversion.factor.to.calculate.total.protein.from.nitrogen,XN),
     Original.FCT.Food.Code = ifelse( (is.na(Original.FCT.Food.Code)==TRUE & !is.na(Food.Item.ID)),Food.Item.ID,Original.FCT.Food.Code),
     Study.ID.number = ifelse(Study.ID.number == "" & str_detect(Original.FCT.Food.Code,"09_")==TRUE,"Bangladesh_2013",Study.ID.number),
     Study.ID.number = ifelse(Study.ID.number == "" & str_detect(Original.FCT.Food.Code,"J0*|H0*")==TRUE,"FAO_Pacific_2004",Study.ID.number)
@@ -182,7 +198,19 @@ afcd_dat_clean <- afcd_dat %>%
     Aspartic.acid.1, #remove duplicated name with Aspartic Acid
     Asparagine.aspartic.acid, ##remove duplicated name with Asperagine plus aspartic Acid
     Glutamine.gluamic.acid, # remove duplicated name with Glutamine plus glutamic acid (also mispelled :) )
+    Vitamin.D.D2.D3., # remove duplciated name with Vitamin.D (summation)
+    Ergosterol, #this variable was incorrectly named, should be total sterols... study 268, values total sterols and variable removed
     fatty.acids.total.n3.longchain.polyunsaturated.in.cis.configuration,fatty.acids.total.n3.polyunsaturated.in.cis.configuration,Other.fatty.acids.not.specifiied,# no numeric values (all NAs)
+    Sugars.total.expression.unknown,# no numeric values (all NAs)
+    starch.total.expression.unknown,# no numeric values (all NAs)
+    betaCarotene.cis,# no numeric values (all NAs)
+    X25hydroxycholecalciferol,# no numeric values (all NAs)
+    Isohamnetin,# no numeric values (all NAs)
+    Kaempferol,# no numeric values (all NAs)
+    Quercetin,# no numeric values (all NAs)
+    Sum.of.18.amino.acids.excluding.glutamine.and.asparagine.,# no numeric values (all NAs)
+    RefID,# no values (all NAs)
+    Conversion.factor.to.calculate.total.protein.from.nitrogen, #duplicated with Xn (protein nitrogen conversion factor)
     Fatty.acid.18.1.n7.fatty.acid.18.1.n9,Fatty.acid.22.1.n11.fatty.acid.22.1.n13,Fatty.acid.20.1.n11.fatty.acid.20.1.n13,
     Fatty.acid.20.1.n11.fatty.acid.20.1.n13,Fatty.acid.22.1.n11.fatty.acid.22.1.n13.1,
     Fatty.acid.20.1.n9.fatty.acid.20.1.n11, #this was incorrectly specified (should be C20.1n11) so has been moved to C20.1 n11 and removed here.
@@ -216,19 +244,19 @@ afcd_dat_clean <- afcd_dat_clean %>%
 
 #for finding outliers/ incorrectly specified values
 afcd_dat_clean %>%
-  select(Study_id_number,Nitrogen_total) %>%
-  drop_na(Nitrogen_total) %>%
-  filter(Study_id_number=="391")
+  select(Study_id_number,Vitamin_d,Vitamin_d_d2_d3) %>%
+  drop_na(Vitamin_d,Vitamin_d_d2_d3) %>%
+  filter(Study_id_number=="USA_USDA_2019")
 
 
-test <- afcd_dat_clean %>%
+test <- 
+  afcd_dat_clean %>%
   select(
     Study_id_number,
-    # Original_fct_food_code,
-    Nitrogen_total
+    
+    Vitamin_d
     ) %>%
   pivot_longer(-c(
-    # Original_fct_food_code,
     Study_id_number)
     ,names_to = "nutrient",values_to = "values") %>%
   drop_na(values) %>%
@@ -240,12 +268,7 @@ test <- afcd_dat_clean %>%
     max=max(values),
     min=min(values),
     n=length(values)
-    ) %>%
-  filter(
-    Study_id_number %in% c("FAO_Biodiversity","FAO_Infoods_Ufish")
-  )
-  pivot_wider(names_from=nutrient,values_from=values)
-
+    ) 
 #_____________________________________________________________________________________________
 # write to file
 # ____________________________________________________________________________________________
