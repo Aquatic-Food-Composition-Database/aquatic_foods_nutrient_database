@@ -211,6 +211,9 @@ afcd_dat_clean <- afcd_dat %>%
     Sum.of.18.amino.acids.excluding.glutamine.and.asparagine.,# no numeric values (all NAs)
     RefID,# no values (all NAs)
     Conversion.factor.to.calculate.total.protein.from.nitrogen, #duplicated with Xn (protein nitrogen conversion factor)
+    Amino.acids.total.essential.unknown.or.variable.which.AS.are.included.in.total,#unit variability was too high
+    Amino.acids.total.nonessential, #unit variability was too high
+    Amino.acids.total.precise.definition.not.specified, #unit variability was too high
     Fatty.acid.18.1.n7.fatty.acid.18.1.n9,Fatty.acid.22.1.n11.fatty.acid.22.1.n13,Fatty.acid.20.1.n11.fatty.acid.20.1.n13,
     Fatty.acid.20.1.n11.fatty.acid.20.1.n13,Fatty.acid.22.1.n11.fatty.acid.22.1.n13.1,
     Fatty.acid.20.1.n9.fatty.acid.20.1.n11, #this was incorrectly specified (should be C20.1n11) so has been moved to C20.1 n11 and removed here.
@@ -236,7 +239,6 @@ afcd_dat_clean <- afcd_dat_clean %>%
   rename(
     Cholecalciferol_d3=Cholecalciferol_d3_,
     Ergocalciferol_d2=Ergocalciferol_d2_,
-    Vitamin_d_d2_d3=Vitamin_d_d2_d3_,
     Isoleucine=Isoleucin,
     retinol_13_cis=X13cis_retinol
     )
@@ -253,8 +255,7 @@ test <-
   afcd_dat_clean %>%
   select(
     Study_id_number,
-    
-    Vitamin_d
+    Amino_acids_total_precise_definition_not_specified
     ) %>%
   pivot_longer(-c(
     Study_id_number)
