@@ -30,6 +30,9 @@ source(
 # simplify the categories for the part of the food analysed and the preparation of the food,
 # using afcd_clean_categories.R
 # ____________________________________________________________________________________________
+
+
+
 afcd_dat_clean <- afcd_dat %>%
   mutate(
     parts_of_food = case_when(
@@ -193,7 +196,7 @@ afcd_dat_clean <- afcd_dat %>%
     Parts,Preparation,Wild.Farmed,Processing,Edible.portion.coefficient,Dry.Matter,#updated, so remove
     Class.worms,Order.worms,Family.worms,Genus.worms,species, #updated, so remove
     GBD.Macro,GBD.Sub, FishBase.SAU.Code,ISSCAAP,EDIBLE,FAO.Taxon.Code,Code:Latest.revision.in.version,
-    Fatty.acid.18.1.n7.1,Fatty.acid.18.2.n6.1, #remove these duplicated names
+    Fatty.acid.18.1.n7.1,Fatty.acid.18.2.n6.1,Fatty.acid.conversion.factor, #remove these duplicated names
     Aluminium, #remove duplicated name with Aluminum
     Aspartic.acid.1, #remove duplicated name with Aspartic Acid
     Asparagine.aspartic.acid, ##remove duplicated name with Asperagine plus aspartic Acid
@@ -235,13 +238,40 @@ afcd_names_clean <- str_to_title(afcd_names_clean)
 
 names(afcd_dat_clean) <- afcd_names_clean
 
+# now determine values that were included but have no numeric values (all NA)
+# and exclude those values below
+afcd_vars_no_vals <- afcd_dat_clean %>%
+  select(Ph_hydrogen_ion_concentration:Wax_total) %>%
+  select_if(is.logical) %>%
+  names()
+
 afcd_dat_clean <- afcd_dat_clean %>%
   rename(
     Cholecalciferol_d3=Cholecalciferol_d3_,
     Ergocalciferol_d2=Ergocalciferol_d2_,
     Isoleucine=Isoleucin,
     retinol_13_cis=X13cis_retinol
-    )
+    ) %>%
+  select(-c(afcd_vars_no_vals))
+
+# variables with 
+
+afcd_cov <- afcd_dat_clean %>%
+  select(Ph_hydrogen_ion_concentration:Wax_total) %>%
+  pivot_longer(cols = Ph_hydrogen_ion_concentration:Wax_total,names_to = "nutrients",values_to = "values") %>%
+  group_by(nutrients) %>%
+  drop_na(values) %>%
+  filter(values>0) %>%
+  summarize(
+    cv=sd(values)/mean(values),
+    n=length(values),
+    max=max(values),
+    min=min(values),
+    mean=mean(values),
+    median=median(values)
+  )
+
+
 
 
 #for finding outliers/ incorrectly specified values
