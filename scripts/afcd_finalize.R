@@ -166,6 +166,7 @@ afcd_dat_clean <- afcd_dat %>%
     Nitrogen.nonprotein = ifelse( (Study.ID.number%in%c("47") & is.na(Nitrogen.nonprotein) == FALSE ),Nitrogen.nonprotein*1e-2,Nitrogen.nonprotein),
     # Nitrogen total values to be removed b/c they have  uncertain values or units (266,64) or are % with no anchor points   (430,1017,1030,126,176,391,130, 461, 495)  
     Nitrogen.total = ifelse( (Study.ID.number%in%c("266","64","430","1017","1030","126","176","391","130", "461", "495") & is.na(Nitrogen.total) == FALSE ),NA,Nitrogen.total),
+    Squalene = ifelse(Study.ID.number%in%c("1098") ,NA,Squalene), #could not figure out where this vlaue came from, and it was much higher, so removed
     # Nitrogen total values to be removed keep but convert to g/100g s: 385,361,378 (mg),
     Nitrogen.total = ifelse( (Study.ID.number%in%c("385","361","378") & is.na(Nitrogen.total) == FALSE ),Nitrogen.total*1e-3,Nitrogen.total),
     Neoxanthin = ifelse( (Study.ID.number%in%c("525","543") & is.na(Neoxanthin) == FALSE ),Neoxanthin*1e3,Neoxanthin),
@@ -184,7 +185,10 @@ afcd_dat_clean <- afcd_dat %>%
     # Convert/keep: 732 (iu/100g (1IU=0.025mcg), 531, 218,932, 113, 914,906,970,46,459,4,465 (mg/100g - all peer review)
     Vitamin.D = ifelse((Study.ID.number%in%c("531","218","932","113","914","906","970","46","459","4","465") & is.na(Vitamin.D) == FALSE ),Vitamin.D*1000,Vitamin.D),
     Vitamin.D = ifelse((Study.ID.number%in%c("732") & is.na(Vitamin.D) == FALSE ),Vitamin.D*0.025,Vitamin.D),
-    # now combine Vitamin.D with Vitamin.D.D2.D3., as these represent the same values
+    Astaxanthin = ifelse((Study.ID.number%in%c("123") & is.na(Astaxanthin) == FALSE ),Astaxanthin/10*1000,Astaxanthin), # was in mg/kg 
+    Ornithine = ifelse((Study.ID.number%in%c("210","287") & is.na(Ornithine) == FALSE ),Ornithine*100,Ornithine), # was in mg/g 
+    Ornithine = ifelse((Study.ID.number%in%c("287") & is.na(Ornithine) == FALSE ),Ornithine*1000,Ornithine), # was in g/100g
+      # now combine Vitamin.D with Vitamin.D.D2.D3., as these represent the same values
     Vitamin.D = ifelse( (is.na(Vitamin.D)==TRUE & is.na(Vitamin.D.D2.D3.)==FALSE) ,Vitamin.D.D2.D3.,Vitamin.D),
     XN = ifelse( (is.na(XN) == TRUE & is.na(Conversion.factor.to.calculate.total.protein.from.nitrogen)==FALSE),Conversion.factor.to.calculate.total.protein.from.nitrogen,XN),
     Original.FCT.Food.Code = ifelse( (is.na(Original.FCT.Food.Code)==TRUE & !is.na(Food.Item.ID)),Food.Item.ID,Original.FCT.Food.Code),
@@ -205,6 +209,7 @@ afcd_dat_clean <- afcd_dat %>%
     Ergosterol, #this variable was incorrectly named, should be total sterols... study 268, values total sterols and variable removed
     fatty.acids.total.n3.longchain.polyunsaturated.in.cis.configuration,fatty.acids.total.n3.polyunsaturated.in.cis.configuration,Other.fatty.acids.not.specifiied,# no numeric values (all NAs)
     Sugars.total.expression.unknown,# no numeric values (all NAs)
+    Saponins,# no numeric values (all NAs)
     starch.total.expression.unknown,# no numeric values (all NAs)
     betaCarotene.cis,# no numeric values (all NAs)
     X25hydroxycholecalciferol,# no numeric values (all NAs)
@@ -250,7 +255,8 @@ afcd_dat_clean <- afcd_dat_clean %>%
     Cholecalciferol_d3=Cholecalciferol_d3_,
     Ergocalciferol_d2=Ergocalciferol_d2_,
     Isoleucine=Isoleucin,
-    retinol_13_cis=X13cis_retinol
+    retinol_13_cis=X13cis_retinol,
+    Vitamin_d_method_unknown_or_variable=Vitamin_d
     ) %>%
   select(-c(afcd_vars_no_vals))
 
@@ -276,8 +282,18 @@ afcd_cov <- afcd_dat_clean %>%
 
 #for finding outliers/ incorrectly specified values
 afcd_dat_clean %>%
-  select(Study_id_number,Vitamin_d,Vitamin_d_d2_d3) %>%
-  drop_na(Vitamin_d,Vitamin_d_d2_d3) %>%
+  select(Study_id_number,Zinc) %>%
+  drop_na(Zinc) %>%
+  group_by(Study_id_number) %>%
+  summarize(
+    cv=sd(Zinc)/mean(Zinc),
+    n=length(Zinc),
+    mean=mean(Zinc),
+    max=max(Zinc),
+    min=min(Zinc)
+  ) %>%
+  arrange(desc(n)) %>%
+  data.frame()
   filter(Study_id_number=="USA_USDA_2019")
 
 
@@ -285,7 +301,7 @@ test <-
   afcd_dat_clean %>%
   select(
     Study_id_number,
-    Amino_acids_total_precise_definition_not_specified
+    Dehydroretinol
     ) %>%
   pivot_longer(-c(
     Study_id_number)
