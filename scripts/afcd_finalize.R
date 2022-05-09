@@ -188,6 +188,7 @@ afcd_dat_clean <- afcd_dat %>%
     Astaxanthin = ifelse((Study.ID.number%in%c("123") & is.na(Astaxanthin) == FALSE ),Astaxanthin/10*1000,Astaxanthin), # was in mg/kg 
     Ornithine = ifelse((Study.ID.number%in%c("210","287") & is.na(Ornithine) == FALSE ),Ornithine*100,Ornithine), # was in mg/g 
     Ornithine = ifelse((Study.ID.number%in%c("287") & is.na(Ornithine) == FALSE ),Ornithine*1000,Ornithine), # was in g/100g
+    Zinc = ifelse((Study.ID.number%in%c("315") & is.na(Zinc) == FALSE ),Zinc/10000,Zinc), # was in was not correctly converted (ug/g to mg/100g)
       # now combine Vitamin.D with Vitamin.D.D2.D3., as these represent the same values
     Vitamin.D = ifelse( (is.na(Vitamin.D)==TRUE & is.na(Vitamin.D.D2.D3.)==FALSE) ,Vitamin.D.D2.D3.,Vitamin.D),
     XN = ifelse( (is.na(XN) == TRUE & is.na(Conversion.factor.to.calculate.total.protein.from.nitrogen)==FALSE),Conversion.factor.to.calculate.total.protein.from.nitrogen,XN),
@@ -293,8 +294,20 @@ afcd_dat_clean %>%
     min=min(Zinc)
   ) %>%
   arrange(desc(n)) %>%
-  data.frame()
-  filter(Study_id_number=="USA_USDA_2019")
+  View()
+
+  afcd_dat_clean %>%
+    select(Study_id_number,Calcium,Order,Genus) %>%
+    filter(Order %in% c("clupeiformes")) %>%
+    drop_na(Calcium) %>%
+    group_by(Genus) %>%
+    summarize(
+      cv=sd(Calcium)/mean(Calcium),
+      n=length(Calcium),
+      mean=mean(Calcium),
+      max=max(Calcium),
+      min=min(Calcium)
+    )
 
 
 test <- 
