@@ -59,6 +59,39 @@ library(jsonlite)
 # vegetables and veg product, fg=1100
 
 
+# gathered from all the food.csv's using manual search (in vegetables), only found in SR Legacy and FNDSS (codes included below for that one)
+sr_legacy_seaweed_fdc_id <- c(167602,167603,168456,168457,168458,169280,170090,170091,170495,170496)
+
+fdc_sr_legacy <- read.csv(
+  file=here("data","usa","fdc_srlegacy_20190402","food.csv"),
+  header=TRUE) %>%
+  filter(
+    food_category_id==15 | fdc_id %in% sr_legacy_seaweed_fdc_id
+  )
+
+ fdc_foundation <- read.csv(
+  file=here("data","usa","fdc_foundation_20220428","food.csv"),
+  header=TRUE) %>%
+  filter(
+    food_category_id==15 | fdc_id %in% c(seaweed_fdc_id) 
+  )
+ 
+ 
+ fish_and_shellfish <- c( 
+   1098741:1099168, #main ingredient
+   1099896:1099915, #sandwiches
+   1100145:1100172 #soups
+   )
+ seaweeds <- c(1103376,1103574,1103575,1103576,1103689,1103724)
+ 
+  fdc_fndss <- read.csv(
+   file=here("data","usa","fdc_fndss_20221030","food.csv"),
+   header=TRUE) %>%
+   filter(
+     fdc_id %in% c(fish_and_shellfish,seaweeds) 
+   )
+
+fdc_all_dat <- rbind(fdc_sr_legacy,fdc_foundation,fdc_fndss) 
 
 # ________________________________________________________________________________________________
 # Scrape USDA database for nutrient information to integrate with existing GENuS-FISH
