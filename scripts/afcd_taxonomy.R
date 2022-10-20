@@ -65,9 +65,6 @@ id_tx_ncbi <- taxizedb::name2taxid(afcd_scinames,db="ncbi", out_type="summary")
 id_tx_itis <- taxizedb::name2taxid(afcd_scinames,db="itis", out_type="summary")
 id_tx_gbif <- taxizedb::name2taxid(afcd_scinames,db="gbif", out_type="summary")
 
-# remove these two because all names in them are contained in the above, see commented script in lines immediately below
-# id_tx_wfo <- taxizedb::name2taxid(afcd_scinames,db="wfo", out_type="summary")
-# id_tx_tpl <- taxizedb::name2taxid(afcd_scinames,db="tpl", out_type="summary")
 
 # setdiff(id_tx_tpl$name,id_tx_gbif$name) #gbif has everything in tpl
 # setdiff(id_tx_wfo$name,id_tx_gbif$name) #gbif has everything in wfo
@@ -202,17 +199,6 @@ filled_kingdom_fam <- as.data.frame(rbindlist(list_kingdom_fam))
 
 afcd_taxa[seq_true,c("kingdom","phylum","class","order","family","genus")] <- filled_kingdom_fam
 
-# add information for this aquatic plant
-for(i in seq_true) {
-  if(afcd_taxa$species[i]=="Enhydra fluctuans") {
-  afcd_taxa$kingdom[i]<-"Plantae"
-  afcd_taxa$phylum[i]<-"Magniliophyta"
-  afcd_taxa$class[i]<-"Magnoliospida"
-  afcd_taxa$order[i]<-"Asterales"
-  afcd_taxa$family[i]<-"Asteraceae"
-  afcd_taxa$genus[i]<-"Enhydra"
-  }
-}
 
 afcd_taxa <- afcd_taxa %>% 
         arrange(is.na(.),kingdom,phylum,class) %>%
@@ -257,13 +243,13 @@ afcd_taxa[which(afcd_taxa$taxa_name=="percichthyidae and centrarchidae"),][c("ge
 afcd_taxa[which(afcd_taxa$taxa_name=="ostreidae family including crassostrea gigas"),][c("genus","family")] <- c(NA,"ostreidae")
 afcd_taxa[which(afcd_taxa$taxa_name=="abalistus stellatus"),][c("family","order")] <- c("serranidae","perciformes")
 afcd_taxa[which(afcd_taxa$taxa_name=="amblypharongodon mola"),][c("genus","family","order")] <- c("amblypharyngodon","cyprinidae","cypriniformes") #misspelled
-afcd_taxa[which(afcd_taxa$taxa_name=="amphiora anceps"),][c("taxa_name","genus","family","order")] <- c("amphiroa anceps","amphiroa","corallinaceae","corallinales") #misspelled
+# afcd_taxa[which(afcd_taxa$taxa_name=="amphiora anceps"),][c("taxa_name","genus","family","order")] <- c("amphiroa anceps","amphiroa","corallinaceae","corallinales") #misspelled
 afcd_taxa[which(afcd_taxa$taxa_name=="amphora spp"),][c("genus","family","order")] <- c("amphiroa","corallinaceae","corallinales") #misspelled ... b/c i am assuming this is NOT a diatom...
 
 afcd_taxa[which(afcd_taxa$taxa_name=="gastropoda"),][c("taxa_name","genus","family","order","class","phylum")] <- c("gastropoda",NA,NA,NA,"gastropoda","mollusca")
 afcd_taxa[which(afcd_taxa$taxa_name=="bivalvia"),][c("taxa_name","genus","family","order","class","phylum")] <- c("bivalvia",NA,NA,NA,"bivalvia","mollusca")
-afcd_taxa[which(afcd_taxa$taxa_name=="anabus testudineus"),][c("taxa_name","genus","family","order")] <- c("anabas testudineus","anabas","anabantidae","anabantiformes")
-afcd_taxa[which(afcd_taxa$taxa_name=="anadara<U+FFFD>spp."),][c("taxa_name","genus","family","order","class")] <- c("anadara spp.","anadara","arcidae","arcida","bivalvia")
+# afcd_taxa[which(afcd_taxa$taxa_name=="anabus testudineus"),][c("taxa_name","genus","family","order")] <- c("anabas testudineus","anabas","anabantidae","anabantiformes")
+# afcd_taxa[which(afcd_taxa$taxa_name=="anadara<U+FFFD>spp."),][c("taxa_name","genus","family","order","class")] <- c("anadara spp.","anadara","arcidae","arcida","bivalvia")
 afcd_taxa[which(afcd_taxa$taxa_name=="anadora semillis"),][c("taxa_name","genus","family","order","class")] <- c("anadara senilis","anadara","arcidae","arcida","bivalvia")
 afcd_taxa[which(afcd_taxa$taxa_name=="anchenoglanis occidentalis"),][c("taxa_name","genus","family","order")] <- c("auchenoglanis occidentalis","auchenoglanis","claroteidae","siluriformes")
 afcd_taxa[which(afcd_taxa$taxa_name=="angelichthys isabelita"),][c("taxa_name","genus","family","order")] <- c("holacanthus bermudensis","holacanthus","pomacanthidae","perciformes") #old name according to worms
@@ -325,7 +311,7 @@ afcd_taxa[which(afcd_taxa$taxa_name=="atherinidas"),][c("family")] <- c("atherin
 afcd_taxa[which(afcd_taxa$taxa_name=="atherinidas"),][c("order")] <- c("atheriniformes")
 afcd_taxa[which(afcd_taxa$taxa_name=="atherinidas"),][c("order")] <- c("actinopterygii")
 
-afcd_taxa[which(afcd_taxa$taxa_name=="atlantic mackerel"),][c("taxa_name")] <- c("scomber scombrus")
+# afcd_taxa[which(afcd_taxa$taxa_name=="atlantic mackerel"),][c("taxa_name")] <- c("scomber scombrus")
 afcd_taxa[which(afcd_taxa$taxa_name=="scomber scombrus"),][c("genus")] <- c("scomber")
 
 
@@ -339,9 +325,6 @@ afcd_taxa[which(afcd_taxa$taxa_name=="notophycis marginata"),][c("genus")] <- c(
 afcd_taxa[which(afcd_taxa$taxa_name=="notophycis marginata"),][c("family")] <- c("moridae")
 afcd_taxa[which(afcd_taxa$taxa_name=="notophycis marginata"),][c("order")] <- c("gadiformes")
 
-afcd_taxa[which(afcd_taxa$taxa_name=="avocettina sp"),][c("genus")] <- c("avocettina")
-afcd_taxa[which(afcd_taxa$taxa_name=="avocettina sp"),][c("family")] <- c("nemichthydae")
-afcd_taxa[which(afcd_taxa$taxa_name=="avocettina sp"),][c("order")] <- c("anguilliformes")
 
 afcd_taxa[which(afcd_taxa$taxa_name=="bagre pinimmaculatus"),][c("family","order")] <- c("ariidae","siluriformes")
 

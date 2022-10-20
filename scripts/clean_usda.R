@@ -102,6 +102,41 @@ usda_aquatic_foods_dat_clean <- usda_clean %>%
 
 usda_aquatic_foods_dat_clean$Country.ISO3 <- "USA_USDA_2022" #adds classification for  usda
 
+usda_aquatic_foods_dat_clean <- usda_aquatic_foods_dat_clean %>%
+  mutate(
+    Scientific.Name=ifelse(Scientific.Name=="none",NA,Scientific.Name)
+    )
+
+
+
+prep_to_remove <- "\\(|\\)|, raw.*|, dried.*|, dry*|, crab cakes.*|, fresh|, cooked.*|, canned.*|, pickled.*|, rehydrated*|, salted.*, batter.*|, kippered.*|, smoked.*|, steamed or poached*|, farmed.*|, wild.*|, breaded and fried*|bay and sea*"
+# funciton to fill as many 
+filled_sciname <- sapply(
+  1:dim(usda_aquatic_foods_dat_clean)[1], function(x) {
+    if(is.na(usda_aquatic_foods_dat_clean[x,]$Scientific.Name)==TRUE) {
+        food_name <- usda_aquatic_foods_dat_clean[x,]$Food.name.in.English
+        
+        food_name <- str_replace_all(food_name,prep_to_remove,"")
+        food_name_match_vec <- str_replace_all(usda_aquatic_foods_dat_clean$Food.name.in.English,prep_to_remove,"")
+        matched_vec <- str_detect(str_to_lower(food_name_match_vec),str_to_lower(food_name))
+        matched_sciname <- na.omit(as.data.frame(usda_aquatic_foods_dat_clean$Scientific.Name[matched_vec]))[1,]
+        filled_sciname <- matched_sciname
+      } else {
+        filled_sciname <- usda_aquatic_foods_dat_clean[x,]$Scientific.Name
+      }
+      return(filled_sciname)
+    }
+  )
+
+
+usda_aquatic_foods_dat_clean <- usda_aquatic_foods_dat_clean %>%
+  mutate(
+    Scientific.Name=filled_sciname,
+    Scientific.Name=ifelse(str_detect(Food.name.in.English,"sockeye"),"Oncorhynchus nerka",Scientific.Name),
+    Scientific.Name=ifelse(str_detect(Food.name.in.English,"tilapia"),"Oreochromis spp.",Scientific.Name),
+    Scientific.Name=ifelse(str_detect(Food.name.in.English,"Fish, tuna") & is.na(Scientific.Name),"Scombridae",Scientific.Name)
+  )
+
 
 
 # and store

@@ -231,7 +231,7 @@ afcd_dat_clean <- afcd_dat %>%
     USDA.ndbno,Food.Item.ID, #remove as this is now a part of Original.FCT.Food.Code
     FAO.3A_CODE,alt.scinames,Habitat,Component.name #in the original dataset, not needed here
     )) %>%
-  select(taxa_name,kingdom:genus,taxa_db,taxa_id,parts_of_food:production_category,edible.portion.coefficient,Study.ID.number,peer_review,everything(.))
+  select(taxa_name,kingdom:genus,taxa_id,parts_of_food:production_category,edible.portion.coefficient,Study.ID.number,peer_review,everything(.))
 
 #_____________________________________________________________________________________________
 # clean up names
@@ -333,6 +333,6 @@ test <-
 # write to file
 # ____________________________________________________________________________________________
 write.csv(afcd_dat_clean,
-          here("data","OutputsFromR","aquatic_food_composition_database","20220302_AFCD.csv"),
+          here("data","OutputsFromR","aquatic_food_composition_database","20221013_AFCD.csv"),
           row.names=FALSE
 )
