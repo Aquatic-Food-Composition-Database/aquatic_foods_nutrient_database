@@ -8,7 +8,7 @@
 # Revised: 09/06/2022
 # ===============================================================================
 
-
+library(tidyverse)
 library(here)
 library(jsonlite)
 library(pbapply)
@@ -37,11 +37,13 @@ fdc_sr_legacy <- read.csv(
     food_category_id==15 | fdc_id %in% sr_legacy_seaweed_fdc_id
   )
 
+seaweeds <- c(1103376,1103574,1103575,1103576,1103689,1103724)
+
 fdc_foundation <- read.csv(
   file=here("data","usa","fdc_foundation_20220428","food.csv"),
   header=TRUE) %>%
   filter(
-    food_category_id==15 | fdc_id %in% c(seaweed_fdc_id) 
+    food_category_id==15 | fdc_id %in% c(seaweeds) 
   )
 
 
@@ -50,7 +52,7 @@ fish_and_shellfish <- c(
   1099896:1099915, #sandwiches
   1100145:1100172 #soups
 )
-seaweeds <- c(1103376,1103574,1103575,1103576,1103689,1103724)
+
 
 fdc_fndss <- read.csv(
   file=here("data","usa","fdc_fndss_20221030","food.csv"),
@@ -62,12 +64,18 @@ fdc_fndss <- read.csv(
 fdc_all_dat <- rbind(fdc_sr_legacy,fdc_foundation,fdc_fndss) 
 fdc_id_unique <- unique(fdc_all_dat$fdc_id)
 
+
+usda_api_call <- function(x) {
+  url <- paste0("https://api.nal.usda.gov/fdc/v1/food/",fdc_id_unique[x],"?api_key=",api.key,"&nutrients=")
+  raw <- fromJSON(txt=url,flatten = TRUE)
+  return(raw)
+}
+
 # need to complete the calls in two steps due to API 
 store_list <- list()
 seq_hour_1 <- 1:1000
 hour_1_request <- pblapply(seq_hour_1,function(x) {
   tryCatch (
-    
     store_list<- append(store_list,usda_api_call(x)) ,
     error = function(e){
       message(paste("An error occurred for item", x, 404,":\n"), e)
