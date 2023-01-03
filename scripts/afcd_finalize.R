@@ -109,6 +109,7 @@ afcd_dat_clean <- afcd_dat %>%
     Study.ID.number=str_replace_all(Study.ID.number,"ARG","Argentina_2010"), 
     # JPN assumption is this comes from a link in FAO-INFOODS, link here: https://www.mext.go.jp/en/policy/science_technology/policy/title01/detail01/sdetail01/sdetail01/1385122.htm
     Study.ID.number=str_replace_all(Study.ID.number,"JPN","Japan_7thRev_2015"), 
+    Study.ID.number=str_replace_all(Study.ID.number,"Japan_7thRev_2015_2015","Japan_7thRev_2015"),
     # GMB assumption is this comes from a link in FAO-INFOODS, link to pdf here:http://www.fao.org/fileadmin/templates/food_composition/documents/pdf/Gambia04082011.pdf
     Study.ID.number=str_replace_all(Study.ID.number,"GMB","Gambia_2011"), 
     # CAN assumption is this comes from a link in FAO-INFOODS, link here: https://www.canada.ca/en/health-canada/services/food-nutrition/healthy-eating/nutrient-data/canadian-nutrient-file-2015-download-files.html
@@ -259,76 +260,9 @@ afcd_dat_clean <- afcd_dat_clean %>%
     retinol_13_cis=X13cis_retinol,
     Vitamin_d_method_unknown_or_variable=Vitamin_d
     ) %>%
-  select(-c(afcd_vars_no_vals))
+  select(-c(afcd_vars_no_vals)) %>%
+  mutate()
 
-# variables with 
-
-afcd_cov <- afcd_dat_clean %>%
-  select(Ph_hydrogen_ion_concentration:Wax_total) %>%
-  pivot_longer(cols = Ph_hydrogen_ion_concentration:Wax_total,names_to = "nutrients",values_to = "values") %>%
-  group_by(nutrients) %>%
-  drop_na(values) %>%
-  filter(values>0) %>%
-  summarize(
-    cv=sd(values)/mean(values),
-    n=length(values),
-    max=max(values),
-    min=min(values),
-    mean=mean(values),
-    median=median(values)
-  )
-
-
-
-
-#for finding outliers/ incorrectly specified values
-afcd_dat_clean %>%
-  select(Study_id_number,Zinc) %>%
-  drop_na(Zinc) %>%
-  group_by(Study_id_number) %>%
-  summarize(
-    cv=sd(Zinc)/mean(Zinc),
-    n=length(Zinc),
-    mean=mean(Zinc),
-    max=max(Zinc),
-    min=min(Zinc)
-  ) %>%
-  arrange(desc(n)) %>%
-  View()
-
-  afcd_dat_clean %>%
-    select(Study_id_number,Calcium,Order,Genus) %>%
-    filter(Order %in% c("clupeiformes")) %>%
-    drop_na(Calcium) %>%
-    group_by(Genus) %>%
-    summarize(
-      cv=sd(Calcium)/mean(Calcium),
-      n=length(Calcium),
-      mean=mean(Calcium),
-      max=max(Calcium),
-      min=min(Calcium)
-    )
-
-
-test <- 
-  afcd_dat_clean %>%
-  select(
-    Study_id_number,
-    Dehydroretinol
-    ) %>%
-  pivot_longer(-c(
-    Study_id_number)
-    ,names_to = "nutrient",values_to = "values") %>%
-  drop_na(values) %>%
-  distinct() %>%
-  group_by(Study_id_number,nutrient) %>%
-  summarize(
-    median=median(values),
-    sd=sd(values),
-    max=max(values),
-    min=min(values),
-    n=length(values)
-    ) 
 #_____________________________________________________________________________________________
 # write to file
 # ____________________________________________________________________________________________

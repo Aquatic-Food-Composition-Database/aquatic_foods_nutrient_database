@@ -328,9 +328,9 @@ afcd_taxa[which(afcd_taxa$taxa_name=="notophycis marginata"),][c("order")] <- c(
 
 afcd_taxa[which(afcd_taxa$taxa_name=="bagre pinimmaculatus"),][c("family","order")] <- c("ariidae","siluriformes")
 
-afcd_taxa[which(afcd_taxa$taxa_name=="bahaschia argus"),][c("taxa_name","genus","family","order","class","phylum")] <- c("bohadschia argus","bohadschia","holothuriidae","holothuriida","holothuroidea","echinodermata")
+# afcd_taxa[which(afcd_taxa$taxa_name=="bahaschia argus"),][c("taxa_name","genus","family","order","class","phylum")] <- c("bohadschia argus","bohadschia","holothuriidae","holothuriida","holothuroidea","echinodermata")
 
-afcd_taxa[which(afcd_taxa$taxa_name=="barbonemus gonionotus"),][c("taxa_name")] <- c("barbonymus gonionotus")
+# afcd_taxa[which(afcd_taxa$taxa_name=="barbonemus gonionotus"),][c("taxa_name")] <- c("barbonymus gonionotus")
 afcd_taxa[which(afcd_taxa$taxa_name=="barbonymus gonionotus"),][c("genus")] <- c("barbonymus")
 afcd_taxa[which(afcd_taxa$taxa_name=="barbonymus gonionotus"),][c("family")] <- c("cyprinidae")
 afcd_taxa[which(afcd_taxa$taxa_name=="barbonymus gonionotus"),][c("order")] <- c("cypriniformes")
@@ -391,16 +391,16 @@ afcd_taxa[which(afcd_taxa$taxa_name=="chalcalburnus mossulensis"),][c("genus")] 
 afcd_taxa[which(afcd_taxa$taxa_name=="chalcalburnus mossulensis"),][c("family")] <- c("cyprinidae")
 afcd_taxa[which(afcd_taxa$taxa_name=="chalcalburnus mossulensis"),][c("order")] <- c("cypriniformes")
 
-afcd_taxa[which(afcd_taxa$genus=="caldophora sp"),][c("taxa_name")] <- c("cladophora sp")
-afcd_taxa[which(afcd_taxa$genus=="cladophora sp"),][c("genus")] <- c("cladophora")
-afcd_taxa[which(afcd_taxa$genus=="cladophora sp"),][c("family")] <- c("cladophoraceae")
-afcd_taxa[which(afcd_taxa$genus=="cladophora sp"),][c("order")] <- c("cladophorales")
-afcd_taxa[which(afcd_taxa$genus=="cladophora sp"),][c("class")] <- c("ulvophyceae")
+# afcd_taxa[which(afcd_taxa$genus=="caldophora sp"),][c("taxa_name")] <- c("cladophora sp")
+# afcd_taxa[which(afcd_taxa$genus=="cladophora sp"),][c("genus")] <- c("cladophora")
+# afcd_taxa[which(afcd_taxa$genus=="cladophora sp"),][c("family")] <- c("cladophoraceae")
+# afcd_taxa[which(afcd_taxa$genus=="cladophora sp"),][c("order")] <- c("cladophorales")
+# afcd_taxa[which(afcd_taxa$genus=="cladophora sp"),][c("class")] <- c("ulvophyceae")
 
-afcd_taxa[which(afcd_taxa$genus=="calliblepharis spp"),][c("family")] <- c("cystocloniaceae") #from algaebase
-afcd_taxa[which(afcd_taxa$genus=="calliblepharis spp"),][c("order")] <- c("gigartinales")
-afcd_taxa[which(afcd_taxa$genus=="calliblepharis spp"),][c("class")] <- c("florideophyceae")
-afcd_taxa[which(afcd_taxa$genus=="calliblepharis spp"),][c("phylum")] <- c("rhodophyta")
+# afcd_taxa[which(afcd_taxa$genus=="calliblepharis spp"),][c("family")] <- c("cystocloniaceae") #from algaebase
+# afcd_taxa[which(afcd_taxa$genus=="calliblepharis spp"),][c("order")] <- c("gigartinales")
+# afcd_taxa[which(afcd_taxa$genus=="calliblepharis spp"),][c("class")] <- c("florideophyceae")
+# afcd_taxa[which(afcd_taxa$genus=="calliblepharis spp"),][c("phylum")] <- c("rhodophyta")
 
 afcd_taxa[which(afcd_taxa$taxa_name=="calliurichthys japonicus"),][c("family")] <- c("callionymidae")
 afcd_taxa[which(afcd_taxa$taxa_name=="calliurichthys japonicus"),][c("order")] <- c("perciformes")
@@ -442,23 +442,23 @@ afcd_taxa[which(afcd_taxa$taxa_name=="carassium carassium"),][c("genus")] <- c("
 afcd_taxa[which(afcd_taxa$taxa_name=="carassius carassius"),][c("family")] <- c("cyprinidae")
 afcd_taxa[which(afcd_taxa$taxa_name=="carassius carassius"),][c("order")] <- c("cypriniformes")
 
-afcd_taxa[which(afcd_taxa$taxa_name=="carasssius carassius"),][c("genus")] <- c("carassius carassius")
+# afcd_taxa[which(afcd_taxa$taxa_name=="carasssius carassius"),][c("genus")] <- c("carassius carassius")
 afcd_taxa[which(afcd_taxa$taxa_name=="carassius carassius"),][c("family")] <- c("cyprinidae")
 afcd_taxa[which(afcd_taxa$taxa_name=="carassius carassius"),][c("order")] <- c("cypriniformes")
 
 
-afcd_taxa[which(afcd_taxa$taxa_name=="cardium papyraceum"),][c("taxa_name")] <- c("Fulvia laevigata")
-afcd_taxa[which(afcd_taxa$taxa_name=="Fulvia laevigata"),][c("genus")] <- c("fulvia")
-afcd_taxa[which(afcd_taxa$taxa_name=="Fulvia laevigata"),][c("family")] <- c("cardiidae")
-afcd_taxa[which(afcd_taxa$taxa_name=="Fulvia laevigata"),][c("order")] <- c("cardiida")
-afcd_taxa[which(afcd_taxa$taxa_name=="Fulvia laevigata"),][c("class")] <- c("bivalvia")
+# afcd_taxa[which(afcd_taxa$taxa_name=="cardium papyraceum"),][c("taxa_name")] <- c("Fulvia laevigata")
+# afcd_taxa[which(afcd_taxa$taxa_name=="Fulvia laevigata"),][c("genus")] <- c("fulvia")
+# afcd_taxa[which(afcd_taxa$taxa_name=="Fulvia laevigata"),][c("family")] <- c("cardiidae")
+# afcd_taxa[which(afcd_taxa$taxa_name=="Fulvia laevigata"),][c("order")] <- c("cardiida")
+# afcd_taxa[which(afcd_taxa$taxa_name=="Fulvia laevigata"),][c("class")] <- c("bivalvia")
 
 
 afcd_taxa[which(afcd_taxa$genus=="spirulina"),][c("genus")] <- c("spirulinales")
-afcd_taxa[which(afcd_taxa$genus=="spirulina"),][c("family")] <- c("spirulinaceae")
-afcd_taxa[which(afcd_taxa$genus=="spirulina"),][c("order")] <- c("spirulinales")
-afcd_taxa[which(afcd_taxa$genus=="spirulina"),][c("class")] <- c("cyanophyceae")
-afcd_taxa[which(afcd_taxa$genus=="spirulina"),][c("phylum")] <- c("cyanobacteria")
+# afcd_taxa[which(afcd_taxa$genus=="spirulina"),][c("family")] <- c("spirulinaceae")
+# afcd_taxa[which(afcd_taxa$genus=="spirulina"),][c("order")] <- c("spirulinales")
+# afcd_taxa[which(afcd_taxa$genus=="spirulina"),][c("class")] <- c("cyanophyceae")
+# afcd_taxa[which(afcd_taxa$genus=="spirulina"),][c("phylum")] <- c("cyanobacteria")
 
 afcd_taxa[which(afcd_taxa$genus=="barbodes"),][c("family")] <- c("cyprinidae")
 afcd_taxa[which(afcd_taxa$genus=="barbodes"),][c("order")] <- c("cypriniformes")
@@ -483,14 +483,14 @@ afcd_taxa[which(afcd_taxa$genus=="porphyra"),][c("class")] <- c("bangiophyceae")
 afcd_taxa[which(afcd_taxa$genus=="porphyra"),][c("phylum")] <- c("rhodophyta")
 
 afcd_taxa[which(afcd_taxa$genus=="acanthopagus"),][c("genus")] <- c("acanthopagrus")
-afcd_taxa[which(afcd_taxa$genus=="acanthopagus"),][c("family")] <- c("sparidae")
-afcd_taxa[which(afcd_taxa$genus=="acanthopagus"),][c("order")] <- c("perciformes")
+# afcd_taxa[which(afcd_taxa$genus=="acanthopagus"),][c("family")] <- c("sparidae")
+# afcd_taxa[which(afcd_taxa$genus=="acanthopagus"),][c("order")] <- c("perciformes")
 
-afcd_taxa[which(afcd_taxa$genus=="acrosiphonia"),][c("genus")] <- c("acanthopagrus")
-afcd_taxa[which(afcd_taxa$genus=="acrosiphonia"),][c("family")] <- c("ulotrichaceae")
-afcd_taxa[which(afcd_taxa$genus=="acrosiphonia"),][c("order")] <- c("ulotrichales")
-afcd_taxa[which(afcd_taxa$genus=="acrosiphonia"),][c("class")] <- c("ulvophyceae")
-afcd_taxa[which(afcd_taxa$genus=="acrosiphonia"),][c("phylum")] <- c("chlorophyta")
+# afcd_taxa[which(afcd_taxa$genus=="acrosiphonia"),][c("genus")] <- c("acanthopagrus")
+# afcd_taxa[which(afcd_taxa$genus=="acrosiphonia"),][c("family")] <- c("ulotrichaceae")
+# afcd_taxa[which(afcd_taxa$genus=="acrosiphonia"),][c("order")] <- c("ulotrichales")
+# afcd_taxa[which(afcd_taxa$genus=="acrosiphonia"),][c("class")] <- c("ulvophyceae")
+# afcd_taxa[which(afcd_taxa$genus=="acrosiphonia"),][c("phylum")] <- c("chlorophyta")
 
 
 afcd_taxa[which(afcd_taxa$genus=="adenocystis"),][c("family")] <- c("adenocystaceae")
@@ -582,7 +582,7 @@ afcd_taxa[which(afcd_taxa$class=="teleostei"),][,c("class")] <- "actinopterygii"
 
 afcd_taxa[which(afcd_taxa$class=="phaeophyceae"),][,c("phylum")] <- c("ochrophyta")
 
-afcd_taxa[which(afcd_taxa$order=="pristiformes/rhiniformes group"),][,c("order")] <- "rhinopristiformes"
+# afcd_taxa[which(afcd_taxa$order=="pristiformes/rhiniformes group"),][,c("order")] <- "rhinopristiformes"
 
 
 afcd_taxa[which(afcd_taxa$family=="platyrhinidae"),][,c("order")] <- c("myliobatiformes")
@@ -601,8 +601,6 @@ afcd_taxa[ending_in_ae!=TRUE & length_taxa_name>1,] <- afcd_taxa[ending_in_ae!=T
 afcd_taxa[ending_in_ae!=TRUE & length_taxa_name>1,] <- afcd_taxa[ending_in_ae!=TRUE & length_taxa_name>1,][, phylum:= phylum[!is.na(phylum)][1L] , by = class] #fill phylum by class
 
 
-
-afcd_taxa[afcd_taxa$genus=="porphyra",][,c("taxa_name","genus","family","order","class","phylum")] 
 # this creates one bug that repeats over itself. There are a few hundred rows with no family information in our database 
 # so it incorrectly fills order and phylum from the last known family association. we don't want that
 

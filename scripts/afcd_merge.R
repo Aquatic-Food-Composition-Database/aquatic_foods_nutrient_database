@@ -20,6 +20,7 @@ norway_file <-  "clean_fct_norway_2019.csv"
 india_file <- "clean_fct_india_2017.csv"
 latinfoods_file <- "clean_latinfoods.csv"
 usda_file <- "clean_usda_food_data_central.csv"
+jpn_algae_file <- "clean_jpn_algae_fct_2015.csv"
 peer_review_file <- "clean_peer_review.csv"
 #__________________________________________
 # read data and load libraries directory defaults
@@ -110,6 +111,14 @@ usda_foods_dat <- read.csv(
   mutate(
     Study.ID.number="USA_USDA_2022"
   )
+jpn_algae_dat <- read.csv(
+  here("data","OutputsFromR","cleaned_fcts",jpn_algae_file)
+) %>%
+  mutate(
+    Study.ID.number="Japan_7thRev_2015",
+    across(acetic.acid:Zinc,as.numeric)
+  )
+
 peer_review_dat <- read.csv(
   here("data","OutputsFromR","cleaned_fcts",peer_review_file)
 )
@@ -123,6 +132,7 @@ smiling_thailand_dat$Original.FCT.Food.Code <- as.character(smiling_thailand_dat
 smiling_vietnam_dat$Original.FCT.Food.Code <- as.character(smiling_vietnam_dat$Original.FCT.Food.Code)
 norway_dat$Original.FCT.Food.Code <- as.character(norway_dat$Original.FCT.Food.Code)
 usda_foods_dat$Original.FCT.Food.Code <- as.character(usda_foods_dat$Original.FCT.Food.Code)
+jpn_algae_dat$Original.FCT.Food.Code <- as.character(jpn_algae_dat$Original.FCT.Food.Code)
 peer_review_dat$ISSCAAP <- as.integer(peer_review_dat$ISSCAAP)
 peer_review_dat$FishBase.SAU.Code <- as.integer(peer_review_dat$FishBase.SAU.Code)
 peer_review_dat<- peer_review_dat %>%
@@ -145,6 +155,7 @@ afcd_bind <- bind_rows(afcd_dat,
                        smiling_vietnam_dat,norway_dat,
                        india_dat,latinfoods_dat,
                        usda_foods_dat,
+                       jpn_algae_dat,
                        peer_review_dat
                        )
 

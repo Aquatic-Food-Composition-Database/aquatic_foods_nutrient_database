@@ -82,20 +82,26 @@ convert_units <- function(ele,dat,original_unit,convert_to_unit) {
 # that's fine, because we can just add in the variable names to this as well, that'll be needed for the column-wise 
 # multiplication of coefficients when doing the actual conversion anyways. 
 coefs_convert_unit_fct <- function(key,original_unit,convert_to_unit,variables_to_convert) {
-  # key <- merge_key
-  # original_unit <- "Smiling_Cambodia_unit"
-  # convert_to_unit <- "AFCD_unit"
-  # variables_to_convert <- "Smiling_Cambodia_variable_name"
+  # 
+  # key=merge_key
+  # original_unit="jpn_unit"
+  # convert_to_unit="AFCD_unit"
+  # variables_to_convert="jpn_variable_name"
 
   # first remove any value where we don't have a 
   key <- key[is.na(key[,variables_to_convert])==FALSE,] # removes any nutrient value from the  
-  coefs <- sapply(1:dim(key)[1],function(x) 
+  multipliers <- sapply(1:dim(key)[1],function(x) 
     convert_units(ele=x,dat=key,
                   original_unit = original_unit,
                   convert_to_unit=convert_to_unit
     )
   )
-  df <- cbind(key[,variables_to_convert],key[,original_unit],key[,convert_to_unit],coefs)
+  df <- cbind(
+    key[,variables_to_convert],
+    key[,original_unit],
+    key[,convert_to_unit])
+  
+  df$coefs <- multipliers
   return(df)
   
 }
