@@ -21,7 +21,7 @@ library(taxizedb)
 library(data.table)
 library(pbapply)
 library(readxl)
-
+library(here)
 # filenames
 afcd_merged_file <- "AFCD_merged.csv"
 asfis_file <- "ASFIS_sp_2020.xlsx"
@@ -30,11 +30,11 @@ asfis_file <- "ASFIS_sp_2020.xlsx"
 directory <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Nutrition/Separate/aquatic_foods_nutrient_database"
 
 afcd_dat <- read.csv(
-  file.path(directory,"data","OutputsFromR",afcd_merged_file),
+  here("data","OutputsFromR",afcd_merged_file),
   header = TRUE)
 
 asfis_spec_info <- read_excel(
-  file.path(directory,"data","ASFIS_sp",asfis_file),
+  here("data","ASFIS_sp",asfis_file),
   sheet = "ASFIS_All_for_publishing"
   )
 
@@ -107,18 +107,18 @@ empty_itis <- names(empty)[empty==TRUE]
 class_itis_remove_bad_ids <- class_itis[!(names(class_itis) %in% empty_itis)]
 
 ## remove the empties, this will create some list-col warnings, but that will be addressed below
-list_gbif <- pblapply(1:length(class_gbif), function(i) widen_taxa_func(class_list=class_gbif,i=i))
+# list_gbif <- pblapply(1:length(class_gbif), function(i) widen_taxa_func(class_list=class_gbif,i=i))
 list_itis <- pblapply(1:length(class_itis_remove_bad_ids), function(i) widen_taxa_func(class_list=class_itis_remove_bad_ids,i=i))
 list_ncbi <- pblapply(1:length(class_ncbi), function(i) widen_taxa_func(class_list=class_ncbi,i=i))
 
 # bind the lists
 taxa_ncbi <- plyr::rbind.fill(list_ncbi)
 taxa_itis <- plyr::rbind.fill(list_itis)
-taxa_gbif <- plyr::rbind.fill(list_ncbi)
+# taxa_gbif <- plyr::rbind.fill(list_ncbi)
 # add database names so we know where they came from
 taxa_ncbi$taxa_db <- "ncbi"
 taxa_itis$taxa_db <- "itis"
-taxa_gbif$taxa_db <- "gbif"
+# taxa_gbif$taxa_db <- "gbif"
 
 #must be some bugs in the package... it included a few taxa_id's where species were NA
 # this creates some issues in the merge and string manipulation down below, so remove them now
@@ -126,7 +126,7 @@ taxa_gbif <- taxa_gbif[is.na(taxa_gbif$species) != TRUE,]
 taxa_itis <- taxa_itis[is.na(taxa_itis$species) != TRUE,] 
 taxa_ncbi <- taxa_ncbi[is.na(taxa_ncbi$species) != TRUE,] 
 
-taxa_taxize <- bind_rows(taxa_gbif,taxa_itis,taxa_ncbi) %>%
+taxa_taxize <- bind_rows(taxa_itis,taxa_ncbi) %>%
   drop_na(genus)
 
 
@@ -647,9 +647,11 @@ afcd_taxa_names <- data.frame(
 # _________________________________________
 
 write.csv(afcd_taxa_names,
-    file.path(directory,"data","OutputsFromR","aquatic_food_composition_database","afcd_taxonomic_names_only.csv"),
+    here("data","OutputsFromR","aquatic_food_composition_database","afcd_taxonomic_names_only.csv"),
     row.names=FALSE
   )
 
-write.csv(afcd_taxa,file.path(directory,"data","OutputsFromR","afcd_with_taxa.csv"),row.names = FALSE)
+write.csv(
+  afcd_taxa,
+  here("data","OutputsFromR","afcd_with_taxa.csv"),row.names = FALSE)
 

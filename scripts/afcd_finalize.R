@@ -267,6 +267,6 @@ afcd_dat_clean <- afcd_dat_clean %>%
 # write to file
 # ____________________________________________________________________________________________
 write.csv(afcd_dat_clean,
-          here("data","OutputsFromR","aquatic_food_composition_database","20230103_AFCD.csv"),
+          here("data","OutputsFromR","aquatic_food_composition_database","20230227_AFCD.csv"),
           row.names=FALSE
 )
