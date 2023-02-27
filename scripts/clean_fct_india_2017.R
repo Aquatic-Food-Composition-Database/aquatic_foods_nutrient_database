@@ -86,8 +86,7 @@ india_aquatic_foods_dat_clean <- india_aquatic_foods_dat %>%
 # variables is wrong. 
 
 india_aquatic_foods_dat_clean$Country.ISO3 <- "IND" #adds classification for PNDB
-
-
+india_aquatic_foods_dat_clean$Preparation <- "raw" #FCT readme "xcept for eggs, all other food component data are forfoods in the raw form.'
 
 
 # change names of all the values to align with names in AFCD
