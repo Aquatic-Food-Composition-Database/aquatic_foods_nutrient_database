@@ -260,7 +260,7 @@ afcd_dat_clean <- afcd_dat_clean %>%
     retinol_13_cis=X13cis_retinol,
     Vitamin_d_method_unknown_or_variable=Vitamin_d
     ) %>%
-  select(-c(afcd_vars_no_vals)) %>%
+  select(-c(all_of(afcd_vars_no_vals))) %>%
   mutate()
 
 #_____________________________________________________________________________________________

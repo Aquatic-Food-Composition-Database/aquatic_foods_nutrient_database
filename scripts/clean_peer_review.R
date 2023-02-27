@@ -4,7 +4,6 @@
 # creator: Zach Koehn
 # email: zkoehn@stanford.edu
 # date started: 07/14/2020
-# last date modified: 07/16/2020
 ##################
 
 
@@ -13,111 +12,7 @@
 ##################
 library(tidyverse);library(here);library(data.table)
 
-directory <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Nutrition/Separate/aquatic_foods_nutrient_database"
-
-
-# load nutrient information from Camille's datasets in our drive folder
-macro <- read.csv(
-  file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","macro nutrients.csv"),
-  header=TRUE
-) %>%
-  dplyr::select(-X,-X.1,-X.2)
-
-amino <- read.csv(
-  file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","amino acids.csv"),
-  header=TRUE
-  ) %>%
-  dplyr::select(-X)
-
-fats <- read.csv(
-  file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","fatty_acids.csv"),
-  header=TRUE
-  ) %>%
-  dplyr::select(-X)
-
-minerals <- read.csv(
-  file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","minerals.csv"),
-  header=TRUE
-  ) %>%
-  dplyr::select(-X,-X.1,-X.2)
-
-misc <- read.csv(
-  file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","misc.csv"),
-  header=TRUE
-  )
-
-vitamin <- read.csv(
-  file.path(directory,"data","afcd_peer_review_data","Seafood nutrients","vitamins.csv"),
-  header=TRUE
-  ) 
-
-##################
-# before merging, determine the metadata that we can use that to merge the data
-##################
-
-name_intersect <- Reduce(intersect,
-                         tibble::lst(
-                           names(macro),
-                           names(amino),
-                           names(fats),
-                           names(minerals),
-                           names(misc),
-                           names(vitamin)
-                         )
-)
-
-
-
-##################
-# merge datasets together
-# of note, the first 26 rows in each of these should be the same across all datasets
-##################
-
-
-
-# now bind all the nutrient data frames together 
-# note this also ensures that all names used in the merge are of the same type
-# fats <- fats %>% mutate(across(all_of(name_intersect),as.character))
-
-all_nutrients <- full_join(
-  macro %>% mutate(across(all_of(name_intersect),as.character)),
-  amino %>% mutate(across(all_of(name_intersect),as.character)),
-  by=name_intersect) %>% distinct()
-all_nutrients_1 <- full_join(
-  all_nutrients,
-  vitamin %>% mutate(across(all_of(name_intersect),as.character)),
-  by=name_intersect) %>% distinct()
-all_nutrients_2 <- full_join(
-  all_nutrients_1,
-  minerals %>% mutate(across(all_of(name_intersect),as.character)),
-  by=name_intersect) %>% distinct()
-all_nutrients_3 <- full_join(
-  all_nutrients_2,
-  fats %>% mutate(
-    across(all_of(name_intersect),as.character),
-    Edible.portion.coefficient_est = as.character(Edible.portion.coefficient_est)
-    ),
-  by=name_intersect) %>% distinct()
-all_nutrients_4 <- full_join(
-  all_nutrients_3,
-  misc %>% mutate(across(all_of(name_intersect),as.character)),
-  by=name_intersect) %>% distinct()
-
-##################
-# for now REMOVE relative values, those are cleaned & calculated in "clean_pere_review_relative_values.R"
-##################
-all_nutrients_no_relatives <- all_nutrients_4 %>%
-  dplyr::select(
-    -str_subset(names(all_nutrients_4),"PAA."), #for now removes 
-    -str_subset(names(all_nutrients_4),"PP."),
-    -str_subset(names(all_nutrients_4),"PFA."),
-    -str_subset(names(all_nutrients_4),"X."), #old artifact of merging (false rownames)
-    -str_subset(names(all_nutrients_4),"_sd"), #removes the standard deviation 
-    -Fatty.acid.22.1.n9.fatty.acid.22.1.n11 #duplicated
-  ) %>%
-  rename_all(funs(
-    stringr::str_replace_all( ., "_est", "" )
-  ))
+source(here("scripts","merge_peer_review.R"))
 
 ##################
 # Exclude studies based on Marian Kjellevold's quality control assessment 
@@ -130,7 +25,6 @@ exclude_by_study_id <- c(
   592, #Hawaibam Romharsha, & Chungkham Sarojnalini. (2019). Micro-nutrient Contents of Some Fresh Water Fish Species of Manipur, India. Oriental Journal of Chemistry, 35(4), 1426–1432. https://doi.org/10.13005/ojc/350425
   632, #"Hawaibam Romharsha, & Chungkham Sarojnalini. (2018). Proximate Composition, Total Amino Acids and Essential Mineral Elements of Some Cyprinid Fishes of Manipur, India. Current Research in Nutrition and Food Science, 6(1), 157–164. https://doi.org/10.12944/CRNFSJ.6.1.18",
   109, #"10.12692/ijb/6.5.333-342",
-  42,  #"Mumba, P. P., & Jose, M. (2005). Nutrient composition of selected fresh and processed fish species from lake Malawi: A nutritional possibility for people living with HIV/AIDS. International Journal of Consumer Studies, 29(1), 72‚Äì77. https://doi.org/10.1111/j.1470-6431.2005.00377.x",
   573, #"Yu, J., Li, S., Chang, J., Niu, H., Hu, Z., & Han, Y. (2019). Effect of variation in the dietary ratio of linseed oil to fish oil on growth, body composition, tissues fatty acid composition, flesh nutritional value and immune indices in Manchurian trout, Brachymystax lenok. Aquaculture Nutrition, 25(2), 377‚Äì387. https://doi.org/10.1111/anu.12863", #feeding trial
   636, #B. Tang, X. Bu, X. Lian, Y. Zhang, I. Muhammad, Q. Zhou, H. Liu, & Y. Yang. (2018). Effect of replacing fish meal with meat and bone meal on growth, feed utilization and nitrogen and phosphorus excretion for juvenile Pseudobagrus ussuriensis. Aquaculture Nutrition, 24, 894–902. https://doi.org/10.1111/anu.12625
   647, #W. C. Cai, G. Z. Jiang, X. F. Li, C. X. Sun, H. F. Mi, S. Q. Liu, & W. B. Liu. (2018). Effects of complete fish meal replacement by rice protein concentrate with or without lysine supplement on growth performance, muscle development and flesh quality of blunt snout bream (Megalobrama amblycephala). Aquaculture Nutrition, 24, 481–491. https://doi.org/10.1111/anu.12581
@@ -155,8 +49,11 @@ exclude_by_study_id <- c(
   99,  #"Elagba Haj Ali Mohamed. (2013). Proximate and mineral composition in muscle and head tissue of seven commercial species of the Nile fish from Sudan. Asian Journal of Science and Technology, 4(10), 62‚Äì65.",
   431, #"Beaubier, J., & Hipfner, J. M. (2013). Proximate composition and energy density of forage fish delivered to rhinoceros suklet Cerorhinca monocerata nestlings at triangle island, British Colombia. Marine Ornithology, 41, 35‚Äì39.",
   111,  #"B Chrisolite, S A Shanmugam, & S siva Senthil Arumugam. (2015). Proximate and mineral composition of fifteen freshwater fishes of Thoothukudi, Tamil NaduI. Journal of Aquaculture in the Tropics, 30(1‚Äì2), 33‚Äì43."
-  # experimental
+  # experimental feed studies
   759, # Bell, J. G., Strachan, F., Roy, W. J., Matthew, C., McDonald, P., Barrows, F. T., & Sprague, M. (2016). Evaluation of barley protein concentrate and fish protein concentrate, made from trimmings, as sustainable ingredients in Atlantic salmon ( Salmo salar L.) feeds. Aquaculture Nutrition, 22(2), 326–334. https://doi.org/10.1111/anu.12250
+  
+  # Unclear methods on how values should be included
+  42,  #"Mumba, P. P., & Jose, M. (2005). Nutrient composition of selected fresh and processed fish species from lake Malawi: A nutritional possibility for people living with HIV/AIDS. International Journal of Consumer Studies, 29(1), 72‚Äì77. https://doi.org/10.1111/j.1470-6431.2005.00377.x",
   
   # And values that are relative only (percentage of weight with no consistent weight) or experimental
   130, # Baghel, R. S., Kumari, P., Reddy, C. R. K., & Jha, B. (2014). Growth, pigments, and biochemical composition of marine red alga Gracilaria crassa. Journal of Applied Phycology, 26(5), 2143‚Äì2150. https://doi.org/10.1007/s10811-014-0250-5
@@ -208,6 +105,7 @@ exclude_by_study_id <- c(
   
   # these values need to be double checked, especially the %relative fatty acid methyl ester based fat observations,
   # excluding for now
+  1449, # feeding study, relative values do not seem to correspond with total fats/lipids that are absolute 10.1007/s10695-009-9360-4
   1004, #feeding study, data also incorrectly entered into database :( 10.1016/j.aquaculture.2005.06.009
   499, # peer reviewer RAs included this incorrectly, this used % total fatty acid methyl esters.... (10.3390/ijerph17072545)
   270, #peer reviewer RAs used wrong data point (used relative value, not g/100g of edible in Table 2b) 10.1006/jfca.1996.0024 #FAME
@@ -277,8 +175,10 @@ dim(all_nutrients_no_relatives_excluded)
 
 write.csv(
   all_nutrients_no_relatives_excluded,
-  file.path(directory,"data","OutputsFromR","cleaned_fcts",
+  here("data","OutputsFromR","cleaned_fcts",
        "clean_peer_review.csv"
        ),
   row.names = FALSE
 )
+
+
