@@ -30,11 +30,11 @@ asfis_file <- "ASFIS_sp_2020.xlsx"
 directory <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Nutrition/Separate/aquatic_foods_nutrient_database"
 
 afcd_dat <- read.csv(
-  here("data","OutputsFromR",afcd_merged_file),
+  here::here("data","OutputsFromR",afcd_merged_file),
   header = TRUE)
 
 asfis_spec_info <- read_excel(
-  here("data","ASFIS_sp",asfis_file),
+  here::here("data","ASFIS_sp",asfis_file),
   sheet = "ASFIS_All_for_publishing"
   )
 
@@ -59,7 +59,9 @@ afcd_taxa <- afcd_dat %>%
 
 
 afcd_scinames <- unique(afcd_taxa$Scientific.Name)
-afcd_scinames <- afcd_scinames[afcd_scinames!="" & is.na(afcd_scinames)==FALSE]
+afcd_scinames <- afcd_scinames[afcd_scinames!="" & is.na(afcd_scinames)==FALSE & str_detect(afcd_scinames,"Includes")==FALSE]
+
+View(as.data.frame(afcd_scinames))
 
 id_tx_ncbi <- taxizedb::name2taxid(afcd_scinames,db="ncbi", out_type="summary")
 id_tx_itis <- taxizedb::name2taxid(afcd_scinames,db="itis", out_type="summary")
@@ -72,7 +74,7 @@ id_tx_gbif <- taxizedb::name2taxid(afcd_scinames,db="gbif", out_type="summary")
 
 class_ncbi <- taxizedb::classification(id_tx_ncbi$id,db="ncbi")
 class_itis <- taxizedb::classification(id_tx_itis$id,db="itis")
-class_gbif <- taxizedb::classification(id_tx_gbif$id,db="gbif")
+# class_gbif <- taxizedb::classification(id_tx_gbif$id,db="gbif")
 
 
 widen_taxa_func <- function(class_list,i) {
@@ -122,7 +124,7 @@ taxa_itis$taxa_db <- "itis"
 
 #must be some bugs in the package... it included a few taxa_id's where species were NA
 # this creates some issues in the merge and string manipulation down below, so remove them now
-taxa_gbif <- taxa_gbif[is.na(taxa_gbif$species) != TRUE,] 
+# taxa_gbif <- taxa_gbif[is.na(taxa_gbif$species) != TRUE,] 
 taxa_itis <- taxa_itis[is.na(taxa_itis$species) != TRUE,] 
 taxa_ncbi <- taxa_ncbi[is.na(taxa_ncbi$species) != TRUE,] 
 
@@ -647,11 +649,11 @@ afcd_taxa_names <- data.frame(
 # _________________________________________
 
 write.csv(afcd_taxa_names,
-    here("data","OutputsFromR","aquatic_food_composition_database","afcd_taxonomic_names_only.csv"),
+    here::here("data","OutputsFromR","aquatic_food_composition_database","afcd_taxonomic_names_only.csv"),
     row.names=FALSE
   )
 
 write.csv(
   afcd_taxa,
-  here("data","OutputsFromR","afcd_with_taxa.csv"),row.names = FALSE)
+  here::here("data","OutputsFromR","afcd_with_taxa.csv"),row.names = FALSE)
 

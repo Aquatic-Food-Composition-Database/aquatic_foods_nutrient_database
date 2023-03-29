@@ -128,23 +128,18 @@ colnames(fao.data) <- gsub("\\.\\.","\\.",colnames(fao.data))
 colnames(fao.data) <- gsub("\\.\\.","\\.",colnames(fao.data))
 
 AFCD.w.FAO.USDA <- rbind.fill(AFCD.for.bind.dat,fao.data)
-colnames(AFCD.w.FAO.USDA)
 
+AFCD.w.FAO.USDA <- AFCD.w.FAO.USDA %>%
+  select(
+    GBD.Macro:Component.name,USDA.ndbno:RefID,Code:Latest.revision.in.version,Other,Edible.portion.coefficient:Tannins.total,EDIBLE:Fatty.acid.24.6,Dry.Matter:Wax.total
+    ) %>%
+  mutate(
+    across(Edible.portion.coefficient:Wax.total,enc2utf8),
+    across(Edible.portion.coefficient:Wax.total,function(x) as.numeric)
+  )
 
-
-
-#converts all nutrient values to numeric class, but not the metadata from the merge halfway through
-AFCD.w.FAO.USDA[,20:377] <- apply(AFCD.w.FAO.USDA[,20:378],MARGIN = 2,
-                    function(x)
-                      as.numeric(x)
-)
-#stop here for metadata from FAO (will move to front in EXCEL after exporting)
-AFCD.w.FAO.USDA[,393:length(AFCD.w.FAO.USDA)] <- apply(AFCD.w.FAO.USDA[,20:393:length(AFCD.w.FAO.USDA)],MARGIN = 2,
-                           function(x)
-                             as.numeric(x)
-)
-
-
+AFCD.w.FAO.USDA[,37:409] <- apply(AFCD.w.FAO.USDA[,37:409],2,function(x) enc2utf8(x))
+AFCD.w.FAO.USDA[,37:409] <- apply(AFCD.w.FAO.USDA[,37:409],2,function(x) as.numeric(x))
 
 # integrate the processing/preparation from USDA.scrape
 
@@ -240,6 +235,85 @@ for(i in 1:length(AFCD.w.FAO.USDA[,1])) {
     AFCD.w.FAO.USDA$Preparation[i] <- "pkl"
   }
 } 
+
+
+AFCD.w.FAO.USDA <- AFCD.w.FAO.USDA %>%
+  # now change over the part from what we now know to be hidden in 'other'
+  # unique(AFCD.w.FAO.USDA$Other)
+  # based on the above
+  mutate(
+    Parts=ifelse(Other %in%c(
+      "Anatomical parts excluded prior to analysis: Viscera.",
+      "Anatomical parts excluded prior to analysis: Viscera, barbel.",
+      "Anatomical parts excluded prior to analysis: Viscera, scales.",
+      "Anatomical parts excluded prior to analysis: Viscera, fins.",
+      "Anatomical parts excluded prior to analysis: Viscera, fins, scales, gills, operculum.",
+      "Anatomical parts excluded prior to analysis: Viscera, fins, scales."
+      ),"whole gutted",Parts)) %>%
+  mutate(
+    Parts=ifelse(Other %in% c(
+      "Anatomical parts excluded prior to analysis: Viscera, shell, legs, tail.",
+      "Anatomical parts excluded prior to analysis: Bones, viscera, fins.",
+      "Anatomical parts excluded prior to analysis: Bones, viscera, scales, gills, fins.",
+      "Anatomical parts excluded prior to analysis: Bones, viscera, barbell, gills.",
+      "Anatomical parts excluded prior to analysis: Bones, fins, viscera.",
+      "Anatomical parts excluded prior to analysis: Bones, viscera, gills, barbell.",
+      "Anatomical parts excluded prior to analysis: Bones, viscera, fins, scales, operculum.",
+      "Anatomical parts excluded prior to analysis: Bones, viscera, fins, scales, gills.",
+      "Anatomical parts excluded prior to analysis: Bones, viscera, fins, barbell.",
+      "Anatomical parts excluded prior to analysis: Bones, viscera, fins, scales.",
+      "Anatomical parts excluded prior to analysis: Bones, viscera, fins, snout.",
+      "Anatomical parts excluded prior to analysis: Bones, viscera, fins, skin, dorsal spine, snout.",
+      "[Muscle B cut]",
+      "Whole fillet"
+      ),"muscle tissue",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"dressed w/ head"),"whole gutted",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"cleaned fish"),"whole gutted",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"edible portion (gutted)"),"whole gutted",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"without head"),"whole",Parts)) %>% 
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"edible parts"),"whole",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"edible part"),"whole",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"edible portion"),"whole",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"fillet"),"muscle tissue",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"deheaded, peeled"),"muscle tissue",Parts)) %>%  
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"edible muslce"),"muscle tissue",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"flesh"),"muscle tissue",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"flesh,"),"muscle tissue",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"muscle"),"muscle tissue",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"meat"),"muscle tissue",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"canned"),"muscle tissue",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"foot"),"muscle tissue",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"whole"),"whole",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"whole,"),"whole",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"mantle"),"mantle",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"roe"),"roe",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"eggs"),"roe",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"liver"),"liver",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"soft tissue"),"muscle tissue",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"tissue"),"muscle tissue",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"soft body"),"muscle tissue",Parts)) %>%
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"smoked"),"muscle tissue",Parts)) %>%  
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"skinned"),"muscle tissue",Parts)) %>%  
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"skin"),"muscle tissue",Parts)) %>% 
+  mutate(Parts=ifelse(Country.ISO3=="USA" & is.na(Parts),"muscle tissue",Parts)) %>% 
+  
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"hepatopancreas"),"viscera tissue",Parts)) %>% 
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"gonad*"),"reproductive tissue",Parts)) %>% 
+  mutate(Parts=ifelse(str_detect(Food.name.in.English,"head"),"head",Parts)) %>% 
+  mutate(Scientific.Name=ifelse(str_detect(Food.name.in.English,"Spotted featherback"),"Chitala spp.",Scientific.Name)) %>%  
+  mutate(Scientific.Name=ifelse(str_detect(Food.name.in.English,"Bronze featherback"),"Notopterus notopterus",Scientific.Name)) %>%  
+  mutate(Scientific.Name=ifelse(str_detect(Food.name.in.English,"Nile tilapia"),"Oreochromis niloticus",Scientific.Name)) %>%  
+  mutate(Scientific.Name=ifelse(str_detect(Food.name.in.English,"pollock, Alaska"),"Gadus chalcogrammus",Scientific.Name)) %>%  
+  mutate(Scientific.Name=ifelse(str_detect(Food.name.in.English,"cod, Pacific"),"Gadus macrocephalus",Scientific.Name)) %>%  
+  mutate(Scientific.Name=ifelse(str_detect(Food.name.in.English,"crab, dungeness"),"Metacarcinus magister",Scientific.Name)) %>%  
+mutate(
+    Parts=ifelse(Other %in% c(
+    "Anatomical parts excluded prior to analysis: No parts removed."
+  ),"whole",Parts))
+
+# AFCD.w.FAO.USDA %>%
+#   filter(is.na(Parts)) %>%
+#   View()
 
 # export finalized dataset
 write.csv(
