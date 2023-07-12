@@ -21,7 +21,7 @@ india_file <- "clean_fct_india_2017.csv"
 latinfoods_file <- "clean_latinfoods.csv"
 usda_file <- "clean_usda_food_data_central.csv"
 jpn_algae_file <- "clean_jpn_algae_fct_2015.csv"
-peer_review_file <- "clean_peer_review.csv"
+peer_review_file <- "clean_peer_review_master.csv"
 #__________________________________________
 # read data and load libraries directory defaults
 # _________________________________________
@@ -134,12 +134,11 @@ smiling_vietnam_dat$Original.FCT.Food.Code <- as.character(smiling_vietnam_dat$O
 norway_dat$Original.FCT.Food.Code <- as.character(norway_dat$Original.FCT.Food.Code)
 usda_foods_dat$Original.FCT.Food.Code <- as.character(usda_foods_dat$Original.FCT.Food.Code)
 jpn_algae_dat$Original.FCT.Food.Code <- as.character(jpn_algae_dat$Original.FCT.Food.Code)
-peer_review_dat$ISSCAAP <- as.integer(peer_review_dat$ISSCAAP)
-peer_review_dat$FishBase.SAU.Code <- as.integer(peer_review_dat$FishBase.SAU.Code)
+# peer_review_dat$ISSCAAP <- as.integer(peer_review_dat$ISSCAAP)
+# peer_review_dat$FishBase.SAU.Code <- as.integer(peer_review_dat$FishBase.SAU.Code)
 peer_review_dat<- peer_review_dat %>%
   mutate(
-    across(Nitrogen.nonprotein:Tannins.total,as.numeric),
-    Dry.Matter=as.character(Dry.Matter),
+    across(Asparagine_est:dim(peer_review_dat)[2],as.numeric),
     Study.ID.number=as.character(Study.ID.number),
     Scientific.Name=as.character(Scientific.Name),
     peer_review="yes"
@@ -167,13 +166,28 @@ afcd_bind <- bind_rows(afcd_dat,
 afcd_names <- names(afcd_dat)
 
 no_afcd_names <- setdiff(names(afcd_bind),afcd_names)
-no_afcd_names <- no_afcd_names[1:650] # remove peer review
 
+rando_numbers <- 
+  afcd_bind %>%
+  select(Study.ID.number,no_afcd_names) %>%
+  select_if(is.numeric)
 
+variable_only_na <- cbind(afcd_bind$Study.ID.number,rando_numbers) %>%
+  rename(Study.ID.number='afcd_bind$Study.ID.number') %>%
+  pivot_longer(cols=-Study.ID.number) %>%
+  # drop_na(value) %>%
+  group_by(name) %>%
+  summarize(
+    num_nas=sum(is.na(value)),
+    num_total=length(value)
+    ) %>%
+  mutate(proportion=num_nas/num_total) %>%
+  filter(proportion ==1)
+  
+  
 
 afcd_bind_clean <- afcd_bind %>%
-  select(-all_of(no_afcd_names))
-
+  select(-all_of(unique(variable_only_na$name)))
 
 #__________________________________________
 # write data frame to folder

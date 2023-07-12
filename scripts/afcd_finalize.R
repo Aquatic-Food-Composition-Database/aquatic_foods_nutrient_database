@@ -230,18 +230,53 @@ afcd_dat_clean <- afcd_dat %>%
     Fatty.acid.18.1.n11.fatty.acid.20.1.n9, #this was incorrectly specified (should be C20.1n9) so has been moved to C20.1 n9 and removed here.
     Fatty.acid.22.1.n9.fatty.acid.22.1.n11, #this was incorrectly specified (should be C22.1n11) so has been moved to C22.1 n11 and removed here.
     USDA.ndbno,Food.Item.ID, #remove as this is now a part of Original.FCT.Food.Code
-    FAO.3A_CODE,alt.scinames,Habitat,Component.name #in the original dataset, not needed here
+    FAO.3A_CODE,Habitat,Component.name #in the original dataset, not needed here
     )) %>%
   select(taxa_name,kingdom:genus,taxa_id,parts_of_food:production_category,edible.portion.coefficient,Study.ID.number,peer_review,everything(.))
 
+afcd_dat_clean <- afcd_dat_clean %>%
+  mutate(
+    Dry.matter_est=ifelse(is.na(Dry.matter_est),Dry.Matter_est,Dry.matter_est),
+    Dry.matter_est=ifelse(is.na(Dry.matter_est),Dry.matter,Dry.matter_est),
+    Dry.matter_sd=ifelse(is.na(Dry.matter_sd),Dry.Matter_sd,Dry.matter_sd),
+    ID=ifelse(is.na(ID),id,ID),
+    Lactose=ifelse(is.na(Lactose),Lactose..g.,Lactose),
+    Lactose=ifelse(is.na(Lactose),lactose,Lactose),
+    Tocopherol..delta=ifelse(is.na(Tocopherol..delta),tocphd,Tocopherol..delta),
+    Tocopherol..delta=ifelse(is.na(Tocopherol..delta),TOCPHD,Tocopherol..delta),
+    Tocopherol..delta=ifelse(is.na(Tocopherol..delta),TOCPHD.mg.,Tocopherol..delta),
+    Tocopherol..gamma=ifelse(is.na(Tocopherol..gamma),TOCPHG.mg.,Tocopherol..gamma),
+    Tocopherol..gamma=ifelse(is.na(Tocopherol..gamma),tocphg,Tocopherol..gamma),
+    Tocopherol..beta=ifelse(is.na(Tocopherol..beta),tocphb,Tocopherol..beta),
+    Cryptoxanthin..beta=ifelse(is.na(Cryptoxanthin..beta),CRYPXB,Cryptoxanthin..beta),
+    Cryptoxanthin..beta=ifelse(is.na(Cryptoxanthin..beta),crypxb,Cryptoxanthin..beta),
+    Cryptoxanthin..ug.=ifelse(is.na(Cryptoxanthin..ug.),CRYPX.mcg.,Cryptoxanthin..ug.),
+    Pantothenic.acid_est=ifelse(is.na(Pantothenic.acid_est),pantothenic.acid,Pantothenic.acid_est),
+    Pantothenic.acid_est=ifelse(is.na(Pantothenic.acid_est),Pantothenic.acid,Pantothenic.acid_est),
+    Food.Name.in.English=ifelse(is.na(Food.Name.in.English),Food.name.in.English,Food.Name.in.English),
+    Family=ifelse(is.na(Family),family,Family),
+    Order=ifelse(is.na(Order),order,Order)
+  ) %>%
+  select(
+    -c(
+      Dry.Matter_est,Dry.Matter_sd,id,Lactose..g.,lactose,
+      tocphd,TOCPHD,TOCPHD.mg.,TOCPHG.mg.,tocphg,tocphb,
+      CRYPXB,crypxb,CRYPX.mcg.,pantothenic.acid,Pantothenic.acid,
+      Food.name.in.English,family,order))
+  
 #_____________________________________________________________________________________________
 # clean up names
 # removing '.' in title, as this is a special chracter, 
 # and then make all variable names proper
 # ____________________________________________________________________________________________
+# identify duplicate names and collapse
+
+
 afcd_names <- names(afcd_dat_clean)
 afcd_names_clean <- str_replace_all(afcd_names,"\\.","_")
 afcd_names_clean <- str_to_title(afcd_names_clean)
+
+afcd_names_clean[duplicated(afcd_names_clean)]
 
 names(afcd_dat_clean) <- afcd_names_clean
 
@@ -252,6 +287,9 @@ afcd_vars_no_vals <- afcd_dat_clean %>%
   select_if(is.logical) %>%
   names()
 
+names(afcd_dat_clean)[duplicated(names(afcd_dat_clean))]
+
+
 afcd_dat_clean <- afcd_dat_clean %>%
   rename(
     Cholecalciferol_d3=Cholecalciferol_d3_,
@@ -260,13 +298,11 @@ afcd_dat_clean <- afcd_dat_clean %>%
     retinol_13_cis=X13cis_retinol,
     Vitamin_d_method_unknown_or_variable=Vitamin_d
     ) %>%
-  select(-c(all_of(afcd_vars_no_vals))) %>%
-  mutate()
-
+  select(-c(all_of(afcd_vars_no_vals))) 
 #_____________________________________________________________________________________________
 # write to file
 # ____________________________________________________________________________________________
 write.csv(afcd_dat_clean,
-          here("data","OutputsFromR","aquatic_food_composition_database","20230329_AFCD.csv"),
+          here("data","OutputsFromR","aquatic_food_composition_database","20230612_AFCD.csv"),
           row.names=FALSE
 )
