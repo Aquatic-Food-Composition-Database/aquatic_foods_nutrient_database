@@ -31,7 +31,13 @@ source(
 # using afcd_clean_categories.R
 # ____________________________________________________________________________________________
 
-
+afcd_dat_clean %>%
+  # filter(Study.ID.number %in% c('1570','1571','1572','1573','1574','1575','1576','1577','1578','1579','1580','1581','1582','1583','1584','1585') ) %>%
+  filter(is.na(parts_of_food)) %>%
+  select(Food.name.in.English) %>%
+  distinct() %>%
+  View
+  
 
 afcd_dat_clean <- afcd_dat %>%
   mutate(
@@ -91,7 +97,8 @@ afcd_dat_clean <- afcd_dat %>%
       Wild.Farmed %in% c("Captive","darmed","f","farm","farmed","Farmed","farmed ") ~ "farmed",
       Wild.Farmed %in% c("","NA","unknown","Retail Bought ","micropropegated","mix") ~ "unknown",
       is.na(Wild.Farmed) ~ "unknown"
-    ), 
+    )) %>%
+  mutate( 
     parts_of_food = ifelse(is.na(parts_of_food),"small sample",parts_of_food),
     preparation_of_food = ifelse(is.na(preparation_of_food),"small sample",preparation_of_food)
   ) %>%
@@ -236,9 +243,6 @@ afcd_dat_clean <- afcd_dat %>%
 
 afcd_dat_clean <- afcd_dat_clean %>%
   mutate(
-    Dry.matter_est=ifelse(is.na(Dry.matter_est),Dry.Matter_est,Dry.matter_est),
-    Dry.matter_est=ifelse(is.na(Dry.matter_est),Dry.matter,Dry.matter_est),
-    Dry.matter_sd=ifelse(is.na(Dry.matter_sd),Dry.Matter_sd,Dry.matter_sd),
     ID=ifelse(is.na(ID),id,ID),
     Lactose=ifelse(is.na(Lactose),Lactose..g.,Lactose),
     Lactose=ifelse(is.na(Lactose),lactose,Lactose),
@@ -251,18 +255,26 @@ afcd_dat_clean <- afcd_dat_clean %>%
     Cryptoxanthin..beta=ifelse(is.na(Cryptoxanthin..beta),CRYPXB,Cryptoxanthin..beta),
     Cryptoxanthin..beta=ifelse(is.na(Cryptoxanthin..beta),crypxb,Cryptoxanthin..beta),
     Cryptoxanthin..ug.=ifelse(is.na(Cryptoxanthin..ug.),CRYPX.mcg.,Cryptoxanthin..ug.),
-    Pantothenic.acid_est=ifelse(is.na(Pantothenic.acid_est),pantothenic.acid,Pantothenic.acid_est),
-    Pantothenic.acid_est=ifelse(is.na(Pantothenic.acid_est),Pantothenic.acid,Pantothenic.acid_est),
+    Pantothenic.acid=ifelse(is.na(Pantothenic.acid),pantothenic.acid,Pantothenic.acid),
+    Pantothenic.acid=ifelse(is.na(Pantothenic.acid),Pantothenic.acid,Pantothenic.acid),
     Food.Name.in.English=ifelse(is.na(Food.Name.in.English),Food.name.in.English,Food.Name.in.English),
     Family=ifelse(is.na(Family),family,Family),
-    Order=ifelse(is.na(Order),order,Order)
+    Order=ifelse(is.na(Order),order,Order),
+    Vitamin.K=ifelse(is.na(Vitamin.K),vitamin.k,Vitamin.K),
+    Folic.acid=ifelse(is.na(Folic.acid),Folic.acid..ug.,Folic.acid),
+    Folic.acid=ifelse(is.na(Folic.acid),folic.acid,Folic.acid),
+    Fatty.acid.20.4.n6.Fatty.acid.22.1=ifelse(is.na(Fatty.acid.20.4.n6.Fatty.acid.22.1),Fatty.acid.20.4.n6.fatty.acid.22.1,Fatty.acid.20.4.n6.Fatty.acid.22.1),
+    Isoleucine=ifelse(is.na(Isoleucine),Isoleucin,Isoleucine),
+    Cholecalciferol.D3=ifelse(is.na(Cholecalciferol.D3),Cholecalciferol.D3.,Cholecalciferol.D3),
+    Cholecalciferol.D3=ifelse(is.na(Cholecalciferol.D3),Cholecalciferol,Cholecalciferol.D3)
   ) %>%
   select(
     -c(
-      Dry.Matter_est,Dry.Matter_sd,id,Lactose..g.,lactose,
+     id,Lactose..g.,lactose,
       tocphd,TOCPHD,TOCPHD.mg.,TOCPHG.mg.,tocphg,tocphb,
       CRYPXB,crypxb,CRYPX.mcg.,pantothenic.acid,Pantothenic.acid,
-      Food.name.in.English,family,order))
+      Food.name.in.English,family,order,Vitamin.K,Folic.acid..ug.,folic.acid,Fatty.acid.20.4.n6.fatty.acid.22.1,
+     Isoleucin,Cholecalciferol,Cholecalciferol.D3.))
   
 #_____________________________________________________________________________________________
 # clean up names
@@ -292,9 +304,7 @@ names(afcd_dat_clean)[duplicated(names(afcd_dat_clean))]
 
 afcd_dat_clean <- afcd_dat_clean %>%
   rename(
-    Cholecalciferol_d3=Cholecalciferol_d3_,
     Ergocalciferol_d2=Ergocalciferol_d2_,
-    Isoleucine=Isoleucin,
     retinol_13_cis=X13cis_retinol,
     Vitamin_d_method_unknown_or_variable=Vitamin_d
     ) %>%
@@ -303,6 +313,6 @@ afcd_dat_clean <- afcd_dat_clean %>%
 # write to file
 # ____________________________________________________________________________________________
 write.csv(afcd_dat_clean,
-          here("data","OutputsFromR","aquatic_food_composition_database","20230612_AFCD.csv"),
+          here("data","OutputsFromR","aquatic_food_composition_database","20230614_AFCD.csv"),
           row.names=FALSE
 )

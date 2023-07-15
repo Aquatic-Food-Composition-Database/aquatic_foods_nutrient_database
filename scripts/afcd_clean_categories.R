@@ -44,7 +44,8 @@ raw <- c("raw","Raw","r","wet","crudo","cruda","cru","Fresh","flesh","flesh","sa
 freezedried <- c("freeze-dried", "freeze dried","Freeze dried ",
                  "freezedried","Freeze-dried","freeze-dried, dried",
                  "freeze fried", #clearly spelling error!
-                 "Freezedried")
+                 "Freezedried",
+                 "Frozen, freeze dried","frozen, freeze dried","frozen, dried")
 rehydrated <- c("rehydrated")
 unknown_preparation <- c("unknown","NA","b","sl","not specified",
 	"conserva","0","Control","wet","fz","fe","e","Experiment")

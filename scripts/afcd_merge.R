@@ -122,7 +122,20 @@ jpn_algae_dat <- read.csv(
 
 peer_review_dat <- read.csv(
   here::here("data","OutputsFromR","cleaned_fcts",peer_review_file)
-)
+) %>%
+  select(
+    Study.ID.number:Notes.on.Laboratory.Analysis.methods.to.calculate.the.nutrient.composition.values,
+    contains("_est")) %>%
+  mutate(
+    PAA.Aspartic.acid_est=ifelse(is.na(PAA.Aspartic.acid_est),PAA.Aspartic.acid.1_est.1,PAA.Aspartic.acid_est),
+    PAA.Glutamine.gluamic.acid_est=ifelse(is.na(PAA.Glutamine.gluamic.acid_est),PAA.Glutamine.gluamic.acid_est.1,PAA.Glutamine.gluamic.acid_est)
+  ) %>%
+  select(-c(PAA.Aspartic.acid.1_est.1,PAA.Glutamine.gluamic.acid_est.1)) %>%
+  mutate(
+    across(-c(Study.ID.number:Notes.on.Laboratory.Analysis.methods.to.calculate.the.nutrient.composition.values),as.numeric)
+  )
+names(peer_review_dat) <- str_replace_all(names(peer_review_dat),"_est","")
+  
 
 #__________________________________________
 # clean up the 
@@ -138,7 +151,6 @@ jpn_algae_dat$Original.FCT.Food.Code <- as.character(jpn_algae_dat$Original.FCT.
 # peer_review_dat$FishBase.SAU.Code <- as.integer(peer_review_dat$FishBase.SAU.Code)
 peer_review_dat<- peer_review_dat %>%
   mutate(
-    across(Asparagine_est:dim(peer_review_dat)[2],as.numeric),
     Study.ID.number=as.character(Study.ID.number),
     Scientific.Name=as.character(Scientific.Name),
     peer_review="yes"

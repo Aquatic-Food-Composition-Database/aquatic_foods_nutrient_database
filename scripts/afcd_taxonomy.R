@@ -256,7 +256,7 @@ afcd_taxa[which(afcd_taxa$taxa_name=="gastropoda"),][c("taxa_name","genus","fami
 # afcd_taxa[which(afcd_taxa$taxa_name=="anabus testudineus"),][c("taxa_name","genus","family","order")] <- c("anabas testudineus","anabas","anabantidae","anabantiformes")
 # afcd_taxa[which(afcd_taxa$taxa_name=="anadara<U+FFFD>spp."),][c("taxa_name","genus","family","order","class")] <- c("anadara spp.","anadara","arcidae","arcida","bivalvia")
 afcd_taxa[which(afcd_taxa$taxa_name=="anadora semillis"),][c("taxa_name","genus","family","order","class")] <- c("anadara senilis","anadara","arcidae","arcida","bivalvia")
-afcd_taxa[which(afcd_taxa$taxa_name=="anchenoglanis occidentalis"),][c("taxa_name","genus","family","order")] <- c("auchenoglanis occidentalis","auchenoglanis","claroteidae","siluriformes")
+# afcd_taxa[which(afcd_taxa$taxa_name=="anchenoglanis occidentalis"),][c("taxa_name","genus","family","order")] <- c("auchenoglanis occidentalis","auchenoglanis","claroteidae","siluriformes")
 # afcd_taxa[which(afcd_taxa$taxa_name=="angelichthys isabelita"),][c("taxa_name","genus","family","order")] <- c("holacanthus bermudensis","holacanthus","pomacanthidae","perciformes") #old name according to worms
 afcd_taxa[which(afcd_taxa$taxa_name=="anguila bicolour"),][c("taxa_name","genus","family","order")] <- c("anguilla bicolor","anguilla","anguillidae","anguilliformes") #mispelled
 
