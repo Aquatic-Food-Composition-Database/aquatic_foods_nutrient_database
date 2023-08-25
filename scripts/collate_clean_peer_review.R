@@ -35,16 +35,6 @@ peer_review_master <- rbind(peer_review_dat_nisha,peer_review_dat_lucie) %>%
 
 
 
-peer_review_master %>%
-  filter(is.na(Preparation)) %>%
-  select(1:30) %>%
-  View
-  
-  # group_by(Preparation) %>%
-  # count() %>%
-  View
-
-
 
 write_csv(peer_review_master,here("data","OutputsFromR","cleaned_fcts","clean_peer_review_master.csv"))
 

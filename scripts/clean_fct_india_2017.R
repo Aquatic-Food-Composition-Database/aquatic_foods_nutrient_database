@@ -81,13 +81,15 @@ india_names_to_convert_to_afcd <- convert_nutrient_names("india_variable_name")
 india_aquatic_foods_dat_clean <- india_aquatic_foods_dat %>%
   data.table::setnames(
     old=india_names_to_convert_to_afcd$original_dataset,
-    new=india_names_to_convert_to_afcd$AFCD_variable_name)
+    new=india_names_to_convert_to_afcd$AFCD_variable_name,
+    skip_absent = TRUE
+    )
 # if this throws an error related to teh old not being int he new... it's usually because the formatting of those 
 # variables is wrong. 
 
 india_aquatic_foods_dat_clean$Country.ISO3 <- "IND" #adds classification for PNDB
 india_aquatic_foods_dat_clean$Preparation <- "raw" #FCT readme "xcept for eggs, all other food component data are forfoods in the raw form.'
-
+india_aquatic_foods_dat_clean$Parts <- "muscle tissue" 
 
 # change names of all the values to align with names in AFCD
 

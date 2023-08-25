@@ -60,7 +60,7 @@ microwaved <- c("microwave","microwaved")
 oil <- c("oil")
 cooked <- c("cooked","cooked, dry heat","cooked, moist heat",
             "sancochado","cocida","cocido","roasted")
-brined <- c("brined")
+brined <- c("brined","brined,")
 grilled <- c("grilled","assado/40 min")
 acid_digestion <- c("acid digestion")
 salted <- c("salted","s")
@@ -84,7 +84,7 @@ combination <- c("freeze-dried, aged","boiled, frozen",
 
 
 muscle_tissue <- c(
-	"f","meat","muscle","fillet","Muscle ","carne","muscle ","dorsal muscle","epaxial muscle","Muscle","soft tissue",
+	"f","meat","muscle","fillet","Muscle ","carne","muscle ","dorsal muscle","epaxial muscle","Muscle","soft tissue","muscle tissue",
 	"filete","flesh","Meat","Fillet and skinned","pulpa","meat ","fillet ","muscle, dark meat",
     "flesh and skin","fs","Muscle and skin", #flesh with skin
     "filé","músculo dorsal ","d","adductor muscle","foot","foot muscle","Adductor muscle","Foot","adductor","abdominal muscle",

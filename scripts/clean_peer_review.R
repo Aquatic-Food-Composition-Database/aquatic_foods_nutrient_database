@@ -15,11 +15,12 @@ library(tidyverse);library(here);library(data.table)
 source(here("scripts","merge_peer_review.R"))
 
 ##################
-# Exclude studies based on Marian Kjellevold's quality control assessment 
+# Exclude studies based on a few parameters
 ##################
 
   # where DOI exists, exclude by that 
 exclude_by_study_id <- c(
+  # Exclude based on Marian Kjellevold's quality control assessment (as part of Nature 2021 pub)
   519, #"Shimaa A. Amer, Ali Osman, Naif A. Al-Gabri, Shafika A. M. Elsayed, Ghada I. Abd El-Rahman, Mohamed Tharwat Elabbasy, Shaimaa A. A. Ahmed, & Rowida E. Ibrahim. (2019). The Effect of Dietary Replacement of Fish Meal with Whey Protein Concentrate on the Growth Performance, Fish Health, and Immune Status of Nile Tilapia Fingerlings, Oreochromis niloticus. Animals, 9(1103). https://doi.org/10.3390/ani9121003",
   652, #"Nesrin Emre, Kazım Uysal, Yılmaz Emre, Mustafa Kavaso_lu, & Ozgur Akta_. (2018). Seasonal and Sexual Variations of Total Protein, Fat and Fatty Acid Composition of an Endemic Freshwater Fish Species (Capoeta antalyensis. Aquatic Sciences and Engineering, 33(1), 6–10. https://doi.org/10.18864/ASE201802",
   592, #Hawaibam Romharsha, & Chungkham Sarojnalini. (2019). Micro-nutrient Contents of Some Fresh Water Fish Species of Manipur, India. Oriental Journal of Chemistry, 35(4), 1426–1432. https://doi.org/10.13005/ojc/350425

@@ -26,21 +26,18 @@ source(
   here::here("scripts","afcd_clean_categories.R")
 )
 
+
 #_____________________________________________________________________________________________
 # simplify the categories for the part of the food analysed and the preparation of the food,
 # using afcd_clean_categories.R
 # ____________________________________________________________________________________________
 
-afcd_dat_clean %>%
-  # filter(Study.ID.number %in% c('1570','1571','1572','1573','1574','1575','1576','1577','1578','1579','1580','1581','1582','1583','1584','1585') ) %>%
-  filter(is.na(parts_of_food)) %>%
-  select(Food.name.in.English) %>%
-  distinct() %>%
-  View
-  
+
 
 afcd_dat_clean <- afcd_dat %>%
   mutate(
+    ASFIS.Scientific.name=str_to_lower(ASFIS.Scientific.name),
+    taxa_name=ifelse(is.na(taxa_name),ASFIS.Scientific.name,taxa_name),
     parts_of_food = case_when(
       Parts %in%  muscle_tissue ~ "muscle_tissue",
       Parts %in%  whole ~ "whole",
@@ -74,9 +71,10 @@ afcd_dat_clean <- afcd_dat %>%
     preparation_of_food = case_when(
       Preparation %in% frozen ~ "frozen",
       Preparation %in% raw ~ "raw",
-      Preparation %in% freezedried~  "freeze_dried",
-      Preparation %in% unknown_preparation ~ "unknown_preparation",
       Preparation %in% dried ~ "dried",
+      Preparation %in% freezedried ~  "freeze_dried",
+      Preparation %in% brined ~ "brined",
+      Preparation %in% unknown_preparation ~ "unknown_preparation",
       Preparation %in% baked ~ "baked",
       Preparation %in% boiled_steamed ~ "boiled_steamed",
       Preparation %in% fried ~ "fried",
@@ -276,6 +274,8 @@ afcd_dat_clean <- afcd_dat_clean %>%
       Food.name.in.English,family,order,Vitamin.K,Folic.acid..ug.,folic.acid,Fatty.acid.20.4.n6.fatty.acid.22.1,
      Isoleucin,Cholecalciferol,Cholecalciferol.D3.))
   
+
+
 #_____________________________________________________________________________________________
 # clean up names
 # removing '.' in title, as this is a special chracter, 
@@ -299,8 +299,6 @@ afcd_vars_no_vals <- afcd_dat_clean %>%
   select_if(is.logical) %>%
   names()
 
-names(afcd_dat_clean)[duplicated(names(afcd_dat_clean))]
-
 
 afcd_dat_clean <- afcd_dat_clean %>%
   rename(
@@ -309,10 +307,12 @@ afcd_dat_clean <- afcd_dat_clean %>%
     Vitamin_d_method_unknown_or_variable=Vitamin_d
     ) %>%
   select(-c(all_of(afcd_vars_no_vals))) 
+
+
 #_____________________________________________________________________________________________
 # write to file
 # ____________________________________________________________________________________________
 write.csv(afcd_dat_clean,
-          here("data","OutputsFromR","aquatic_food_composition_database","20230614_AFCD.csv"),
+          here("data","OutputsFromR","aquatic_food_composition_database","20230722_AFCD.csv"),
           row.names=FALSE
 )
