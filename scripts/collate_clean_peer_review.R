@@ -1,6 +1,7 @@
 
 library(tidyverse);library(here);library(readxl)
-
+library(AFCD)
+unique(afcd$nutrient_type)
 
 peer_review_dat_nisha <-read_excel(
   here("data","afcd_peer_review_data",
