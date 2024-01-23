@@ -146,14 +146,89 @@ master_ids <- data.frame(
     minerals_ids$Study.ID.number,misc_ids$Study.ID.number,vitamin_ids$Study.ID.number),
   sample_id=c(
     macro_ids$sample_id,amino_ids$sample_id,fats_ids$sample_id,
-    minerals_ids$sample_id,misc_ids$sample_id,vitamin_ids$sample_id)
+    minerals_ids$sample_id,misc_ids$sample_id,vitamin_ids$sample_id),
+  Scientific.Name=c(
+    macro_ids$Scientific.Name,amino_ids$Scientific.Name,fats_ids$Scientific.Name,
+    minerals_ids$Scientific.Name,misc_ids$Scientific.Name,vitamin_ids$Scientific.Name),
+  n=c(
+    macro_ids$n,amino_ids$n,fats_ids$n,
+    minerals_ids$n,misc_ids$n,vitamin_ids$n),
+  alt.scinames=c(
+    macro_ids$alt.scinames,amino_ids$alt.scinames,fats_ids$alt.scinames,
+    minerals_ids$alt.scinames,misc_ids$alt.scinames,vitamin_ids$alt.scinames),
+  Class.worms=c(
+    macro_ids$Class.worms,amino_ids$Class.worms,fats_ids$Class.worms,
+    minerals_ids$Class.worms,misc_ids$Class.worms,vitamin_ids$Class.worms),
+  Order.worms=c(
+    macro_ids$Order.worms,amino_ids$Order.worms,fats_ids$Order.worms,
+    minerals_ids$Order.worms,misc_ids$Order.worms,vitamin_ids$Order.worms),
+  Family.worms=c(
+    macro_ids$Family.worms,amino_ids$Family.worms,fats_ids$Family.worms,
+    minerals_ids$Family.worms,misc_ids$Family.worms,vitamin_ids$Family.worms),
+  Genus.worms=c(
+    macro_ids$Genus.worms,amino_ids$Genus.worms,fats_ids$Genus.worms,
+    minerals_ids$Genus.worms,misc_ids$Genus.worms,vitamin_ids$Genus.worms),
+  GBD.Macro=c(
+    macro_ids$GBD.Macro,amino_ids$GBD.Macro,fats_ids$GBD.Macro,
+    minerals_ids$GBD.Macro,misc_ids$GBD.Macro,vitamin_ids$GBD.Macro),
+  GBD.Sub=c(
+    macro_ids$GBD.Sub,amino_ids$GBD.Sub,fats_ids$GBD.Sub,
+    minerals_ids$GBD.Sub,misc_ids$GBD.Sub,vitamin_ids$GBD.Sub),
+  Country.ISO3=c(
+    macro_ids$Country.ISO3,amino_ids$Country.ISO3,fats_ids$Country.ISO3,
+    minerals_ids$Country.ISO3,misc_ids$Country.ISO3,vitamin_ids$Country.ISO3),
+  FishBase.SAU.Code=c(
+    macro_ids$FishBase.SAU.Code,amino_ids$FishBase.SAU.Code,fats_ids$FishBase.SAU.Code,
+    minerals_ids$FishBase.SAU.Code,misc_ids$FishBase.SAU.Code,vitamin_ids$FishBase.SAU.Code),
+  ISSCAAP=c(
+    macro_ids$ISSCAAP,amino_ids$ISSCAAP,fats_ids$ISSCAAP,
+    minerals_ids$ISSCAAP,misc_ids$ISSCAAP,vitamin_ids$ISSCAAP),
+  FAO.Taxon.Code=c(
+    macro_ids$FAO.Taxon.Code,amino_ids$FAO.Taxon.Code,fats_ids$FAO.Taxon.Code,
+    minerals_ids$FAO.Taxon.Code,misc_ids$FAO.Taxon.Code,vitamin_ids$FAO.Taxon.Code),
+  FAO.3A_CODE=c(
+    macro_ids$FAO.3A_CODE,amino_ids$FAO.3A_CODE,fats_ids$FAO.3A_CODE,
+    minerals_ids$FAO.3A_CODE,misc_ids$FAO.3A_CODE,vitamin_ids$FAO.3A_CODE),
+  Food.name.in.English=c(
+    macro_ids$Food.name.in.English,amino_ids$Food.name.in.English,fats_ids$Food.name.in.English,
+    minerals_ids$Food.name.in.English,misc_ids$Food.name.in.English,vitamin_ids$Food.name.in.English),
+  Food.Name.in.Original.Language=c(
+    macro_ids$Food.Name.in.Original.Language,amino_ids$Food.Name.in.Original.Language,fats_ids$Food.Name.in.Original.Language,
+    minerals_ids$Food.Name.in.Original.Language,misc_ids$Food.Name.in.Original.Language,vitamin_ids$Food.Name.in.Original.Language),
+  Processing=c(
+    macro_ids$Processing,amino_ids$Processing,fats_ids$Processing,
+    minerals_ids$Processing,misc_ids$Processing,vitamin_ids$Processing),
+  Preparation=c(
+    macro_ids$Preparation,amino_ids$Preparation,fats_ids$Preparation,
+    minerals_ids$Preparation,misc_ids$Preparation,vitamin_ids$Preparation),
+  Wild.Farmed=c(
+    macro_ids$Wild.Farmed,amino_ids$Wild.Farmed,fats_ids$Wild.Farmed,
+    minerals_ids$Wild.Farmed,misc_ids$Wild.Farmed,vitamin_ids$Wild.Farmed),
+  Parts=c(
+    macro_ids$Parts,amino_ids$Parts,fats_ids$Parts,
+    minerals_ids$Parts,misc_ids$Parts,vitamin_ids$Parts),
+  Edible.portion.coefficient_est=c(
+    macro_ids$Edible.portion.coefficient_est,amino_ids$Edible.portion.coefficient_est,fats_ids$Edible.portion.coefficient_est,
+    minerals_ids$Edible.portion.coefficient_est,misc_ids$Edible.portion.coefficient_est,vitamin_ids$Edible.portion.coefficient_est),
+  Edible.portion.coefficient_sd=c(
+    macro_ids$Edible.portion.coefficient_sd,amino_ids$Edible.portion.coefficient_sd,fats_ids$Edible.portion.coefficient_sd,
+    minerals_ids$Edible.portion.coefficient_sd,misc_ids$Edible.portion.coefficient_sd,vitamin_ids$Edible.portion.coefficient_sd),
+  sex=c(
+    macro_ids$sex,amino_ids$sex,fats_ids$sex,
+    minerals_ids$sex,misc_ids$sex,vitamin_ids$sex),
+  Season=c(
+    macro_ids$Season,amino_ids$Season,fats_ids$Season,
+    minerals_ids$Season,misc_ids$Season,vitamin_ids$Season),
+  Notes.on.Laboratory.Analysis.methods.to.calculate.the.nutrient.composition.values=c(
+    macro_ids$Notes.on.Laboratory.Analysis.methods.to.calculate.the.nutrient.composition.values,amino_ids$Notes.on.Laboratory.Analysis.methods.to.calculate.the.nutrient.composition.values,fats_ids$Notes.on.Laboratory.Analysis.methods.to.calculate.the.nutrient.composition.values,
+    minerals_ids$Notes.on.Laboratory.Analysis.methods.to.calculate.the.nutrient.composition.values,misc_ids$Notes.on.Laboratory.Analysis.methods.to.calculate.the.nutrient.composition.values,vitamin_ids$Notes.on.Laboratory.Analysis.methods.to.calculate.the.nutrient.composition.values)
 ) %>%
   distinct()
 
 
-
 all_list <- list(master_ids,macro_ids,vitamin_ids,minerals_ids,fats_ids,amino_ids,misc_ids)
-all_merge <- Reduce(function(x, y) merge(x, y, all.x=TRUE), all_list) %>%
+
+all_merge <- plyr::join_all(all_list) %>%
   distinct() %>%
   filter(
     is.na(Scientific.Name)==FALSE,
