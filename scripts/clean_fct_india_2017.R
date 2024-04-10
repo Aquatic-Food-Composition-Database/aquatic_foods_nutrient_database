@@ -4,7 +4,7 @@
 #Name: J. Zachary (Zach) Koehn
 #Email: zkoehn@stanford.edu
 #Date started: 05/22/2020
-#Revised: 05/22/2020
+#Revised: 04/09/2024
 #============================================================
 
 #__________________________________________
@@ -16,16 +16,14 @@ library(tidyverse);library(dplyr);library(here);library(readxl);library(data.tab
 source(here("scripts","functions","func_cleaning_fct.R"))
 
 
-india_file <- "ifct2017.csv"
-merge_key_file <- "database_merge_key.xlsx"
+# load data
+list_files <- list.files(here("data","india_fct_2017","ifct2017 compositions master assets"),pattern="\\.csv$")
+india_dat_list <- lapply(list_files,function(x) read_csv(here("data","india_fct_2017","ifct2017 compositions master assets",x)))
 
-india_dat <- read.csv(
-  here("data","india_fct_2017",india_file), 
-  header = TRUE)
-
+  
 # and read the excel merge key used to modify names and units to merge with AFCD
 merge_key <- read_excel(
-  here("data",merge_key_file),
+  here("data","database_merge_key.xlsx"),
   sheet="key"
 )
 
@@ -34,16 +32,32 @@ merge_key <- read_excel(
 # extract aquatic foods information and 
 # cleaning variable names
 # _________________________________________
-unique(india_dat$grup) # determine what foods to include
-aquatic_food_groups <- c( #does not appear to be a seafoo d
-  "Marine Shellfish",
-  "Fresh Water Fish and Shellfish",
-  "Marine Fish",
-  "Marine Mollusks"
-)
 
-india_aquatic_foods_dat <- india_dat %>%
-  filter(grup %in% aquatic_food_groups)
+# binds together CSV files from the India Food Composition Table data on GitHub
+# completes cleaning to extract/separate estimates from standard deviations,
+# excludes non-aquatic food information
+# re-formats data to align with other FCT data structures for cleaning
+india_dat_df <- rbindlist(india_dat_list,fill=TRUE) %>%
+  mutate(
+    across(water:tfapu,as.character)
+  ) %>%
+  pivot_longer(water:tfapu,names_to="nutrients",values_to="value") %>%
+  drop_na(value) %>%
+  filter(
+    str_detect(code,"P") #code filters out any food that is not aquatic
+  ) %>%
+  separate(name,into=c("name","scientific_name"),sep=" \\(") %>%
+  mutate(scientific_name=str_replace_all(scientific_name,"\\)","")) %>%
+  separate(value,into=c("estimate","sd"),sep="±") %>%
+  # for now, remove the standard deviations, in future, could include these standard deviations
+  select(-sd) %>%
+  mutate(
+    estimate=as.numeric(estimate)
+  ) %>%
+  select(code:estimate) %>%
+  drop_na(estimate) %>%
+  pivot_wider(names_from=nutrients,values_from=estimate)
+
 
 
 #__________________________________________
@@ -65,8 +79,8 @@ india_names <- india_conversion_coefs$india_variable_name
 names(coefs) <- india_names #names it
 
 # now figure out which variables match from the conversion vector to 
-name_match <- intersect(names(india_aquatic_foods_dat), names(coefs))
-india_aquatic_foods_dat[name_match] <- sweep(india_aquatic_foods_dat[name_match], 2, unlist(coefs[name_match]), `*`)
+name_match <- intersect(names(india_dat_df), names(coefs))
+india_dat_df[name_match] <- sweep(india_dat_df[name_match], 2, unlist(coefs[name_match]), `*`)
 
 
 
@@ -78,17 +92,17 @@ india_aquatic_foods_dat[name_match] <- sweep(india_aquatic_foods_dat[name_match]
 india_names_to_convert_to_afcd <- convert_nutrient_names("india_variable_name") 
 
 
-india_aquatic_foods_dat_clean <- india_aquatic_foods_dat %>%
+india_aquatic_foods_dat_clean <- india_dat_df %>%
   data.table::setnames(
     old=india_names_to_convert_to_afcd$original_dataset,
     new=india_names_to_convert_to_afcd$AFCD_variable_name,
     skip_absent = TRUE
     )
-# if this throws an error related to teh old not being int he new... it's usually because the formatting of those 
+# if this throws an error related to the old not being int he new... it's usually because the formatting of those 
 # variables is wrong. 
 
 india_aquatic_foods_dat_clean$Country.ISO3 <- "IND" #adds classification for PNDB
-india_aquatic_foods_dat_clean$Preparation <- "raw" #FCT readme "xcept for eggs, all other food component data are forfoods in the raw form.'
+india_aquatic_foods_dat_clean$Preparation <- "raw" #FCT readme "xcept for eggs, all other food component data are for foods in the raw form.'
 india_aquatic_foods_dat_clean$Parts <- "muscle tissue" 
 
 # change names of all the values to align with names in AFCD
@@ -101,5 +115,8 @@ india_aquatic_foods_dat_clean$Parts <- "muscle tissue"
 # save the modified data frames to the folder
 # _________________________________________
 write.csv(india_aquatic_foods_dat_clean,here("data","OutputsFromR","cleaned_fcts","clean_fct_india_2017.csv"),row.names = FALSE)
-
-
+india_aquatic_foods_dat_clean %>%
+filter(
+  Scientific.Name=="Aprion virescens"
+) %>%
+  select(Calcium)
