@@ -243,15 +243,10 @@ afcd_dat_clean <- afcd_dat_clean %>%
   mutate(
     ID=ifelse(is.na(ID),id,ID),
     Lactose=ifelse(is.na(Lactose),Lactose..g.,Lactose),
-    Lactose=ifelse(is.na(Lactose),lactose,Lactose),
-    Tocopherol..delta=ifelse(is.na(Tocopherol..delta),tocphd,Tocopherol..delta),
     Tocopherol..delta=ifelse(is.na(Tocopherol..delta),TOCPHD,Tocopherol..delta),
     Tocopherol..delta=ifelse(is.na(Tocopherol..delta),TOCPHD.mg.,Tocopherol..delta),
     Tocopherol..gamma=ifelse(is.na(Tocopherol..gamma),TOCPHG.mg.,Tocopherol..gamma),
-    Tocopherol..gamma=ifelse(is.na(Tocopherol..gamma),tocphg,Tocopherol..gamma),
-    Tocopherol..beta=ifelse(is.na(Tocopherol..beta),tocphb,Tocopherol..beta),
     Cryptoxanthin..beta=ifelse(is.na(Cryptoxanthin..beta),CRYPXB,Cryptoxanthin..beta),
-    Cryptoxanthin..beta=ifelse(is.na(Cryptoxanthin..beta),crypxb,Cryptoxanthin..beta),
     Cryptoxanthin..ug.=ifelse(is.na(Cryptoxanthin..ug.),CRYPX.mcg.,Cryptoxanthin..ug.),
     Pantothenic.acid=ifelse(is.na(Pantothenic.acid),pantothenic.acid,Pantothenic.acid),
     Pantothenic.acid=ifelse(is.na(Pantothenic.acid),Pantothenic.acid,Pantothenic.acid),
@@ -268,9 +263,9 @@ afcd_dat_clean <- afcd_dat_clean %>%
   ) %>%
   select(
     -c(
-     id,Lactose..g.,lactose,
-      tocphd,TOCPHD,TOCPHD.mg.,TOCPHG.mg.,tocphg,tocphb,
-      CRYPXB,crypxb,CRYPX.mcg.,pantothenic.acid,Pantothenic.acid,
+     id,Lactose..g.,
+     TOCPHD,TOCPHD.mg.,TOCPHG.mg.,
+      CRYPXB,CRYPX.mcg.,pantothenic.acid,Pantothenic.acid,
       Food.name.in.English,family,order,Vitamin.K,Folic.acid..ug.,folic.acid,Fatty.acid.20.4.n6.fatty.acid.22.1,
      Isoleucin,Cholecalciferol,Cholecalciferol.D3.))
   
